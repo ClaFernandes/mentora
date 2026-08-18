@@ -1,0 +1,19 @@
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-layout_stripe-banner {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 16px;
+}
+
+.app-layout_main {
+    flex: 1;
+    padding: 24px;
+}

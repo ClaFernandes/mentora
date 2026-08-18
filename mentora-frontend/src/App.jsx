@@ -1,8 +1,11 @@
+import { AuthProvider } from "./context/AuthContext.jsx";
+import AppLayout from "./layouts/AppLayout.jsx";
+
 function App() {
   return (
-    <>
-      <h1>Mentora</h1>
-    </>
+    <AuthProvider>
+      <AppLayout />
+    </AuthProvider>
   );
 }
 
