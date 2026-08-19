@@ -1,17 +1,15 @@
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-
 import AppLayout from "../layouts/AppLayout.jsx";
 import LandingLayout from "../layouts/LandingLayout.jsx";
-
 import LandingPage from "../pages/landing/LandingPage.jsx";
 import LegalPage from "../pages/institutional/LegalPage.jsx";
+import Login from "../pages/auth/Login.jsx";
+import AdminLogin from "../pages/auth/AdminLogin.jsx";
+import Register from "../pages/auth/Register.jsx";
+import UpdatePassword from "../pages/auth/UpdatePassword.jsx";
 import NotFoundPage from "../pages/not-found/NotFoundPage.jsx";
 
-// Páginas por construir 
-// import Login from "../pages/auth/Login.jsx";
-// import Register from "../pages/auth/Register.jsx";
-// import AdminLogin from "../pages/auth/AdminLogin.jsx";
 // import MentorOnboarding from "../pages/onboarding/MentorOnboarding.jsx";
 // import MenteeOnboarding from "../pages/onboarding/MenteeOnboarding.jsx";
 // import FeedPage from "../pages/feed/FeedPage.jsx";
@@ -21,7 +19,7 @@ import NotFoundPage from "../pages/not-found/NotFoundPage.jsx";
 // import AdminPage from "../pages/admin/AdminPage.jsx";
 // import MentorsPage from "../pages/mentors/MentorsPage.jsx"; 
 
-// Placeholder para páginas por construir. Apagar quando tiver pronto
+// Placeholder para páginas por construir. Apagar quando tiverem as páginas prontas
 function Placeholder({ label }) {
     return <div style={{ padding: 24 }}>{label} — em construção</div>;
 }
@@ -32,9 +30,10 @@ export default function AppRoutes() {
             <Route element={<LandingLayout />}>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/legal" element={<LegalPage />} />
-                <Route path="/login" element={<Placeholder label="Login" />} />
-                <Route path="/register" element={<Placeholder label="Registo" />} />
-                <Route path="/admin/login" element={<Placeholder label="Login admin" />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/update-password" element={<UpdatePassword />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Route>
 

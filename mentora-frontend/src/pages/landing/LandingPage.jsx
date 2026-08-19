@@ -8,12 +8,12 @@ import "./LandingPage.css";
 const FEATURED_MENTORS = [
     { id: "1", name: "Ana Ribeiro", area: "Desenvolvimento Web", avgRating: 4.9, sessionPrice: 50, avatarUrl: "https://i.pravatar.cc/150?img=32" },
     { id: "2", name: "Ricardo Silva", area: "UX/UI Design", avgRating: 4.8, sessionPrice: 40, avatarUrl: "https://i.pravatar.cc/150?img=12" },
-    { id: "3", name: "Sofia Martins", area: "Marketing Digital", avgRating: 5.0, sessionPrice: 45, avatarUrl: "https://i.pravatar.cc/150?img=45" },
+    { id: "3", name: "Sofia Martins", area: "Marketing Digital", avgRating: 5.0, sessionPrice: 45, avatarUrl: "https://i.pravatar.cc/150?img=48" },
 ];
 
 const HERO_AVATARS = [
     { id: "h1", avatarUrl: "https://i.pravatar.cc/150?img=16" },
-    { id: "h2", avatarUrl: "https://i.pravatar.cc/150?img=45" },
+    { id: "h2", avatarUrl: "https://i.pravatar.cc/150?img=23" },
     { id: "h3", avatarUrl: "https://i.pravatar.cc/150?img=68" },
 ];
 
