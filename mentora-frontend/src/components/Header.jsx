@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
+import { useTheme } from "../hooks/useTheme.js";
 import Avatar from "./Avatar.jsx";
 import logo from "../assets/logo-transparente-mostarda.png";
 import { FiMessageCircle, FiMoon, FiSun, FiLogOut, FiSearch } from "react-icons/fi";
@@ -32,25 +33,14 @@ export default function Header() {
 
     const visibleNavItems = NAV_ITEMS.filter((item) => item.roles.includes(user.role));
 
-    const [theme, setTheme] = useState(() => {
-        return localStorage.getItem("mentora-theme") || "light";
-    });
-
-    useEffect(() => {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("mentora-theme", theme);
-    }, [theme]);
-
-    function toggleTheme() {
-        setTheme((prev) => (prev === "light" ? "dark" : "light"));
-    }
+    const { theme, toggleTheme } = useTheme();
 
     return (
         <header className="header">
-            <div className="header_logo">
+            <NavLink to="/feed" className="header_logo">
                 <img src={logo} alt="Logo" />
                 <h1>Mentora</h1>
-            </div>
+            </NavLink>
 
             <form className="header_search" onSubmit={search}>
                 <div className="header_search-wrapper">

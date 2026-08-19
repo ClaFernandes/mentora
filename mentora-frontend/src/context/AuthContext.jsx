@@ -7,6 +7,7 @@ const MOCK_USER = {
     name: "Clarice Fernandes",
     email: "clarice@mail.com",
     role: "mentor", // "mentor" | "mentee" | "admin"
+    status: "active", // "pending" | "active" | "rejected"
     avatarUrl: "",
     bio: "Desenvolvedora full-stack e mentora.",
     createdAt: "2026-01-10T00:00:00.000Z",

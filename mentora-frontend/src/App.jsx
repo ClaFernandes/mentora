@@ -1,10 +1,10 @@
+import AppRoutes from "./routes/AppRoutes.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
-import AppLayout from "./layouts/AppLayout.jsx";
 
 function App() {
   return (
     <AuthProvider>
-      <AppLayout />
+      <AppRoutes />
     </AuthProvider>
   );
 }
