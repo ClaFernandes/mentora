@@ -8,10 +8,10 @@ import Login from "../pages/auth/Login.jsx";
 import AdminLogin from "../pages/auth/AdminLogin.jsx";
 import Register from "../pages/auth/Register.jsx";
 import UpdatePassword from "../pages/auth/UpdatePassword.jsx";
+import MentorOnboarding from "../pages/onboarding/MentorOnboarding.jsx";
+import MenteeOnboarding from "../pages/onboarding/MenteeOnboarding.jsx";
 import NotFoundPage from "../pages/not-found/NotFoundPage.jsx";
 
-// import MentorOnboarding from "../pages/onboarding/MentorOnboarding.jsx";
-// import MenteeOnboarding from "../pages/onboarding/MenteeOnboarding.jsx";
 // import FeedPage from "../pages/feed/FeedPage.jsx";
 // import ProfilePage from "../pages/profile/ProfilePage.jsx";
 // import BookingFlow from "../pages/booking/BookingFlow.jsx";
@@ -41,7 +41,7 @@ export default function AppRoutes() {
                 path="/onboarding/mentor"
                 element={
                     <ProtectedRoute role="mentor">
-                        <Placeholder label="Onboarding mentor" />
+                        <MentorOnboarding />
                     </ProtectedRoute>
                 }
             />
@@ -50,7 +50,7 @@ export default function AppRoutes() {
                 path="/onboarding/mentee"
                 element={
                     <ProtectedRoute role="mentee">
-                        <Placeholder label="Onboarding mentorado" />
+                        <MenteeOnboarding />
                     </ProtectedRoute>
                 }
             />

@@ -1,0 +1,380 @@
+.onboarding-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 72px);
+    padding: 48px 24px;
+    background-color: var(--color-bg);
+}
+
+.onboarding-card {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    background-color: var(--color-bg-elevated);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    padding: 40px 32px;
+    text-align: center;
+}
+
+.onboarding-theme-toggle {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.onboarding-theme-toggle:hover {
+    background-color: var(--color-bg);
+}
+
+.onboarding-logo {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+.onboarding-card h2 {
+    color: var(--color-text);
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+}
+
+.onboarding-subtitle {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+}
+
+.onboarding-error {
+    background-color: var(--color-danger);
+    color: var(--color-cream);
+    font-size: 0.85rem;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.onboarding-field {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.onboarding-field label {
+    display: block;
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.onboarding-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.onboarding-input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    pointer-events: none;
+}
+
+.onboarding-select-wrapper select {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.9rem;
+    appearance: none;
+    cursor: pointer;
+}
+
+.onboarding-select-wrapper::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--color-text-secondary);
+    border-bottom: 2px solid var(--color-text-secondary);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.onboarding-select-wrapper select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.onboarding-field>input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.onboarding-field>input[type="text"]:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.onboarding-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.onboarding-input-wrapper input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.onboarding-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.onboarding-days-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.onboarding-day {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background-color: transparent;
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.onboarding-day-icon {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.onboarding-day:hover {
+    border-color: var(--color-accent);
+}
+
+.onboarding-day.active {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.onboarding-day:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.onboarding-day-toggle {
+    border-style: dashed;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+}
+
+.onboarding-custom-interest {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.onboarding-custom-interest input {
+    flex: 1;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.85rem;
+}
+
+.onboarding-custom-interest input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.onboarding-custom-interest button {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.onboarding-custom-interest button:hover {
+    opacity: 0.9;
+}
+
+.onboarding-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background-color: rgba(210, 160, 42, 0.12);
+    border: 1px solid var(--color-accent);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--color-text);
+    font-size: 0.82rem;
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+.onboarding-note svg {
+    color: var(--color-accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 1rem;
+}
+
+.onboarding-field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 96px;
+}
+
+.onboarding-field textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.onboarding-mentors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+}
+
+.onboarding-mentor-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    background-color: transparent;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.onboarding-mentor-card:hover {
+    border-color: var(--color-accent);
+}
+
+.onboarding-mentor-card.active {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.onboarding-mentor-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+}
+
+.onboarding-mentor-card.active .onboarding-mentor-badge {
+    background-color: var(--color-bg-elevated);
+    border-color: var(--color-accent-text);
+    color: var(--color-accent);
+}
+
+.onboarding-mentor-name {
+    color: var(--color-text);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.onboarding-mentor-area {
+    color: var(--color-text-secondary);
+    font-size: 0.72rem;
+    text-align: center;
+}
+
+.onboarding-mentor-card.active .onboarding-mentor-name,
+.onboarding-mentor-card.active .onboarding-mentor-area {
+    color: var(--color-accent-text);
+}
+
+.onboarding-mentor-card:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.onboarding-btn {
+    width: 100%;
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    margin-top: 8px;
+}
+
+.onboarding-btn:hover {
+    opacity: 0.9;
+}
+
+.onboarding-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

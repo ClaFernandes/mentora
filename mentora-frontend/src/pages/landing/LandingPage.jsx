@@ -1,15 +1,12 @@
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar.jsx";
+import { MOCK_MENTORS } from "../../mocks/mockData.js";
 import { FiCheck } from "react-icons/fi";
 import { AiFillStar } from "react-icons/ai";
 import { FaCheckCircle } from "react-icons/fa";
 import "./LandingPage.css";
 
-const FEATURED_MENTORS = [
-    { id: "1", name: "Ana Ribeiro", area: "Desenvolvimento Web", avgRating: 4.9, sessionPrice: 50, avatarUrl: "https://i.pravatar.cc/150?img=32" },
-    { id: "2", name: "Ricardo Silva", area: "UX/UI Design", avgRating: 4.8, sessionPrice: 40, avatarUrl: "https://i.pravatar.cc/150?img=12" },
-    { id: "3", name: "Sofia Martins", area: "Marketing Digital", avgRating: 5.0, sessionPrice: 45, avatarUrl: "https://i.pravatar.cc/150?img=48" },
-];
+const FEATURED_MENTORS = MOCK_MENTORS.slice(0, 3);
 
 const HERO_AVATARS = [
     { id: "h1", avatarUrl: "https://i.pravatar.cc/150?img=16" },
@@ -22,6 +19,10 @@ const STEPS = [
     { number: "2", title: "Encontra o mentor certo", description: "Filtra por área, preço e avaliação para encontrares quem melhor te pode ajudar." },
     { number: "3", title: "Agenda e evolui", description: "Marca a tua sessão, paga com segurança, e acompanha a tua evolução na plataforma." },
 ];
+
+function getMinPrice(offerings) {
+    return Math.min(...offerings.map((o) => o.sessionPrice));
+}
 
 export default function LandingPage() {
     return (
@@ -87,18 +88,20 @@ export default function LandingPage() {
                         <div key={mentor.id} className="landing_mentor-card">
                             <div className="landing_mentor-avatar-wrapper">
                                 <Avatar src={mentor.avatarUrl} name={mentor.name} size={64} />
-                                <FaCheckCircle
-                                    className="landing_mentor-verified"
-                                    title="Mentor verificado"
-                                />
+                                {mentor.isVerified && (
+                                    <FaCheckCircle
+                                        className="landing_mentor-verified"
+                                        title="Mentor verificado"
+                                    />
+                                )}
                             </div>
                             <h3>{mentor.name}</h3>
-                            <p className="landing_mentor-area">{mentor.area}</p>
+                            <p className="landing_mentor-area">{mentor.offerings[0].title}</p>
                             <p className="landing_mentor-rating">
                                 <AiFillStar /> {mentor.avgRating}
                             </p>
                             <p className="landing_mentor-price">
-                                a partir de {mentor.sessionPrice}€
+                                a partir de {getMinPrice(mentor.offerings)}€
                             </p>
                         </div>
                     ))}

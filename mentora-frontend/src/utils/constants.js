@@ -1,0 +1,16 @@
+export const MENTORSHIP_AREAS = [
+    "Programação/Desenvolvimento",
+    "Design (UI/UX)",
+    "Marketing",
+    "Recursos Humanos",
+    "Finanças",
+    "Educação/Ensino",
+    "Idiomas",
+    "Gestão de Produto",
+    "Gestão de Projetos",
+    "Direito",
+    "Vendas",
+    "Escrita e Comunicação",
+    "Empreendedorismo",
+    "Carreira/Desenvolvimento Pessoal",
+]
