@@ -1,0 +1,83 @@
+.post-card {
+    background-color: var(--color-bg-elevated);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.post-card_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.post-card_author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.post-card_author span {
+    font-family: "Manrope", sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.post-card_header time {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+}
+
+.post-card_content {
+    margin-bottom: 14px;
+}
+
+.post-card_content p {
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-text);
+    white-space: pre-wrap;
+}
+
+.post-card_content img {
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 12px;
+    display: block;
+}
+
+.post-card_actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+}
+
+.post-card_actions button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    padding: 6px 4px;
+    transition: color 0.15s ease;
+}
+
+.post-card_actions button:hover {
+    color: var(--color-mustard);
+}
+
+.post-card_actions button:first-child svg {
+    color: var(--color-mustard);
+}

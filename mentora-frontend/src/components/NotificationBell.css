@@ -1,0 +1,129 @@
+.notification-bell {
+    position: relative;
+}
+
+.notification-bell_trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--color-cream);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.notification-bell_trigger:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.notification-bell_badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background-color: var(--color-mustard);
+    color: var(--color-graphite);
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.notification-bell_dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+}
+
+.notification-bell_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.notification-bell_header span {
+    font-family: "Manrope", sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.notification-bell_header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-mustard);
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.notification-bell_header button:hover {
+    text-decoration: underline;
+}
+
+.notification-bell_empty {
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.notification-bell ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.notification-bell_item {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.notification-bell_item:last-child {
+    border-bottom: none;
+}
+
+.notification-bell_item:hover {
+    background-color: var(--color-bg);
+}
+
+.notification-bell_item-unread {
+    background-color: rgba(210, 160, 42, 0.08);
+}
+
+.notification-bell_item p {
+    font-family: "Inter", sans-serif;
+    font-size: 0.85rem;
+    color: var(--color-text);
+    margin: 0 0 4px;
+    line-height: 1.4;
+}
+
+.notification-bell_item time {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}

@@ -3,11 +3,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 import { useTheme } from "../hooks/useTheme.js";
 import Avatar from "./Avatar.jsx";
+import NotificationBell from "./NotificationBell.jsx";
 import logo from "../assets/logo-transparente-mostarda.png";
 import { FiMessageCircle, FiMoon, FiSun, FiLogOut, FiSearch } from "react-icons/fi";
 import "./Header.css";
 
 const NAV_ITEMS = [
+    { to: "/feed", label: "Feed", roles: ["mentor", "mentee"] },
     { to: "/mentores", label: "Mentores", roles: ["mentor", "mentee"] },
     { to: "/sessoes", label: "Sessões", roles: ["mentor", "mentee"] },
 ];
@@ -74,6 +76,8 @@ export default function Header() {
                 <NavLink to="/chat" className="header_chat-icon">
                     <FiMessageCircle />
                 </NavLink>
+
+                <NotificationBell />
 
                 <button
                     type="button"

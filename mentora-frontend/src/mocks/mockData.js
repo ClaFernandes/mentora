@@ -392,3 +392,55 @@ export const MOCK_COMMENTS = [
         createdAt: "2026-08-21T08:30:00.000Z",
     },
 ];
+
+// Chat e pagamento/booking serão acrescentados quando ChatWindow.jsx e BookingFlow.jsx existirem
+export const MOCK_NOTIFICATIONS = [
+    // Notificações para o mentor
+    {
+        id: "n1",
+        type: "like",
+        recipientId: "mock-user-mentor",
+        actorId: "m1",
+        postId: "p3",
+        read: false,
+        createdAt: "2026-08-21T09:00:00.000Z",
+    },
+    {
+        id: "n2",
+        type: "comment",
+        recipientId: "mock-user-mentor",
+        actorId: "2",
+        postId: "p3",
+        read: false,
+        createdAt: "2026-08-21T08:30:00.000Z",
+    },
+    {
+        id: "n3",
+        type: "like",
+        recipientId: "mock-user-mentor",
+        actorId: "m2",
+        postId: "p3",
+        read: true,
+        createdAt: "2026-08-20T19:00:00.000Z",
+    },
+
+    // Notificações para a mentee 
+    {
+        id: "n4",
+        type: "comment",
+        recipientId: "mock-user-mentee",
+        actorId: "1",
+        postId: "p1",
+        read: false,
+        createdAt: "2026-08-19T15:25:00.000Z",
+    },
+    {
+        id: "n5",
+        type: "like",
+        recipientId: "mock-user-mentee",
+        actorId: "3",
+        postId: "p2",
+        read: true,
+        createdAt: "2026-08-20T09:20:00.000Z",
+    },
+];
