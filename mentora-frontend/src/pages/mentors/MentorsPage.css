@@ -1,0 +1,285 @@
+.mentors-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.mentors-filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.mentors-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 0 1 320px;
+    min-width: 200px;
+}
+
+.mentors-search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+    pointer-events: none;
+}
+
+.mentors-search input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.mentors-search input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.mentors-filters select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.mentors-filters select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.mentors-price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mentors-price-inputs input {
+    width: 90px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.9rem;
+}
+
+.mentors-price-inputs input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.mentors-price-inputs span {
+    color: var(--color-text-secondary);
+}
+
+.mentors-rating-pills {
+    display: flex;
+    gap: 8px;
+}
+
+.mentors-rating-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background-color: transparent;
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.mentors-rating-pill:hover {
+    border-color: var(--color-accent);
+}
+
+.mentors-rating-pill.active {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.mentors-rating-pill-icon {
+    font-size: 0.8rem;
+}
+
+.mentors-clear-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 8px 4px;
+    transition: color 0.15s ease;
+}
+
+.mentors-clear-btn:hover {
+    color: var(--color-danger);
+}
+
+.mentors-results-count {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+}
+
+.mentors-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.mentors-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 28px 20px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mentors-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.mentors-card-follow {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+
+.mentors-card-follow:hover {
+    border-color: var(--color-accent);
+}
+
+.mentors-card h3 {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    line-height: 1.25;
+    min-height: 2.6em;
+    display: flex;
+    align-items: center;
+    margin-top: 14px;
+    margin-bottom: 4px;
+}
+
+.mentors-card-offering {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.3;
+    min-height: 2.3em;
+    margin-bottom: 10px;
+}
+
+.mentors-card-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.mentors-card-rating svg {
+    color: var(--color-accent);
+}
+
+.mentors-card-price {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+.mentors-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: 48px 24px;
+}
+
+.mentors-load-more {
+    display: block;
+    margin: 32px auto 0;
+    background-color: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 10px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mentors-load-more:hover {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+@media (max-width: 1200px) {
+    .mentors-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 960px) {
+    .mentors-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .mentors-filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .mentors-price-inputs input {
+        flex: 1;
+        width: auto;
+    }
+}
+
+@media (max-width: 420px) {
+    .mentors-grid {
+        grid-template-columns: 1fr;
+    }
+}

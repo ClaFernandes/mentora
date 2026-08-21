@@ -209,4 +209,186 @@ export const MOCK_MENTORS = [
         isVerified: true,
         avgRating: 4.5,
     },
+    {
+        id: "9",
+        name: "Marta Oliveira",
+        avatarUrl: "https://i.pravatar.cc/150?img=33",
+        bio: "Product manager com experiência em produtos B2B SaaS.",
+        offerings: [
+            {
+                id: "o12",
+                title: "Mentoria de Gestão de Produto",
+                area: "Gestão de Produto",
+                sessionPrice: 55,
+                description: "Roadmap, priorização e discovery de produto para PMs em início de carreira.",
+            },
+        ],
+        isVerified: true,
+        avgRating: 4.7,
+    },
+    {
+        id: "10",
+        name: "Pedro Almeida",
+        avatarUrl: "https://i.pravatar.cc/150?img=68",
+        bio: "Especialista em vendas B2B com mais de 10 anos de experiência.",
+        offerings: [
+            {
+                id: "o13",
+                title: "Mentoria de Técnicas de Vendas",
+                area: "Vendas",
+                sessionPrice: 35,
+                description: "Prospecção, negociação e fecho de vendas para quem está a começar.",
+            },
+        ],
+        isVerified: true,
+        avgRating: 4.4,
+    },
+    {
+        id: "11",
+        name: "Sara Mendes",
+        avatarUrl: "https://i.pravatar.cc/150?img=41",
+        bio: "Copywriter e consultora de comunicação para marcas pessoais.",
+        offerings: [
+            {
+                id: "o14",
+                title: "Mentoria de Escrita e Copywriting",
+                area: "Escrita e Comunicação",
+                sessionPrice: 30,
+                description: "Como escrever textos que convertem, para redes sociais e portfólio.",
+            },
+            {
+                id: "o15",
+                title: "Construção de Marca Pessoal",
+                area: "Carreira/Desenvolvimento Pessoal",
+                sessionPrice: 45,
+                description: "Posicionamento e narrativa profissional para LinkedIn e portfólio.",
+            },
+        ],
+        isVerified: true,
+        avgRating: 4.8,
+    },
+    {
+        id: "12",
+        name: "Daniel Rocha",
+        avatarUrl: "https://i.pravatar.cc/150?img=53",
+        bio: "Engenheiro de software sénior, também atua como product manager técnico.",
+        offerings: [
+            {
+                id: "o16",
+                title: "Mentoria de Arquitetura de Software",
+                area: "Programação/Desenvolvimento",
+                sessionPrice: 80,
+                description: "Sessões avançadas sobre design de sistemas, escalabilidade e boas práticas.",
+            },
+            {
+                id: "o17",
+                title: "Transição para Gestão de Produto",
+                area: "Gestão de Produto",
+                sessionPrice: 60,
+                description: "Para devs que querem migrar de carreira técnica para produto.",
+            },
+        ],
+        isVerified: true,
+        avgRating: 4.3,
+    },
+];
+
+export const MOCK_MENTEES = [
+    {
+        id: "m1",
+        name: "Rita Sousa",
+        avatarUrl: "https://i.pravatar.cc/150?img=45",
+        bio: "Em transição de carreira para produto digital.",
+    },
+    {
+        id: "m2",
+        name: "Bruno Teixeira",
+        avatarUrl: "https://i.pravatar.cc/150?img=15",
+        bio: "Início de carreira em desenvolvimento web.",
+    },
+    {
+        id: "m3",
+        name: "Inês Carvalho",
+        avatarUrl: "https://i.pravatar.cc/150?img=47",
+        bio: "A construir uma marca pessoal em marketing digital.",
+    },
+];
+
+export const MOCK_POSTS = [
+    {
+        id: "p1",
+        authorId: "1",
+        type: "text",
+        content: "Acabei de terminar mais uma sessão de mentoria sobre React Hooks — adoro ver a cara de quem finalmente percebe o useEffect!",
+        imageUrl: "",
+        likedBy: ["mock-user-mentee", "m2"],
+        createdAt: "2026-08-19T14:30:00.000Z",
+    },
+    {
+        id: "p2",
+        authorId: "3",
+        type: "text",
+        content: "Dica rápida de marketing digital: antes de investir em anúncios pagos, garante que o teu funil orgânico já está a converter. Poupa-te dinheiro e frustração.",
+        imageUrl: "",
+        likedBy: ["m1", "m3", "mock-user-mentee"],
+        createdAt: "2026-08-20T09:15:00.000Z",
+    },
+    {
+        id: "p3",
+        authorId: "mock-user-mentor",
+        type: "text",
+        content: "O meu primeiro post na Mentora! Ansiosa para conhecer os mentorados por aqui.",
+        imageUrl: "",
+        likedBy: ["m1"],
+        createdAt: "2026-08-20T16:00:00.000Z",
+    },
+    {
+        id: "p4",
+        authorId: "8",
+        type: "text",
+        content: "Empreender não é sobre ter a ideia perfeita, é sobre validar rápido e errar barato. Falamos mais sobre isto na próxima sessão.",
+        imageUrl: "",
+        likedBy: ["m2", "m3"],
+        createdAt: "2026-08-20T18:45:00.000Z",
+    },
+    {
+        id: "p5",
+        authorId: "2",
+        type: "text",
+        content: "Portfólio bom não é o que tem mais projetos, é o que conta a melhor história sobre como pensas. Qualidade > quantidade.",
+        imageUrl: "",
+        likedBy: ["mock-user-mentee", "m1", "m2", "m3"],
+        createdAt: "2026-08-21T08:00:00.000Z",
+    },
+];
+
+export const MOCK_COMMENTS = [
+    {
+        id: "c1",
+        postId: "p1",
+        authorId: "mock-user-mentee",
+        text: "Isso comigo foi exatamente assim! Obrigada pela sessão de ontem.",
+        createdAt: "2026-08-19T15:00:00.000Z",
+    },
+    {
+        id: "c2",
+        postId: "p1",
+        authorId: "m2",
+        text: "useEffect ainda me assusta um bocadinho, mas estou a chegar lá.",
+        createdAt: "2026-08-19T15:20:00.000Z",
+    },
+    {
+        id: "c3",
+        postId: "p2",
+        authorId: "m3",
+        text: "Precisava mesmo de ouvir isto hoje, obrigada!",
+        createdAt: "2026-08-20T10:00:00.000Z",
+    },
+    {
+        id: "c4",
+        postId: "p5",
+        authorId: "mock-user-mentee",
+        text: "Vou aplicar isto no meu portfólio esta semana.",
+        createdAt: "2026-08-21T08:30:00.000Z",
+    },
 ];
