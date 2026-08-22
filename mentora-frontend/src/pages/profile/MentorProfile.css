@@ -1,0 +1,424 @@
+.mentor-profile {
+    background-color: var(--color-bg-elevated);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.mentor-profile_header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.mentor-profile_header-info h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text);
+    font-size: 1.3rem;
+}
+
+.mentor-profile_verified {
+    color: var(--color-mustard);
+    font-size: 1rem;
+}
+
+/* BIO */
+.mentor-profile_bio {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mentor-profile_bio p {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.mentor-profile_bio-view {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.mentor-profile_bio-view button,
+.mentor-profile_areas-view button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+    padding: 4px;
+    transition: color 0.15s ease;
+}
+
+.mentor-profile_bio-view button:hover,
+.mentor-profile_areas-view button:hover {
+    color: var(--color-mustard);
+}
+
+.mentor-profile_bio-edit textarea {
+    width: 100%;
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    resize: vertical;
+    min-height: 80px;
+}
+
+.mentor-profile_bio-edit-actions,
+.mentor-profile_areas-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.mentor-profile_bio-edit-actions button,
+.mentor-profile_areas-edit-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.mentor-profile_bio-edit-actions button:first-child,
+.mentor-profile_areas-edit-actions button:first-child {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.mentor-profile_bio-edit-actions button:last-child,
+.mentor-profile_areas-edit-actions button:last-child {
+    background-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+/* ÁREAS */
+.mentor-profile_areas {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mentor-profile_areas-view {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.mentor-profile_areas-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mentor-profile_area-badge {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 999px;
+}
+
+.mentor-profile_areas-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-bottom: 10px;
+}
+
+.mentor-profile_area-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.mentor-profile_add-custom-area {
+    background: none;
+    border: 1px dashed var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.mentor-profile_add-custom-area:hover {
+    border-color: var(--color-mustard);
+    color: var(--color-mustard);
+}
+
+.mentor-profile_custom-area {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.mentor-profile_custom-area input {
+    flex: 1;
+    font-family: "Inter", sans-serif;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.mentor-profile_custom-area button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ESTATÍSTICAS + AÇÕES (só no público) */
+.mentor-profile_meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 0;
+    margin-bottom: 24px;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Versão leitura (OwnProfileMentor) */
+.mentor-profile_meta-readonly {
+    justify-content: flex-start;
+}
+
+.mentor-profile_stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.mentor-profile_rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.mentor-profile_rating svg {
+    color: var(--color-mustard);
+}
+
+.mentor-profile_followers {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.mentor-profile_actions {
+    display: flex;
+    gap: 10px;
+}
+
+.mentor-profile_follow-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mentor-profile_follow-btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.mentor-profile_schedule-btn {
+    background-color: var(--color-border);
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: none;
+    cursor: not-allowed;
+}
+
+/* OFERTAS */
+.mentor-profile_offerings {
+    margin-top: 8px;
+}
+
+.mentor-profile_offerings h3 {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+}
+
+.mentor-profile_offering {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.mentor-profile_offering-view {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.mentor-profile_offering-info h4 {
+    color: var(--color-text);
+    font-size: 0.98rem;
+    margin-bottom: 4px;
+}
+
+.mentor-profile_offering-area {
+    display: inline-block;
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+    margin-right: 8px;
+}
+
+.mentor-profile_offering-price {
+    display: inline-block;
+    color: var(--color-mustard);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.mentor-profile_offering-info p {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-top: 6px;
+}
+
+.mentor-profile_offering-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.mentor-profile_offering-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    padding: 4px;
+    transition: color 0.15s ease;
+}
+
+.mentor-profile_offering-actions button:first-child:hover {
+    color: var(--color-mustard);
+}
+
+.mentor-profile_offering-actions button:last-child:hover {
+    color: var(--color-danger);
+}
+
+.mentor-profile_offering-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mentor-profile_offering-edit input,
+.mentor-profile_offering-edit select,
+.mentor-profile_offering-edit textarea {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9rem;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+}
+
+.mentor-profile_offering-edit textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.mentor-profile_offering-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.mentor-profile_offering-edit-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.mentor-profile_offering-edit-actions button:first-child {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.mentor-profile_offering-edit-actions button:last-child {
+    background-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+.mentor-profile_add-offering {
+    display: block;
+    width: 100%;
+    background-color: transparent;
+    border: 1px dashed var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.mentor-profile_add-offering:hover {
+    border-color: var(--color-mustard);
+    color: var(--color-mustard);
+}

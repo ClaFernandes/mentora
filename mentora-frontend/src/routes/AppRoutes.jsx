@@ -12,113 +12,131 @@ import MentorOnboarding from "../pages/onboarding/MentorOnboarding.jsx";
 import MenteeOnboarding from "../pages/onboarding/MenteeOnboarding.jsx";
 import FeedPage from "../pages/feed/FeedPage.jsx";
 import MentorsPage from "../pages/mentors/MentorsPage.jsx";
+import ProfilePage from "../pages/profile/ProfilePage.jsx";
 import NotFoundPage from "../pages/not-found/NotFoundPage.jsx";
 
-// import ProfilePage from "../pages/profile/ProfilePage.jsx";
 // import BookingFlow from "../pages/booking/BookingFlow.jsx";
 // import ChatWindow from "../pages/chat/ChatWindow.jsx";
 // import AdminPage from "../pages/admin/AdminPage.jsx";
 
 // Apagar quando tiverem as páginas prontas
 function Placeholder({ label }) {
-    return <div style={{ padding: 24 }}>{label} — em construção</div>;
+  return <div style={{ padding: 24 }}>{label} — em construção</div>;
 }
 
 export default function AppRoutes() {
-    return (
-        <Routes>
-            <Route element={<LandingLayout />}>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/legal" element={<LegalPage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/update-password" element={<UpdatePassword />} />
-                <Route path="*" element={<NotFoundPage />} />
-            </Route>
+  return (
+    <Routes>
+      <Route element={<LandingLayout />}>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/legal" element={<LegalPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/update-password" element={<UpdatePassword />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
 
-            <Route
-                path="/onboarding/mentor"
-                element={
-                    <ProtectedRoute role="mentor">
-                        <MentorOnboarding />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/onboarding/mentor"
+        element={
+          <ProtectedRoute role="mentor">
+            <MentorOnboarding />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/onboarding/mentee"
-                element={
-                    <ProtectedRoute role="mentee">
-                        <MenteeOnboarding />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/onboarding/mentee"
+        element={
+          <ProtectedRoute role="mentee">
+            <MenteeOnboarding />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route element={<AppLayout />}>
-                <Route
-                    path="/feed"
-                    element={
-                        <ProtectedRoute>
-                            <FeedPage />
-                        </ProtectedRoute>
-                    }
-                />
+      <Route element={<AppLayout />}>
+        <Route
+          path="/feed"
+          element={
+            <ProtectedRoute>
+              <FeedPage />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/perfil"
-                    element={
-                        <ProtectedRoute>
-                            <Placeholder label="Perfil" />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/perfil"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/mentores"
-                    element={
-                        <ProtectedRoute>
-                            <MentorsPage />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/mentores"
+          element={
+            <ProtectedRoute>
+              <MentorsPage />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/sessoes"
-                    element={
-                        <ProtectedRoute>
-                            <Placeholder label="Sessões" />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/mentores/:id"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/agendar/:mentorId"
-                    element={
-                        <ProtectedRoute>
-                            <Placeholder label="Agendar sessão" />
-                        </ProtectedRoute>
-                    }
-                />
+        <Route
+          path="/mentorados/:id"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
 
-                <Route
-                    path="/chat"
-                    element={
-                        <ProtectedRoute>
-                            <Placeholder label="Chat" />
-                        </ProtectedRoute>
-                    }
-                />
-            </Route>
+        <Route
+          path="/sessoes"
+          element={
+            <ProtectedRoute>
+              <Placeholder label="Sessões" />
+            </ProtectedRoute>
+          }
+        />
 
-            <Route
-                path="/admin"
-                element={
-                    <ProtectedRoute role="admin">
-                        <Placeholder label="Painel admin" />
-                    </ProtectedRoute>
-                }
-            />
-        </Routes>
-    );
+        <Route
+          path="/agendar/:mentorId"
+          element={
+            <ProtectedRoute>
+              <Placeholder label="Agendar sessão" />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <Placeholder label="Chat" />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
+
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute role="admin">
+            <Placeholder label="Painel admin" />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
 }
