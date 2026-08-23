@@ -1,5 +1,6 @@
 // Substituir por chamadas aos endpoints correspondentes no backend
 // followersCount é valor fixo de mock — no backend deve ser calculado dinamicamente via User.countDocuments
+// completedSessions é valor fixo de mock — no backend deve ser calculado via Booking.countDocuments
 
 export const MOCK_MENTEE_USER = {
   id: "mock-user-mentee",
@@ -13,6 +14,7 @@ export const MOCK_MENTEE_USER = {
   menteeProfile: {
     interests: ["Programação/Desenvolvimento", "Marketing"],
     followingMentors: ["1", "3"],
+    completedSessions: 6,
   },
 };
 
@@ -331,18 +333,24 @@ export const MOCK_MENTEES = [
     name: "Rita Sousa",
     avatarUrl: "https://i.pravatar.cc/150?img=45",
     bio: "Em transição de carreira para produto digital.",
+    followingMentors: ["1", "8"],
+    completedSessions: 3,
   },
   {
     id: "m2",
     name: "Bruno Teixeira",
     avatarUrl: "https://i.pravatar.cc/150?img=15",
     bio: "Início de carreira em desenvolvimento web.",
+    followingMentors: ["1", "12"],
+    completedSessions: 1,
   },
   {
     id: "m3",
     name: "Inês Carvalho",
     avatarUrl: "https://i.pravatar.cc/150?img=47",
     bio: "A construir uma marca pessoal em marketing digital.",
+    followingMentors: ["3", "11"],
+    completedSessions: 5,
   },
 ];
 

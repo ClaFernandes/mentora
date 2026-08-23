@@ -1,0 +1,257 @@
+.mentee-profile {
+    background-color: var(--color-bg-elevated);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.mentee-profile_header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.mentee-profile_header-info h2 {
+    color: var(--color-text);
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+/* BIO */
+.mentee-profile_bio {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mentee-profile_bio p {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.mentee-profile_bio-view,
+.mentee-profile_interests-view {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.mentee-profile_bio-view button,
+.mentee-profile_interests-view button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+    padding: 4px;
+    transition: color 0.15s ease;
+}
+
+.mentee-profile_bio-view button:hover,
+.mentee-profile_interests-view button:hover {
+    color: var(--color-mustard);
+}
+
+.mentee-profile_bio-edit textarea {
+    width: 100%;
+    font-family: "Inter", sans-serif;
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    resize: vertical;
+    min-height: 80px;
+}
+
+.mentee-profile_bio-edit-actions,
+.mentee-profile_interests-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.mentee-profile_bio-edit-actions button,
+.mentee-profile_interests-edit-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+}
+
+.mentee-profile_bio-edit-actions button:first-child,
+.mentee-profile_interests-edit-actions button:first-child {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.mentee-profile_bio-edit-actions button:last-child,
+.mentee-profile_interests-edit-actions button:last-child {
+    background-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+/* INTERESSES */
+.mentee-profile_interests {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mentee-profile_interests-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.mentee-profile_interest-badge {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 999px;
+}
+
+.mentee-profile_interests-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    margin-bottom: 10px;
+}
+
+.mentee-profile_interest-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.mentee-profile_add-custom-interest {
+    background: none;
+    border: 1px dashed var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.mentee-profile_add-custom-interest:hover {
+    border-color: var(--color-mustard);
+    color: var(--color-mustard);
+}
+
+.mentee-profile_custom-interest {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.mentee-profile_custom-interest input {
+    flex: 1;
+    font-family: "Inter", sans-serif;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.mentee-profile_custom-interest button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ESTATÍSTICAS (só público) */
+.mentee-profile_meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    margin-bottom: 24px;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.mentee-profile_sessions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.mentee-profile_sessions svg {
+    color: var(--color-mustard);
+}
+
+/* vem do MentorsPage.css */
+.mentee-profile_followed {
+    margin-top: 8px;
+}
+
+.mentee-profile_followed h3 {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+}
+
+.mentee-profile_followed .mentors-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.mentee-profile_unfollow-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.mentee-profile_unfollow-btn:hover {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.mentee-profile_followed-empty {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    padding: 24px 0;
+    text-align: center;
+}

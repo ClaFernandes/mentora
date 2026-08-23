@@ -3,6 +3,8 @@ import { useAuth } from "../../hooks/useAuth.js";
 import { MOCK_MENTORS, MOCK_MENTEES } from "../../mocks/mockData";
 import OwnProfileMentor from "./OwnProfileMentor";
 import PublicMentor from "./PublicMentor";
+import OwnProfileMentee from "./OwnProfileMentee";
+import PublicMentee from "./PublicMentee";
 import "./ProfilePage.css";
 
 export default function ProfilePage() {
@@ -38,8 +40,10 @@ export default function ProfilePage() {
         ) : (
           <PublicMentor mentor={profileData} />
         )
+      ) : isOwnProfile ? (
+        <OwnProfileMentee mentee={profileData} />
       ) : (
-        <p>Perfil de mentee — a construir</p>
+        <PublicMentee mentee={profileData} />
       )}
     </div>
   );
