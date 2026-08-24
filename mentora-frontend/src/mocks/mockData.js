@@ -1,6 +1,7 @@
 // Substituir por chamadas aos endpoints correspondentes no backend
-// followersCount é valor fixo de mock — no backend deve ser calculado dinamicamente via User.countDocuments
-// completedSessions é valor fixo de mock — no backend deve ser calculado via Booking.countDocuments
+// followersCount — no backend, calculado pelo User.countDocuments
+// completedSessions — no backend, calculado pelo Booking.countDocuments
+// availability — no backend fica no mentorProfile, editável no ProfilePage/OwnProfileMentor
 
 export const MOCK_MENTEE_USER = {
   id: "mock-user-mentee",
@@ -42,6 +43,11 @@ export const MOCK_MENTOR_USER = {
     isVerified: true,
     avgRating: 4.8,
     followersCount: 47,
+    availability: [
+      { dayOfWeek: 1, startTime: "14:00", endTime: "18:00" },
+      { dayOfWeek: 3, startTime: "09:00", endTime: "12:00" },
+      { dayOfWeek: 3, startTime: "14:00", endTime: "17:00" },
+    ],
   },
 };
 
@@ -83,6 +89,10 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.9,
     followersCount: 218,
+    availability: [
+      { dayOfWeek: 1, startTime: "14:00", endTime: "18:00" },
+      { dayOfWeek: 4, startTime: "10:00", endTime: "13:00" },
+    ],
   },
   {
     id: "2",
@@ -102,6 +112,9 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.8,
     followersCount: 156,
+    availability: [
+      { dayOfWeek: 2, startTime: "09:00", endTime: "12:00" },
+    ],
   },
   {
     id: "3",
@@ -121,6 +134,10 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 5.0,
     followersCount: 302,
+    availability: [
+      { dayOfWeek: 1, startTime: "09:00", endTime: "11:00" },
+      { dayOfWeek: 5, startTime: "15:00", endTime: "18:00" },
+    ],
   },
   {
     id: "4",
@@ -140,6 +157,9 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.6,
     followersCount: 94,
+    availability: [
+      { dayOfWeek: 3, startTime: "16:00", endTime: "19:00" },
+    ],
   },
   {
     id: "5",
@@ -159,6 +179,10 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.7,
     followersCount: 121,
+    availability: [
+      { dayOfWeek: 2, startTime: "14:00", endTime: "17:00" },
+      { dayOfWeek: 4, startTime: "14:00", endTime: "16:00" },
+    ],
   },
   {
     id: "6",
@@ -186,6 +210,9 @@ export const MOCK_MENTORS = [
     isVerified: false,
     avgRating: 4.2,
     followersCount: 23,
+    availability: [
+      { dayOfWeek: 5, startTime: "10:00", endTime: "12:00" },
+    ],
   },
   {
     id: "7",
@@ -205,6 +232,9 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.9,
     followersCount: 178,
+    availability: [
+      { dayOfWeek: 1, startTime: "10:00", endTime: "13:00" },
+    ],
   },
   {
     id: "8",
@@ -232,6 +262,10 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.5,
     followersCount: 143,
+    availability: [
+      { dayOfWeek: 2, startTime: "17:00", endTime: "19:00" },
+      { dayOfWeek: 4, startTime: "17:00", endTime: "19:00" },
+    ],
   },
   {
     id: "9",
@@ -251,6 +285,9 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.7,
     followersCount: 87,
+    availability: [
+      { dayOfWeek: 3, startTime: "10:00", endTime: "12:00" },
+    ],
   },
   {
     id: "10",
@@ -270,6 +307,9 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.4,
     followersCount: 65,
+    availability: [
+      { dayOfWeek: 5, startTime: "09:00", endTime: "11:00" },
+    ],
   },
   {
     id: "11",
@@ -297,6 +337,9 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.8,
     followersCount: 191,
+    availability: [
+      { dayOfWeek: 2, startTime: "15:00", endTime: "18:00" },
+    ],
   },
   {
     id: "12",
@@ -324,6 +367,9 @@ export const MOCK_MENTORS = [
     isVerified: true,
     avgRating: 4.3,
     followersCount: 109,
+    availability: [
+      { dayOfWeek: 4, startTime: "09:00", endTime: "12:00" },
+    ],
   },
 ];
 
@@ -438,7 +484,38 @@ export const MOCK_COMMENTS = [
   },
 ];
 
-// Chat e pagamento/booking serão acrescentados quando ChatWindow.jsx e BookingFlow.jsx existirem
+export const MOCK_CONVERSATIONS = [
+  {
+    id: "conv1",
+    mentorId: "1",
+    menteeId: "mock-user-mentee",
+    hasUnread: false,
+    messages: [
+      { id: "msg1", senderId: "1", text: "Olá! Em que posso ajudar?", createdAt: "2026-08-22T10:00:00.000Z" },
+      { id: "msg2", senderId: "mock-user-mentee", text: "Tinha uma dúvida sobre a oferta de React.", createdAt: "2026-08-22T10:05:00.000Z" },
+    ],
+  },
+  {
+    id: "conv2",
+    mentorId: "3",
+    menteeId: "mock-user-mentee",
+    hasUnread: false,
+    messages: [
+      { id: "msg3", senderId: "mock-user-mentee", text: "Olá Sofia! Vi a tua oferta de marketing digital.", createdAt: "2026-08-23T11:00:00.000Z" },
+      { id: "msg4", senderId: "3", text: "Olá! Fico feliz com o interesse, em que posso ajudar?", createdAt: "2026-08-23T11:10:00.000Z" },
+    ],
+  },
+  {
+    id: "conv3",
+    mentorId: "mock-user-mentor",
+    menteeId: "m1",
+    hasUnread: true,
+    messages: [
+      { id: "msg5", senderId: "m1", text: "Boa tarde! Gostava de saber mais sobre a mentoria de desenvolvimento web.", createdAt: "2026-08-23T15:00:00.000Z" },
+      { id: "msg6", senderId: "mock-user-mentor", text: "Boa tarde, Rita! Claro, diz-me o que gostavas de aprofundar.", createdAt: "2026-08-23T15:20:00.000Z" },
+    ],
+  },
+];
 
 export const MOCK_NOTIFICATIONS = [
   {

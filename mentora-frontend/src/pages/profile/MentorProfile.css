@@ -266,6 +266,26 @@
     color: var(--color-accent-text);
 }
 
+.mentor-profile_message-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
+    border: 1px solid var(--color-accent-secondary);
+    color: var(--color-accent-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mentor-profile_message-btn:hover {
+    background-color: var(--color-accent-secondary);
+    color: var(--color-accent-text);
+}
+
 .mentor-profile_schedule-btn {
     background-color: var(--color-border);
     color: var(--color-text-secondary);

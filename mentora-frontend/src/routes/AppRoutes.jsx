@@ -13,10 +13,10 @@ import MenteeOnboarding from "../pages/onboarding/MenteeOnboarding.jsx";
 import FeedPage from "../pages/feed/FeedPage.jsx";
 import MentorsPage from "../pages/mentors/MentorsPage.jsx";
 import ProfilePage from "../pages/profile/ProfilePage.jsx";
+import ChatWindow from "../pages/chat/ChatWindow.jsx";
 import NotFoundPage from "../pages/not-found/NotFoundPage.jsx";
 
 // import BookingFlow from "../pages/booking/BookingFlow.jsx";
-// import ChatWindow from "../pages/chat/ChatWindow.jsx";
 // import AdminPage from "../pages/admin/AdminPage.jsx";
 
 // Apagar quando tiverem as páginas prontas
@@ -123,7 +123,7 @@ export default function AppRoutes() {
           path="/chat"
           element={
             <ProtectedRoute>
-              <Placeholder label="Chat" />
+              <ChatWindow />
             </ProtectedRoute>
           }
         />

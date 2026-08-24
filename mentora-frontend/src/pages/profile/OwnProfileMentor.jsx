@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
+import AvailabilityCalendar from "../../components/AvailabilityCalendar.jsx";
 import {
   FaCheckCircle,
   FaPen,
@@ -124,6 +125,13 @@ export default function OwnProfileMentor({ mentor }) {
     );
     updateUser({
       mentorProfile: { ...mentor.mentorProfile, offerings: updatedOfferings },
+    });
+  }
+
+  // Guarda a nova disponibilidade sempre que o calendário for editado
+  function updateAvailability(newAvailability) {
+    updateUser({
+      mentorProfile: { ...mentor.mentorProfile, availability: newAvailability },
     });
   }
 
@@ -502,6 +510,17 @@ export default function OwnProfileMentor({ mentor }) {
           </button>
         )}
       </section>
+
+      {/* DISPONIBILIDADE */}
+      <section className="mentor-profile_availability">
+        <h3>Disponibilidade</h3>
+        <AvailabilityCalendar
+          mode="edit"
+          availability={mentor.mentorProfile.availability || []}
+          onChange={updateAvailability}
+        />
+      </section>
+
     </div>
   );
 }

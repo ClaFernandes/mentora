@@ -1,11 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
+import { findOrCreateConversation } from "../../utils/conversationHelpers.js";
 import { FaCheckCircle } from "react-icons/fa";
-import { FiCheck, FiPlus } from "react-icons/fi";
+import { FiCheck, FiPlus, FiMessageCircle } from "react-icons/fi";
 import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
 
 export default function PublicMentor({ mentor }) {
+  const navigate = useNavigate();
   const { user, updateUser } = useAuth();
 
   const isFollowing = user.menteeProfile?.followingMentors?.includes(mentor.id);
@@ -18,6 +21,11 @@ export default function PublicMentor({ mentor }) {
     updateUser({
       menteeProfile: { ...user.menteeProfile, followingMentors: updated },
     });
+  }
+
+  function handleSendMessage() {
+    const conversation = findOrCreateConversation(mentor.id, user.id);
+    navigate("/chat", { state: { conversationId: conversation.id } });
   }
 
   return (
@@ -72,6 +80,18 @@ export default function PublicMentor({ mentor }) {
               {isFollowing ? "A seguir" : "Seguir"}
             </button>
           )}
+
+          {isFollowing && (
+            <button
+              type="button"
+              onClick={handleSendMessage}
+              className="mentor-profile_message-btn"
+            >
+              <FiMessageCircle />
+              Enviar mensagem
+            </button>
+          )}
+
           <button
             type="button"
             className="mentor-profile_schedule-btn"

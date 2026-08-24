@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
 import { useTheme } from "../hooks/useTheme.js";
 import Avatar from "./Avatar.jsx";
 import NotificationBell from "./NotificationBell.jsx";
+import { MOCK_CONVERSATIONS } from "../mocks/mockData.js";
 import logo from "../assets/logo-transparente-mostarda.png";
 import { FiMessageCircle, FiMoon, FiSun, FiLogOut, FiSearch } from "react-icons/fi";
 import "./Header.css";
@@ -17,6 +18,17 @@ const NAV_ITEMS = [
 export default function Header() {
     const { user, logout } = useAuth();
     if (!user) return null;
+
+    let unreadConversationsCount = 0;
+    if (user.role === "mentor") {
+        unreadConversationsCount = MOCK_CONVERSATIONS.filter(
+            (conv) => conv.mentorId === user.id && conv.hasUnread
+        ).length;
+    } else if (user.role === "mentee") {
+        unreadConversationsCount = MOCK_CONVERSATIONS.filter(
+            (conv) => conv.menteeId === user.id && conv.hasUnread
+        ).length;
+    }
 
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
@@ -75,6 +87,9 @@ export default function Header() {
             <div className="header_actions">
                 <NavLink to="/chat" className="header_chat-icon">
                     <FiMessageCircle />
+                    {unreadConversationsCount > 0 && (
+                        <span className="header_chat-badge">{unreadConversationsCount}</span>
+                    )}
                 </NavLink>
 
                 <NotificationBell />

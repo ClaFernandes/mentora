@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.js";
 import { useNotifications } from "../hooks/useNotifications.js";
 import { findAuthorById } from "../utils/authorHelpers.js";
+import { findOrCreateConversation } from "../utils/conversationHelpers.js";
 import { FiBell } from "react-icons/fi";
 import { formatDistanceToNow } from "date-fns";
 import { pt } from "date-fns/locale";
@@ -8,6 +11,8 @@ import "./NotificationBell.css";
 
 export default function NotificationBell() {
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef(null);
 
@@ -27,14 +32,39 @@ export default function NotificationBell() {
 
     function handleNotificationClick(notification) {
         markAsRead(notification.id);
+
+        if (notification.type === "message") {
+            let mentorId;
+            let menteeId;
+
+            if (user.role === "mentor") {
+                mentorId = user.id;
+                menteeId = notification.actorId;
+            } else {
+                mentorId = notification.actorId;
+                menteeId = user.id;
+            }
+
+            const conversation = findOrCreateConversation(mentorId, menteeId);
+            navigate("/chat", { state: { conversationId: conversation.id } });
+        }
     }
 
     function getMessage(notification) {
         const actor = findAuthorById(notification.actorId);
         const actorName = actor ? actor.name : "Alguém";
-        return notification.type === "like"
-            ? `${actorName} gostou da tua publicação`
-            : `${actorName} comentou na tua publicação`;
+
+        if (notification.type === "like") {
+            return `${actorName} gostou da tua publicação`;
+        }
+        if (notification.type === "comment") {
+            return `${actorName} comentou na tua publicação`;
+        }
+        if (notification.type === "message") {
+            return `${actorName} enviou-te uma mensagem`;
+        }
+
+        return `${actorName} interagiu contigo`;
     }
 
     const sortedNotifications = [...notifications].sort(

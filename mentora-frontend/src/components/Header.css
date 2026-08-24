@@ -123,9 +123,31 @@
     transition: background-color 0.15s ease;
 }
 
+.header_chat-icon {
+    position: relative;
+}
+
 .header_chat-icon:hover,
 .header_theme-toggle:hover {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header_chat-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background-color: var(--color-mustard);
+    color: var(--color-graphite);
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .header_user {
