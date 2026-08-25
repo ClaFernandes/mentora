@@ -1,0 +1,107 @@
+.sessions-page {
+    max-width: 700px;
+    margin: 24px auto;
+    background-color: var(--color-bg-elevated);
+    border-radius: 16px;
+    padding: 32px;
+}
+
+.sessions-page h2 {
+    color: var(--color-text);
+    margin-bottom: 20px;
+}
+
+.sessions-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.sessions-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.sessions-filter-btn:hover {
+    border-color: var(--color-accent);
+}
+
+.sessions-filter-btn--active {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-accent-text);
+}
+
+.sessions-filter-count {
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.session-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.session-card_info {
+    flex: 1;
+}
+
+.session-card_info h4 {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.session-card_info p {
+    color: var(--color-text-secondary);
+    font-size: 0.82rem;
+    margin: 2px 0;
+}
+
+.session-status {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.session-status--confirmed {
+    background-color: rgba(122, 158, 147, 0.2);
+    color: var(--color-accent-secondary);
+}
+
+.session-status--completed {
+    background-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+.session-status--cancelled {
+    background-color: rgba(179, 64, 31, 0.15);
+    color: var(--color-danger);
+}

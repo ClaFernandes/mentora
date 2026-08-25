@@ -8,7 +8,7 @@ import {
 export const AuthContext = createContext();
 
 // MOCK_MENTEE_USER | MOCK_MENTOR_USER | MOCK_ADMIN_USER
-const MOCK_USER = MOCK_MENTOR_USER;
+const MOCK_USER = MOCK_ADMIN_USER;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(MOCK_USER);

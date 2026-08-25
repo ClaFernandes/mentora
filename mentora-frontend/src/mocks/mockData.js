@@ -87,6 +87,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.9,
     followersCount: 218,
     availability: [
@@ -110,6 +111,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.8,
     followersCount: 156,
     availability: [
@@ -132,6 +134,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 5.0,
     followersCount: 302,
     availability: [
@@ -155,6 +158,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.6,
     followersCount: 94,
     availability: [
@@ -177,6 +181,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.7,
     followersCount: 121,
     availability: [
@@ -208,6 +213,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: false,
+    status: "active",
     avgRating: 4.2,
     followersCount: 23,
     availability: [
@@ -230,6 +236,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "suspended",
     avgRating: 4.9,
     followersCount: 178,
     availability: [
@@ -260,6 +267,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.5,
     followersCount: 143,
     availability: [
@@ -283,6 +291,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.7,
     followersCount: 87,
     availability: [
@@ -305,6 +314,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.4,
     followersCount: 65,
     availability: [
@@ -335,6 +345,7 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.8,
     followersCount: 191,
     availability: [
@@ -365,10 +376,34 @@ export const MOCK_MENTORS = [
       },
     ],
     isVerified: true,
+    status: "active",
     avgRating: 4.3,
     followersCount: 109,
     availability: [
       { dayOfWeek: 4, startTime: "09:00", endTime: "12:00" },
+    ],
+  },
+  {
+    id: "13",
+    name: "Hugo Martins",
+    avatarUrl: "https://i.pravatar.cc/150?img=60",
+    bio: "Fisioterapeuta a fazer a transição para consultoria em bem-estar corporativo.",
+    offerings: [
+      {
+        id: "o18",
+        title: "Mentoria de Bem-estar no Trabalho",
+        area: "Saúde e Bem-estar",
+        sessionPrice: 35,
+        description:
+          "Estratégias práticas para prevenir burnout e melhorar hábitos no dia a dia de trabalho.",
+      },
+    ],
+    isVerified: false,
+    status: "active",
+    avgRating: 0,
+    followersCount: 0,
+    availability: [
+      { dayOfWeek: 2, startTime: "18:00", endTime: "20:00" },
     ],
   },
 ];
@@ -379,6 +414,7 @@ export const MOCK_MENTEES = [
     name: "Rita Sousa",
     avatarUrl: "https://i.pravatar.cc/150?img=45",
     bio: "Em transição de carreira para produto digital.",
+    status: "active",
     followingMentors: ["1", "8"],
     completedSessions: 3,
   },
@@ -387,6 +423,7 @@ export const MOCK_MENTEES = [
     name: "Bruno Teixeira",
     avatarUrl: "https://i.pravatar.cc/150?img=15",
     bio: "Início de carreira em desenvolvimento web.",
+    status: "active",
     followingMentors: ["1", "12"],
     completedSessions: 1,
   },
@@ -395,6 +432,7 @@ export const MOCK_MENTEES = [
     name: "Inês Carvalho",
     avatarUrl: "https://i.pravatar.cc/150?img=47",
     bio: "A construir uma marca pessoal em marketing digital.",
+    status: "active",
     followingMentors: ["3", "11"],
     completedSessions: 5,
   },
@@ -440,6 +478,7 @@ export const MOCK_POSTS = [
     imageUrl: "",
     likedBy: ["m2", "m3"],
     createdAt: "2026-08-20T18:45:00.000Z",
+    reported: true,
   },
   {
     id: "p5",
@@ -467,6 +506,7 @@ export const MOCK_COMMENTS = [
     authorId: "m2",
     text: "useEffect ainda me assusta um bocadinho, mas estou a chegar lá.",
     createdAt: "2026-08-19T15:20:00.000Z",
+    reported: true,
   },
   {
     id: "c3",
@@ -562,5 +602,115 @@ export const MOCK_NOTIFICATIONS = [
     postId: "p2",
     read: true,
     createdAt: "2026-08-20T09:20:00.000Z",
+  },
+];
+
+export const MOCK_SESSIONS = [
+  {
+    id: "session-mock-jun1",
+    mentorId: "2",
+    menteeId: "m1",
+    offeringId: "o3",
+    date: "2026-06-05",
+    time: "09:00",
+    status: "confirmed",
+    rating: 5,
+    reviewText: "Feedback muito claro sobre o meu portfólio.",
+  },
+  {
+    id: "session-mock-jun2",
+    mentorId: "8",
+    menteeId: "m2",
+    offeringId: "o10",
+    date: "2026-06-20",
+    time: "17:00",
+    status: "confirmed",
+    rating: 4,
+    reviewText: null,
+  },
+  {
+    id: "session-mock-jul1",
+    mentorId: "5",
+    menteeId: "mock-user-mentee",
+    offeringId: "o6",
+    date: "2026-07-03",
+    time: "14:00",
+    status: "confirmed",
+    rating: 5,
+    reviewText: "Excelente orientação sobre processos de recrutamento.",
+  },
+  {
+    id: "session-mock-jul2",
+    mentorId: "11",
+    menteeId: "m3",
+    offeringId: "o14",
+    date: "2026-07-14",
+    time: "15:00",
+    status: "confirmed",
+    rating: 4,
+    reviewText: null,
+  },
+  {
+    id: "session-mock-jul3",
+    mentorId: "12",
+    menteeId: "m2",
+    offeringId: "o16",
+    date: "2026-07-25",
+    time: "09:00",
+    status: "confirmed",
+    rating: 5,
+    reviewText: "Sessão avançada, saí com muitas ideias para aplicar.",
+  },
+  {
+    id: "session-mock1",
+    mentorId: "1",
+    menteeId: "mock-user-mentee",
+    offeringId: "o1",
+    date: "2026-08-10",
+    time: "14:00",
+    status: "confirmed",
+    rating: 5,
+    reviewText: "Sessão excelente, ajudou-me imenso a organizar o meu projeto.",
+  },
+  {
+    id: "session-mock2",
+    mentorId: "3",
+    menteeId: "m3",
+    offeringId: "o4",
+    date: "2026-08-15",
+    time: "09:00",
+    status: "confirmed",
+    rating: 4,
+    reviewText: null,
+  },
+  {
+    id: "session-mock-aug3",
+    mentorId: "1",
+    menteeId: "m1",
+    offeringId: "o2",
+    date: "2026-08-20",
+    time: "14:00",
+    status: "confirmed",
+    rating: 5,
+    reviewText: null,
+  },
+];
+
+export const MOCK_ADMINS = [
+  {
+    id: "admin-1",
+    name: "Rui Teixeira",
+    email: "rui.teixeira@mentora.com",
+    role: "admin",
+    status: "active",
+    createdAt: "2026-02-01T00:00:00.000Z",
+  },
+  {
+    id: "admin-2",
+    name: "Beatriz Lopes",
+    email: "beatriz.lopes@mentora.com",
+    role: "admin",
+    status: "active",
+    createdAt: "2026-04-15T00:00:00.000Z",
   },
 ];

@@ -28,6 +28,10 @@ export default function PublicMentor({ mentor }) {
     navigate("/chat", { state: { conversationId: conversation.id } });
   }
 
+  function handleSchedule(offeringId) {
+    navigate(`/agendar/${mentor.id}`, { state: { offeringId } });
+  }
+
   return (
     <div className="mentor-profile">
       <header className="mentor-profile_header">
@@ -91,14 +95,6 @@ export default function PublicMentor({ mentor }) {
               Enviar mensagem
             </button>
           )}
-
-          <button
-            type="button"
-            className="mentor-profile_schedule-btn"
-            disabled
-          >
-            Agendar
-          </button>
         </div>
       </section>
 
@@ -118,6 +114,17 @@ export default function PublicMentor({ mentor }) {
                 </span>
                 <p>{offering.description}</p>
               </div>
+
+              {user.role === "mentee" && (
+                <button
+                  type="button"
+                  className="mentor-profile_offering-schedule-btn"
+                  onClick={() => handleSchedule(offering.id)}
+                >
+                  Agendar
+                </button>
+              )}
+
             </div>
           </div>
         ))}

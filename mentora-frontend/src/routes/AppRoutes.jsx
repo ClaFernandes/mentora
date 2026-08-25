@@ -14,15 +14,11 @@ import FeedPage from "../pages/feed/FeedPage.jsx";
 import MentorsPage from "../pages/mentors/MentorsPage.jsx";
 import ProfilePage from "../pages/profile/ProfilePage.jsx";
 import ChatWindow from "../pages/chat/ChatWindow.jsx";
+import BookingFlow from "../pages/booking/BookingFlow.jsx";
+import SessionsPage from "../pages/sessions/SessionsPage.jsx";
+import AdminLayout from "../layouts/AdminLayout.jsx";
+import AdminPage from "../pages/admin/AdminPage.jsx";
 import NotFoundPage from "../pages/not-found/NotFoundPage.jsx";
-
-// import BookingFlow from "../pages/booking/BookingFlow.jsx";
-// import AdminPage from "../pages/admin/AdminPage.jsx";
-
-// Apagar quando tiverem as páginas prontas
-function Placeholder({ label }) {
-  return <div style={{ padding: 24 }}>{label} — em construção</div>;
-}
 
 export default function AppRoutes() {
   return (
@@ -105,7 +101,7 @@ export default function AppRoutes() {
           path="/sessoes"
           element={
             <ProtectedRoute>
-              <Placeholder label="Sessões" />
+              <SessionsPage />
             </ProtectedRoute>
           }
         />
@@ -114,7 +110,7 @@ export default function AppRoutes() {
           path="/agendar/:mentorId"
           element={
             <ProtectedRoute>
-              <Placeholder label="Agendar sessão" />
+              <BookingFlow />
             </ProtectedRoute>
           }
         />
@@ -129,14 +125,16 @@ export default function AppRoutes() {
         />
       </Route>
 
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute role="admin">
-            <Placeholder label="Painel admin" />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
     </Routes>
   );
 }

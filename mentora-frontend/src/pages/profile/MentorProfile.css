@@ -286,17 +286,6 @@
     color: var(--color-accent-text);
 }
 
-.mentor-profile_schedule-btn {
-    background-color: var(--color-border);
-    color: var(--color-text-secondary);
-    font-weight: 600;
-    font-size: 0.85rem;
-    padding: 8px 20px;
-    border-radius: 999px;
-    border: none;
-    cursor: not-allowed;
-}
-
 /* OFERTAS */
 .mentor-profile_offerings {
     margin-top: 8px;
@@ -348,6 +337,23 @@
     font-size: 0.85rem;
     line-height: 1.4;
     margin-top: 6px;
+}
+
+.mentor-profile_offering-schedule-btn {
+    flex-shrink: 0;
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.mentor-profile_offering-schedule-btn:hover {
+    opacity: 0.9;
 }
 
 .mentor-profile_offering-actions {

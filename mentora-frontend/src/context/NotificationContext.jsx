@@ -1,19 +1,18 @@
 import { createContext, useState, useMemo } from "react";
-import { useAuth } from "../hooks/useAuth.js"; // NOVO
+import { useAuth } from "../hooks/useAuth.js";
 import { MOCK_NOTIFICATIONS } from "../mocks/mockData.js";
 
 export const NotificationContext = createContext();
 
 export function NotificationProvider({ children }) {
-    const { user } = useAuth(); // NOVO
+    const { user } = useAuth();
     const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
 
-    // ALTERADO: só as notificações do utilizador atual
     const myNotifications = user
         ? notifications.filter((n) => n.recipientId === user.id)
         : [];
 
-    const unreadCount = myNotifications.filter((n) => !n.read).length; // ALTERADO: usa myNotifications
+    const unreadCount = myNotifications.filter((n) => !n.read).length;
 
     function markAsRead(notificationId) {
         setNotifications((prev) =>
@@ -22,7 +21,6 @@ export function NotificationProvider({ children }) {
     }
 
     function markAllAsRead() {
-        // ALTERADO: só marca como lidas as notificações do utilizador atual
         setNotifications((prev) =>
             prev.map((n) =>
                 n.recipientId === user?.id ? { ...n, read: true } : n
@@ -31,7 +29,7 @@ export function NotificationProvider({ children }) {
     }
 
     const value = useMemo(
-        () => ({ notifications: myNotifications, unreadCount, markAsRead, markAllAsRead }), // ALTERADO
+        () => ({ notifications: myNotifications, unreadCount, markAsRead, markAllAsRead }),
         [myNotifications, unreadCount]
     );
 
