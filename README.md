@@ -45,29 +45,6 @@ Comunidade de mentoria paga que funciona também como rede social: profissionais
 
 Tipografia: **Manrope** (títulos) + **Inter** (texto corrido). Suporte a tema claro e escuro, persistido via `localStorage`.
 
-## Estrutura
-Resumo:
-```
-/frontend
-  /src
-    /pages        páginas da aplicação (landing, auth, onboarding, feed, mentores, perfil, booking, chat, admin)
-    /components   componentes partilhados (Header, Footer, Avatar, RatingStars, EmptyState)
-    /layouts      AppLayout (área logada) e LandingLayout (pública)
-    /context      AuthContext, BookingContext
-    /hooks        useAuth, useTheme
-    /routes       ProtectedRoute, AppRoutes
-    /services     chamadas à API por módulo
-    /mocks        dados mockados (mockData.js — apagar quando o backend entrar)
-    /utils        constants.js (catálogo de áreas de mentoria)
-    /styles       theme.css, global.css
-
-/backend
-  /src
-    /modules      auth, users (mentor + offering), feed, booking, payments, chat, admin
-    /config       conexão MongoDB, configuração Stripe
-    /middlewares  tratamento de erros, validação
-```
-
 ## Estado atual
 
 **Em desenvolvimento** — frontend em andamento, com dados mockados, backend ainda por desenvolver e conectar.

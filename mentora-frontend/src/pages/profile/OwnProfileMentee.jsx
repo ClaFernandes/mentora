@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
+import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MOCK_MENTORS } from "../../mocks/mockData.js";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import { FaPen, FaCheck, FaTimes } from "react-icons/fa";
@@ -11,13 +12,11 @@ import "./MenteeProfile.css";
 import "../mentors/MentorsPage.css";
 
 export default function OwnProfileMentee({ mentee }) {
-  const { updateUser } = useAuth();
-
-  // Edição da bio
+  const { updateUser, logout } = useAuth();
+  const navigate = useNavigate();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState(mentee.bio);
-
-  // Edição dos interesses
   const [isEditingInterests, setIsEditingInterests] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState(
     mentee.menteeProfile.interests,
@@ -74,6 +73,12 @@ export default function OwnProfileMentee({ mentee }) {
     updateUser({
       menteeProfile: { ...mentee.menteeProfile, followingMentors: updated },
     });
+  }
+
+  // Apaga a própria conta — no backend vai chamar DELETE /users/me
+  function handleDeleteAccount() {
+    logout();
+    navigate("/");
   }
 
   const followedMentors = MOCK_MENTORS.filter((m) =>
@@ -249,6 +254,29 @@ export default function OwnProfileMentee({ mentee }) {
           )}
         </div>
       </section>
+
+      {/* APAGAR CONTA */}
+      <section className="mentee-profile_danger-zone">
+        <h3>Zona de perigo</h3>
+        <p>Apagar a tua conta remove os teus dados de forma permanente.</p>
+        <button
+          type="button"
+          className="mentee-profile_delete-account-btn"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          Apagar conta
+        </button>
+      </section>
+
+      {showDeleteConfirm && (
+        <ConfirmModal
+          title="Apagar a tua conta?"
+          message="Esta ação não pode ser desfeita. Todos os teus dados serão removidos da plataforma."
+          confirmLabel="Sim, apagar conta"
+          onCancel={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDeleteAccount}
+        />
+      )}
     </div>
   );
 }

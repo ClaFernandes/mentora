@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
+import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import AvailabilityCalendar from "../../components/AvailabilityCalendar.jsx";
 import {
@@ -14,21 +16,17 @@ import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
 
 export default function OwnProfileMentor({ mentor }) {
-  const { updateUser } = useAuth();
-
-  // Edição da bio
+  const { updateUser, logout } = useAuth();
+  const navigate = useNavigate();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState(mentor.bio);
-
-  // Edição das áreas
   const [isEditingAreas, setIsEditingAreas] = useState(false);
   const [selectedAreas, setSelectedAreas] = useState(
     mentor.mentorProfile.areas,
   );
   const [showCustomAreaInput, setShowCustomAreaInput] = useState(false);
   const [customArea, setCustomArea] = useState("");
-
-  // Oferta em edição e os dados temporários enquanto está a ser editada
   const [editingOfferingId, setEditingOfferingId] = useState(null);
   const [editingOfferingData, setEditingOfferingData] = useState({
     title: "",
@@ -38,8 +36,6 @@ export default function OwnProfileMentor({ mentor }) {
   });
   const [editingOfferingAreaMode, setEditingOfferingAreaMode] =
     useState("select");
-
-  // Nova oferta
   const [isAddingOffering, setIsAddingOffering] = useState(false);
   const [newOffering, setNewOffering] = useState({
     title: "",
@@ -135,6 +131,12 @@ export default function OwnProfileMentor({ mentor }) {
     });
   }
 
+  // Apaga a própria conta 
+  function handleDeleteAccount() {
+    logout();
+    navigate("/");
+  }
+
   // Cria uma nova oferta com um id único
   function addOffering() {
     const offeringWithId = { ...newOffering, id: `o-${Date.now()}` };
@@ -174,7 +176,7 @@ export default function OwnProfileMentor({ mentor }) {
         </div>
       </header>
 
-      {/* ESTATÍSTICAS (só leitura) */}
+      {/* ESTATÍSTICAS */}
       <section className="mentor-profile_meta mentor-profile_meta-readonly">
         <div className="mentor-profile_stats">
           <p className="mentor-profile_rating">
@@ -521,6 +523,28 @@ export default function OwnProfileMentor({ mentor }) {
         />
       </section>
 
+      {/* APAGAR CONTA */}
+      <section className="mentor-profile_danger-zone">
+        <h3>Zona de perigo</h3>
+        <p>Apagar a tua conta remove os teus dados de forma permanente.</p>
+        <button
+          type="button"
+          className="mentor-profile_delete-account-btn"
+          onClick={() => setShowDeleteConfirm(true)}
+        >
+          Apagar conta
+        </button>
+      </section>
+
+      {showDeleteConfirm && (
+        <ConfirmModal
+          title="Apagar a tua conta?"
+          message="Esta ação não pode ser desfeita. Todos os teus dados serão removidos da plataforma."
+          confirmLabel="Sim, apagar conta"
+          onCancel={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDeleteAccount}
+        />
+      )}
     </div>
   );
 }

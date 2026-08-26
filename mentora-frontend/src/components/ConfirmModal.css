@@ -1,0 +1,71 @@
+.confirm-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.confirm-modal {
+    background-color: var(--color-bg-elevated);
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+}
+
+.confirm-modal-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: rgba(179, 64, 31, 0.12);
+    color: var(--color-danger);
+    margin: 0 auto 16px;
+}
+
+.confirm-modal h3 {
+    color: var(--color-text);
+    margin-bottom: 8px;
+}
+
+.confirm-modal p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.confirm-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.confirm-modal-cancel {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.confirm-modal-confirm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--color-danger);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}

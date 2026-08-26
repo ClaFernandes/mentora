@@ -5,6 +5,7 @@ import { findAuthorById } from "../../utils/authorHelpers.js";
 import { resolveDisplayStatus } from "../../utils/sessionHelpers.js";
 import Avatar from "../../components/Avatar.jsx";
 import EmptyState from "../../components/EmptyState.jsx";
+import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import "./SessionsPage.css";
@@ -19,12 +20,14 @@ const FILTERS = [
 export default function SessionsPage() {
     const { user } = useAuth();
     const [activeFilter, setActiveFilter] = useState("all");
+    const [sessions, setSessions] = useState(MOCK_SESSIONS);
+    const [cancelTarget, setCancelTarget] = useState(null);
 
     let mySessions = [];
     if (user.role === "mentor") {
-        mySessions = MOCK_SESSIONS.filter((s) => s.mentorId === user.id);
+        mySessions = sessions.filter((s) => s.mentorId === user.id);
     } else if (user.role === "mentee") {
-        mySessions = MOCK_SESSIONS.filter((s) => s.menteeId === user.id);
+        mySessions = sessions.filter((s) => s.menteeId === user.id);
     }
 
     let filteredSessions = mySessions;
@@ -40,6 +43,19 @@ export default function SessionsPage() {
         counts[displayStatus] = (counts[displayStatus] || 0) + 1;
     }
     counts.all = mySessions.length;
+
+    function handleRequestCancel(session) {
+        setCancelTarget(session);
+    }
+
+    function handleConfirmCancel() {
+        const target = sessions.find((s) => s.id === cancelTarget.id);
+        if (target) {
+            target.status = "cancelled";
+        }
+        setSessions([...sessions]);
+        setCancelTarget(null);
+    }
 
     return (
         <div className="sessions-page">
@@ -87,6 +103,8 @@ export default function SessionsPage() {
 
                         const displayStatus = resolveDisplayStatus(session);
 
+                        const canCancel = displayStatus === "confirmed";
+
                         return (
                             <div key={session.id} className="session-card">
                                 <Avatar src={otherPerson.avatarUrl} name={otherPerson.name} size={48} />
@@ -95,13 +113,36 @@ export default function SessionsPage() {
                                     <p>{offering?.title}</p>
                                     <p>{formattedDate} às {session.time}</p>
                                 </div>
-                                <span className={`session-status session-status--${displayStatus}`}>
-                                    {FILTERS.find((f) => f.key === displayStatus)?.label}
-                                </span>
+
+                                <div className="session-card_side">
+                                    <span className={`session-status session-status--${displayStatus}`}>
+                                        {FILTERS.find((f) => f.key === displayStatus)?.label}
+                                    </span>
+
+                                    {canCancel && (
+                                        <button
+                                            type="button"
+                                            className="session-cancel-btn"
+                                            onClick={() => handleRequestCancel(session)}
+                                        >
+                                            Cancelar
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         );
                     })}
                 </div>
+            )}
+
+            {cancelTarget && (
+                <ConfirmModal
+                    title="Cancelar esta sessão?"
+                    message="Se ainda estiveres dentro do prazo mínimo, o valor pago é reembolsado. Fora do prazo, a sessão cancela mas sem reembolso."
+                    confirmLabel="Sim, cancelar"
+                    onCancel={() => setCancelTarget(null)}
+                    onConfirm={handleConfirmCancel}
+                />
             )}
         </div>
     );
