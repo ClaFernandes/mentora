@@ -13,6 +13,12 @@ export default function FeedPage() {
     const [posts, setPosts] = useState(MOCK_POSTS);
     const [comments, setComments] = useState(MOCK_COMMENTS);
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+    const [reportNotice, setReportNotice] = useState(null);
+
+    function showReportNotice(message) {
+        setReportNotice(message);
+        setTimeout(() => setReportNotice(null), 3000);
+    }
 
     function handleToggleLike(postId) {
         setPosts((prev) =>
@@ -25,6 +31,36 @@ export default function FeedPage() {
                     : [...post.likedBy, user.id];
 
                 return { ...post, likedBy: newLikedBy };
+            })
+        );
+    }
+
+    function handleReportPost(postId) {
+        setPosts((prev) =>
+            prev.map((post) => (post.id === postId ? { ...post, reported: true } : post))
+        );
+        showReportNotice("Post denunciado. A nossa equipa vai rever.");
+    }
+
+    function handleReportComment(commentId) {
+        setComments((prev) =>
+            prev.map((c) => (c.id === commentId ? { ...c, reported: true } : c))
+        );
+        showReportNotice("Comentário denunciado. A nossa equipa vai rever.");
+    }
+
+    function handleToggleLikeComment(commentId) {
+        setComments((prev) =>
+            prev.map((comment) => {
+                if (comment.id !== commentId) return comment;
+
+                const likedBy = comment.likedBy || [];
+                const alreadyLiked = likedBy.includes(user.id);
+                const newLikedBy = alreadyLiked
+                    ? likedBy.filter((id) => id !== user.id)
+                    : [...likedBy, user.id];
+
+                return { ...comment, likedBy: newLikedBy };
             })
         );
     }
@@ -60,6 +96,8 @@ export default function FeedPage() {
     return (
         <div className="container">
             <div className="feed">
+                {reportNotice && <div className="feed_notice">{reportNotice}</div>}
+
                 {sortedPosts.length === 0 ? (
                     <EmptyState message="Ainda não há publicações." />
                 ) : (
@@ -69,10 +107,13 @@ export default function FeedPage() {
                             post={post}
                             currentUserId={user.id}
                             onToggleLike={handleToggleLike}
+                            onReportPost={handleReportPost}
                             comments={comments}
                             onEditComment={handleEditComment}
                             onDeleteComment={handleDeleteComment}
                             onAddComment={handleAddComment}
+                            onReportComment={handleReportComment}
+                            onToggleLikeComment={handleToggleLikeComment}
                         />
                     ))
                 )}

@@ -1,7 +1,4 @@
 // Substituir por chamadas aos endpoints correspondentes no backend
-// followersCount — no backend, calculado pelo User.countDocuments
-// completedSessions — no backend, calculado pelo Booking.countDocuments
-// availability — no backend fica no mentorProfile, editável no ProfilePage/OwnProfileMentor
 
 export const MOCK_MENTEE_USER = {
   id: "mock-user-mentee",
@@ -498,6 +495,7 @@ export const MOCK_COMMENTS = [
     postId: "p1",
     authorId: "mock-user-mentee",
     text: "Isso comigo foi exatamente assim! Obrigada pela sessão de ontem.",
+    likedBy: ["1", "m2"],
     createdAt: "2026-08-19T15:00:00.000Z",
   },
   {
@@ -505,6 +503,7 @@ export const MOCK_COMMENTS = [
     postId: "p1",
     authorId: "m2",
     text: "useEffect ainda me assusta um bocadinho, mas estou a chegar lá.",
+    likedBy: [],
     createdAt: "2026-08-19T15:20:00.000Z",
     reported: true,
   },
@@ -513,6 +512,7 @@ export const MOCK_COMMENTS = [
     postId: "p2",
     authorId: "m3",
     text: "Precisava mesmo de ouvir isto hoje, obrigada!",
+    likedBy: ["3"],
     createdAt: "2026-08-20T10:00:00.000Z",
   },
   {
@@ -520,6 +520,7 @@ export const MOCK_COMMENTS = [
     postId: "p5",
     authorId: "mock-user-mentee",
     text: "Vou aplicar isto no meu portfólio esta semana.",
+    likedBy: [],
     createdAt: "2026-08-21T08:30:00.000Z",
   },
 ];
@@ -669,8 +670,8 @@ export const MOCK_SESSIONS = [
     date: "2026-08-10",
     time: "14:00",
     status: "confirmed",
-    rating: 5,
-    reviewText: "Sessão excelente, ajudou-me imenso a organizar o meu projeto.",
+    rating: null,
+    reviewText: null,
   },
   {
     id: "session-mock2",

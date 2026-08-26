@@ -13,6 +13,7 @@ export default function AdminUsers({
     setShowAllMentors,
     setShowAllMentees,
     handleApproveMentor,
+    handleRequestRejectMentor,
 }) {
     return (
         <div>
@@ -35,13 +36,23 @@ export default function AdminUsers({
                                     <h4>{mentor.name}</h4>
                                     <p>{mentor.bio}</p>
                                 </div>
-                                <button
-                                    type="button"
-                                    className="admin-approve-btn"
-                                    onClick={() => handleApproveMentor(mentor.id)}
-                                >
-                                    Aprovar
-                                </button>
+                                <div className="admin-mentor-actions">
+                                    <button
+                                        type="button"
+                                        className="admin-approve-btn"
+                                        onClick={() => handleApproveMentor(mentor.id)}
+                                    >
+                                        Aprovar
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        className="admin-remove-btn"
+                                        onClick={() => handleRequestRejectMentor(mentor.id, mentor.name)}
+                                    >
+                                        Rejeitar
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>

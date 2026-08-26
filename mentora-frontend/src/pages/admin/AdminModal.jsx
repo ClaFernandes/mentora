@@ -44,6 +44,16 @@ export default function AdminModal({ confirmAction, onCancel, onConfirm }) {
                     </>
                 )}
 
+                {confirmAction.kind === "reject-mentor" && (
+                    <>
+                        <h3>Rejeitar candidatura?</h3>
+                        <p>
+                            {confirmAction.name} não vai ser aprovado(a) como mentor. O registo fica
+                            marcado como rejeitado, mas não é apagado.
+                        </p>
+                    </>
+                )}
+
                 <div className="admin-modal-actions">
                     <button type="button" className="admin-modal-cancel" onClick={onCancel}>
                         Cancelar

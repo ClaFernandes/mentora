@@ -81,3 +81,21 @@
 .post-card_actions button:first-child svg {
     color: var(--color-mustard);
 }
+
+.post-card_actions button.post-card_report-btn {
+    margin-left: auto;
+}
+
+.post-card_actions button.post-card_report-btn:hover {
+    color: var(--color-danger);
+}
+
+.post-card_report-btn:disabled {
+    color: var(--color-text-secondary);
+    cursor: default;
+    opacity: 0.6;
+}
+
+.post-card_actions button.post-card_report-btn:disabled:hover {
+    color: var(--color-text-secondary);
+}

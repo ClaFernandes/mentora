@@ -89,6 +89,10 @@ export default function AdminPage() {
         setConfirmAction({ kind: "remove-admin", id, name });
     }
 
+    function handleRequestRejectMentor(id, name) {
+        setConfirmAction({ kind: "reject-mentor", id, name });
+    }
+
     function handleConfirmAction() {
         if (confirmAction.kind === "status") {
             const { accountType, id, name, currentStatus } = confirmAction;
@@ -124,6 +128,16 @@ export default function AdminPage() {
             const { id, name } = confirmAction;
             setAdmins(admins.filter((a) => a.id !== id));
             showSuccess(`${name} deixou de ser administrador(a).`);
+        }
+
+        if (confirmAction.kind === "reject-mentor") {
+            const { id, name } = confirmAction;
+            const mentor = mentors.find((m) => m.id === id);
+            if (mentor) {
+                mentor.status = "rejected";
+            }
+            setMentors([...mentors]);
+            showSuccess(`A candidatura de ${name} foi rejeitada.`);
         }
 
         setConfirmAction(null);
@@ -167,8 +181,8 @@ export default function AdminPage() {
         }
     }
 
-    // Mentores por aprovar e já aprovados
-    const pendingMentors = mentors.filter((m) => !m.isVerified);
+    // Mentores por aprovar (exclui os já rejeitados) e já aprovados
+    const pendingMentors = mentors.filter((m) => !m.isVerified && m.status !== "rejected");
     const pendingMentorsCount = pendingMentors.length;
     const approvedMentors = mentors.filter((m) => m.isVerified);
 
@@ -275,6 +289,7 @@ export default function AdminPage() {
                     setShowAllMentors={setShowAllMentors}
                     setShowAllMentees={setShowAllMentees}
                     handleApproveMentor={handleApproveMentor}
+                    handleRequestRejectMentor={handleRequestRejectMentor}
                 />
             )}
 

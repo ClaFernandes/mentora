@@ -5,10 +5,22 @@ import CommentList from "./CommentList";
 import { formatDistanceToNow } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FiFlag } from "react-icons/fi";
 import { findAuthorById } from "../../utils/authorHelpers";
 import "./PostCard.css";
 
-export default function PostCard({ post, currentUserId, onToggleLike, comments, onEditComment, onDeleteComment, onAddComment }) {
+export default function PostCard({
+    post,
+    currentUserId,
+    onToggleLike,
+    onReportPost,
+    comments,
+    onEditComment,
+    onDeleteComment,
+    onAddComment,
+    onReportComment,
+    onToggleLikeComment,
+}) {
     const [showComments, setShowComments] = useState(false);
 
     const author = findAuthorById(post.authorId);
@@ -43,6 +55,14 @@ export default function PostCard({ post, currentUserId, onToggleLike, comments, 
                 <button onClick={() => setShowComments((prev) => !prev)}>
                     {commentsCount} comentários
                 </button>
+
+                <button
+                    className="post-card_report-btn"
+                    onClick={() => onReportPost(post.id)}
+                    disabled={post.reported}
+                >
+                    <FiFlag /> {post.reported ? "Denunciado" : "Denunciar"}
+                </button>
             </div>
 
             {showComments && (
@@ -52,6 +72,8 @@ export default function PostCard({ post, currentUserId, onToggleLike, comments, 
                     onEdit={onEditComment}
                     onDelete={onDeleteComment}
                     onAdd={onAddComment}
+                    onReport={onReportComment}
+                    onToggleLike={onToggleLikeComment}
                     postId={post.id}
                 />
             )}

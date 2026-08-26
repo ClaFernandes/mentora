@@ -129,3 +129,29 @@
 .session-cancel-btn:hover {
     background-color: rgba(179, 64, 31, 0.1);
 }
+
+.session-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.session-rate-btn {
+    background: none;
+    border: 1px solid var(--color-mustard);
+    color: var(--color-mustard);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.session-rate-btn:hover {
+    background-color: rgba(210, 160, 42, 0.1);
+}
+
+.session-rating-panel {
+    padding: 0 4px;
+}

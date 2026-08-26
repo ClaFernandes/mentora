@@ -24,3 +24,14 @@
     background-color: var(--color-accent);
     color: var(--color-accent-text);
 }
+
+.feed_notice {
+    background-color: rgba(122, 158, 147, 0.15);
+    border: 1px solid var(--color-accent-secondary);
+    color: var(--color-text);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    text-align: center;
+}

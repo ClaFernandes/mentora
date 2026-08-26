@@ -1,0 +1,97 @@
+.rating-stars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rating-stars_row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.rating-star {
+    font-size: 1.1rem;
+    color: var(--color-border);
+}
+
+.rating-star--filled {
+    color: var(--color-mustard);
+}
+
+.rating-review-text {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0;
+}
+
+.rating-stars--write {
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.rating-star-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    line-height: 0;
+}
+
+.rating-star-btn .rating-star {
+    font-size: 1.4rem;
+    transition: color 0.1s ease;
+}
+
+.rating-textarea {
+    width: 100%;
+    font-family: "Inter", sans-serif;
+    font-size: 0.88rem;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    resize: vertical;
+    min-height: 60px;
+}
+
+.rating-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.rating-cancel-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.rating-submit-btn {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+    border: none;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.rating-submit-btn:hover {
+    opacity: 0.9;
+}
+
+.rating-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

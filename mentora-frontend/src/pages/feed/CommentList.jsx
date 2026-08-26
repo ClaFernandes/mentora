@@ -4,7 +4,8 @@ import Avatar from "../../components/Avatar";
 import { findAuthorById } from "../../utils/authorHelpers";
 import { formatDistanceToNow } from "date-fns";
 import { pt } from "date-fns/locale";
-import { FaPen, FaTrash, FaCheck, FaTimes } from "react-icons/fa";
+import { FaPen, FaTrash, FaCheck, FaTimes, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FiFlag } from "react-icons/fi";
 import "./CommentList.css";
 
 export default function CommentList({
@@ -13,6 +14,8 @@ export default function CommentList({
   onEdit,
   onDelete,
   onAdd,
+  onReport,
+  onToggleLike,
   postId,
 }) {
   const [editingId, setEditingId] = useState(null);
@@ -55,6 +58,10 @@ export default function CommentList({
             const isOwnComment = comment.authorId === currentUserId;
             const isEditing = editingId === comment.id;
             const isMentor = author.role === "mentor";
+
+            const commentLikedBy = comment.likedBy || [];
+            const commentIsLiked = commentLikedBy.includes(currentUserId);
+            const commentLikesCount = commentLikedBy.length;
 
             return (
               <li key={comment.id} className="comment-list_item">
@@ -115,7 +122,30 @@ export default function CommentList({
                       </div>
                     </div>
                   ) : (
-                    <p>{comment.text}</p>
+                    <>
+                      <p>{comment.text}</p>
+
+                      <div className="comment-list_footer">
+                        <button
+                          type="button"
+                          className="comment-list_like-btn"
+                          onClick={() => onToggleLike(comment.id)}
+                        >
+                          {commentIsLiked ? <FaHeart /> : <FaRegHeart />} {commentLikesCount}
+                        </button>
+
+                        {!isOwnComment && (
+                          <button
+                            type="button"
+                            className="comment-list_report-btn"
+                            onClick={() => onReport(comment.id)}
+                            disabled={comment.reported}
+                          >
+                            <FiFlag /> {comment.reported ? "Denunciado" : "Denunciar"}
+                          </button>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
               </li>

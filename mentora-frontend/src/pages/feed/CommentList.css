@@ -91,6 +91,49 @@
     color: var(--color-danger);
 }
 
+.comment-list_footer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+.comment-list_footer button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+    padding: 2px;
+    transition: color 0.15s ease;
+}
+
+.comment-list_like-btn:hover {
+    color: var(--color-mustard);
+}
+
+.comment-list_like-btn svg {
+    color: var(--color-mustard);
+}
+
+.comment-list_report-btn:hover {
+    color: var(--color-danger);
+}
+
+.comment-list_report-btn:disabled {
+    color: var(--color-text-secondary);
+    cursor: default;
+    opacity: 0.6;
+}
+
+.comment-list_report-btn:disabled:hover {
+    color: var(--color-text-secondary);
+}
+
 .comment-list_edit {
     display: flex;
     flex-direction: column;
