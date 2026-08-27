@@ -85,6 +85,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.9,
     followersCount: 218,
     availability: [
@@ -109,6 +110,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.8,
     followersCount: 156,
     availability: [
@@ -132,6 +134,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 5.0,
     followersCount: 302,
     availability: [
@@ -156,6 +159,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.6,
     followersCount: 94,
     availability: [
@@ -179,6 +183,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.7,
     followersCount: 121,
     availability: [
@@ -211,6 +216,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: false,
     status: "active",
+    rejected: false,
     avgRating: 4.2,
     followersCount: 23,
     availability: [
@@ -234,6 +240,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "suspended",
+    rejected: false,
     avgRating: 4.9,
     followersCount: 178,
     availability: [
@@ -265,6 +272,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.5,
     followersCount: 143,
     availability: [
@@ -289,6 +297,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.7,
     followersCount: 87,
     availability: [
@@ -312,6 +321,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.4,
     followersCount: 65,
     availability: [
@@ -343,6 +353,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.8,
     followersCount: 191,
     availability: [
@@ -374,6 +385,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: true,
     status: "active",
+    rejected: false,
     avgRating: 4.3,
     followersCount: 109,
     availability: [
@@ -397,6 +409,7 @@ export const MOCK_MENTORS = [
     ],
     isVerified: false,
     status: "active",
+    rejected: false,
     avgRating: 0,
     followersCount: 0,
     availability: [
@@ -530,7 +543,8 @@ export const MOCK_CONVERSATIONS = [
     id: "conv1",
     mentorId: "1",
     menteeId: "mock-user-mentee",
-    hasUnread: false,
+    unreadByMentor: false,
+    unreadByMentee: false,
     messages: [
       { id: "msg1", senderId: "1", text: "Olá! Em que posso ajudar?", createdAt: "2026-08-22T10:00:00.000Z" },
       { id: "msg2", senderId: "mock-user-mentee", text: "Tinha uma dúvida sobre a oferta de React.", createdAt: "2026-08-22T10:05:00.000Z" },
@@ -540,7 +554,8 @@ export const MOCK_CONVERSATIONS = [
     id: "conv2",
     mentorId: "3",
     menteeId: "mock-user-mentee",
-    hasUnread: false,
+    unreadByMentor: false,
+    unreadByMentee: false,
     messages: [
       { id: "msg3", senderId: "mock-user-mentee", text: "Olá Sofia! Vi a tua oferta de marketing digital.", createdAt: "2026-08-23T11:00:00.000Z" },
       { id: "msg4", senderId: "3", text: "Olá! Fico feliz com o interesse, em que posso ajudar?", createdAt: "2026-08-23T11:10:00.000Z" },
@@ -550,7 +565,8 @@ export const MOCK_CONVERSATIONS = [
     id: "conv3",
     mentorId: "mock-user-mentor",
     menteeId: "m1",
-    hasUnread: true,
+    unreadByMentor: true,
+    unreadByMentee: false,
     messages: [
       { id: "msg5", senderId: "m1", text: "Boa tarde! Gostava de saber mais sobre a mentoria de desenvolvimento web.", createdAt: "2026-08-23T15:00:00.000Z" },
       { id: "msg6", senderId: "mock-user-mentor", text: "Boa tarde, Rita! Claro, diz-me o que gostavas de aprofundar.", createdAt: "2026-08-23T15:20:00.000Z" },

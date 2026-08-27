@@ -134,7 +134,7 @@ export default function AdminPage() {
             const { id, name } = confirmAction;
             const mentor = mentors.find((m) => m.id === id);
             if (mentor) {
-                mentor.status = "rejected";
+                mentor.rejected = true;
             }
             setMentors([...mentors]);
             showSuccess(`A candidatura de ${name} foi rejeitada.`);
@@ -182,7 +182,7 @@ export default function AdminPage() {
     }
 
     // Mentores por aprovar (exclui os já rejeitados) e já aprovados
-    const pendingMentors = mentors.filter((m) => !m.isVerified && m.status !== "rejected");
+    const pendingMentors = mentors.filter((m) => !m.isVerified && !m.rejected);
     const pendingMentorsCount = pendingMentors.length;
     const approvedMentors = mentors.filter((m) => m.isVerified);
 
@@ -205,8 +205,9 @@ export default function AdminPage() {
     const visibleMentors = showAllMentors ? approvedMentors : approvedMentors.slice(0, 5);
     const visibleMentees = showAllMentees ? mentees : mentees.slice(0, 5);
 
-    // Listas cortadas para "ver mais" na aba Moderação 
-    const visibleModMentors = showAllModMentors ? mentors : mentors.slice(0, 5);
+    // Listas cortadas para "ver mais" na aba Moderação
+    const moderationMentors = mentors.filter((m) => !m.rejected);
+    const visibleModMentors = showAllModMentors ? moderationMentors : moderationMentors.slice(0, 5);
     const visibleModMentees = showAllModMentees ? mentees : mentees.slice(0, 5);
 
     // Gráfico
@@ -300,7 +301,7 @@ export default function AdminPage() {
                     reportedContentCount={reportedContentCount}
                     handleDismissReport={handleDismissReport}
                     handleRemoveContent={handleRemoveContent}
-                    mentors={mentors}
+                    mentors={moderationMentors}
                     mentees={mentees}
                     visibleModMentors={visibleModMentors}
                     visibleModMentees={visibleModMentees}

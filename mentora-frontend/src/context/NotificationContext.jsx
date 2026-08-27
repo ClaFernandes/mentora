@@ -28,8 +28,12 @@ export function NotificationProvider({ children }) {
         );
     }
 
+    function addNotification(notification) {
+        setNotifications((prev) => [...prev, notification]);
+    }
+
     const value = useMemo(
-        () => ({ notifications: myNotifications, unreadCount, markAsRead, markAllAsRead }),
+        () => ({ notifications: myNotifications, unreadCount, markAsRead, markAllAsRead, addNotification }),
         [myNotifications, unreadCount]
     );
 

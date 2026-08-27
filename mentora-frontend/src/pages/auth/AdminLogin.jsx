@@ -25,16 +25,6 @@ export default function AdminLogin() {
             setError("Acesso restrito a administradores.");
             return;
         }
-        if (user.status === "pending") {
-            logout();
-            setError("A tua conta está a aguardar aprovação.");
-            return;
-        }
-        if (user.status === "rejected") {
-            logout();
-            setError("O teu pedido de acesso foi rejeitado.");
-            return;
-        }
 
         navigate("/admin", { replace: true });
     }, [user, navigate, logout]);
