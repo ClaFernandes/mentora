@@ -10,6 +10,7 @@ export const MENTORSHIP_AREAS = [
     "Gestão de Projetos",
     "Direito",
     "Vendas",
+    "Saúde e Bem-estar",
     "Escrita e Comunicação",
     "Empreendedorismo",
     "Carreira/Desenvolvimento Pessoal",
