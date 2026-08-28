@@ -47,7 +47,7 @@ Tipografia: **Manrope** (títulos) + **Inter** (texto corrido). Suporte a tema c
 
 ## Estado atual
 
-**Em desenvolvimento** — frontend em andamento, com dados mockados, backend ainda por desenvolver e conectar.
+**Em desenvolvimento** — frontend finalizado, com dados mockados; backend em andamento.
 
 ## Autora
 
