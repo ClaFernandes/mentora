@@ -15,7 +15,6 @@ Comunidade de mentoria paga que funciona também como rede social: profissionais
 - **Agendamento com pagamento**: fluxo de 5 passos (escolher oferta → escolher data no calendário → escolher horário → confirmar → pagar) via Stripe
 - **Chat simples** entre mentor e mentorado
 - **Avaliação de sessão** pelo mentorado ao final
-- **Painel de administração**: aprovação de mentores, moderação de conteúdo, estatísticas da plataforma
 
 ## Tecnologias
 
