@@ -66,5 +66,55 @@ const registerUser = async ({ name, email, password, confirmPassword, role }) =>
     };
 }
 
-module.exports = { registerUser };
+const loginUser = async ({ email, password }) => {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        const error = new Error("Email ou palavra-passe inválidos");
+        error.statusCode = 401;
+        throw error;
+    }
+
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+    if (!passwordMatches) {
+        const error = new Error("Email ou palavra-passe inválidos");
+        error.statusCode = 401;
+        throw error;
+    }
+
+    const token = jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+    );
+
+    return {
+        token,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        }
+    };
+}
+
+const getMe = async (userId) => {
+    const user = await User.findById(userId);
+    if (!user) {
+        const error = new Error("Utilizador não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+    return {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+        role: user.role,
+        status: user.status
+    };
+}
+
+module.exports = { registerUser, loginUser, getMe };
 
