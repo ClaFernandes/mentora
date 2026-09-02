@@ -7,12 +7,13 @@ Comunidade de mentoria paga que funciona também como rede social: profissionais
 ## Funcionalidades
 
 - **Autenticação** com três papéis: mentor, mentorado e admin
-- **Perfil de mentor**: áreas de interesse, ofertas de mentoria (título/área/preço/descrição), agenda de disponibilidade, selo de "mentor verificado"
-- **Perfil de mentorado**: bio, mentores seguidos, contador de sessões concluídas
-- **Feed social**: posts em texto/imagem, curtidas, comentários, seguir
+- **Perfil de admin**: aprovação/rejeição de mentores, moderação de conteúdo (remover ou rejeitar denúncia de post/comentário, suspender/reativar ou apagar conta de mentor/mentorado), gestão de outros administradores, painel de estatísticas (mentores, mentorados, sessões concluídas, receita, com gráfico mensal)
+- **Perfil de mentor**: áreas de interesse (definidas no onboarding), uma ou mais ofertas de mentoria (cada uma com título, área, preço e descrição opcional — geridas depois no perfil), agenda de horários disponíveis (definida no perfil após o cadastro), selo de "mentor verificado" após aprovação do admin
+- **Perfil de mentorado** (público, enxuto): foto, bio, interesses, mentores que segue, contador de sessões concluídas
+- **Feed social**: posts em texto/imagem, curtidas, comentários, sistema de seguir
 - **Busca e filtro de mentores**: por área, preço, avaliação, e busca por texto no título das ofertas
-- **Agendamento com pagamento**: fluxo de 3 passos (escolher oferta → escolher horário → pagar) via Stripe
-- **Chat simples** entre mentor e mentorado após confirmação da sessão
+- **Agendamento com pagamento**: fluxo de 5 passos (escolher oferta → escolher data no calendário → escolher horário → confirmar → pagar) via Stripe
+- **Chat simples** entre mentor e mentorado
 - **Avaliação de sessão** pelo mentorado ao final
 - **Painel de administração**: aprovação de mentores, moderação de conteúdo, estatísticas da plataforma
 
@@ -22,14 +23,13 @@ Comunidade de mentoria paga que funciona também como rede social: profissionais
 - React + Vite
 - React Router
 - Context API (autenticação, tema, fluxo de agendamento)
-- CSS puro, por página/componente
+- CSS, por página/componente
 - Stripe.js 
 
 **Backend**
 - Node.js + Express
 - MongoDB + Mongoose
 - Autenticação: bcryptjs + JWT
-- Validação: express-validator
 - Stripe (Payment Intents)
 - Cloudinary (upload de imagens)
 - Nodemailer + Mailtrap SMTP (e-mails transacionais)
