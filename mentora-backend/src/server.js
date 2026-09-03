@@ -6,6 +6,7 @@ const errorHandler = require("./middleware/errorHandler");
 const authRoutes = require("./modules/auth/auth.routes");
 const userRoutes = require("./modules/users/user.routes");
 const menteeRoutes = require("./modules/users/mentee.routes");
+const mentorRoutes = require("./modules/users/mentor.routes");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/mentees", menteeRoutes);
+app.use("/mentors", mentorRoutes);
 
 app.use(errorHandler);
 
