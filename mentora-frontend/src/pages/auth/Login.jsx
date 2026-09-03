@@ -43,7 +43,13 @@ export default function Login() {
         setLoading(true);
 
         try {
-            // Ligar ao Mailtrap
+            await fetch("http://localhost:3000/auth/forgot-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email })
+            });
             setSuccess(email);
         } catch {
             setError("Não foi possível enviar o email. Verifica o endereço introduzido.");
@@ -167,7 +173,7 @@ export default function Login() {
                                         <FiMail />
                                         <p>
                                             Receberás um email com um link para criar uma nova password.
-                                            O link expira em 1 hora.
+                                            O link expira em 15 minutos.
                                         </p>
                                     </div>
                                 </>

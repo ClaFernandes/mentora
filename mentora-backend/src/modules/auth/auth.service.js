@@ -1,5 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const transporter = require("../../config/mailer");
 const User = require("../users/user.model");
 const MentorProfile = require("../users/mentor.model");
 const MenteeProfile = require("../users/mentee.model");
@@ -116,5 +118,63 @@ const getMe = async (userId) => {
     };
 }
 
-module.exports = { registerUser, loginUser, getMe };
+const forgotPassword = async (email) => {
+    const user = await User.findOne({ email });
 
+    if (!user) {
+        return { message: "Se o email estiver registado, receberá instruções para redefinir a palavra-passe." };
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpires = Date.now() + 15 * 60 * 1000;
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = resetTokenExpires;
+    await user.save();
+
+    const resetLink = `${process.env.FRONTEND_URL}/mentora/update-password?token=${resetToken}`;
+
+    await transporter.sendMail({
+        from: '"Mentora" <no-reply@mentora.com>',
+        to: user.email,
+        subject: "Recuperação de Palavra-Passe - Mentora",
+        html: `
+            <p>Olá ${user.name},</p>
+            <p>Recebemos um pedido para redefinir a sua palavra-passe.</p>
+            <p>Clica no link abaixo:</p>
+            <a href="${resetLink}" target="_blank">Redefinir Palavra-Passe</a>
+            <p>Este link expira em 15 minutos.</p>
+            <p>Se você não solicitou esta redefinição, por favor, ignore este email.</p>
+        `
+    });
+    return { message: "Se o email estiver registado, receberá instruções para redefinir a palavra-passe." };
+}
+
+const resetPassword = async ({ token, newPassword, confirmNewPassword }) => {
+    if (newPassword !== confirmNewPassword) {
+        const error = new Error("As palavras-passe não coincidem");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+        const error = new Error("Token inválido ou expirado");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    user.passwordHash = passwordHash;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    return { message: "Palavra-passe redefinida com sucesso" };
+}
+
+module.exports = { registerUser, loginUser, getMe, forgotPassword, resetPassword };

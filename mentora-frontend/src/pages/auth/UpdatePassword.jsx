@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { FiEye, FiEyeOff, FiLock, FiCheck, FiX } from "react-icons/fi";
 import logo from "../../assets/logo-transparente-mostarda.png";
 import "./Auth.css";
@@ -14,7 +14,8 @@ const passwordRules = [
 
 export default function UpdatePassword() {
     const navigate = useNavigate();
-
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
