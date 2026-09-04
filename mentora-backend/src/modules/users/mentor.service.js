@@ -18,4 +18,25 @@ const getMentorProfile = async (userId) => {
     };
 };
 
-module.exports = { getMentorProfile };
+const updateMentorProfile = async (userId, updates) => {
+    const allowedUpdates = {};
+
+    if (updates.bio !== undefined) allowedUpdates.bio = updates.bio;
+    if (updates.areas !== undefined) allowedUpdates.areas = updates.areas;
+
+    const updatedProfile = await MentorProfile.findOneAndUpdate(
+        { userId },
+        { $set: allowedUpdates },
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedProfile) {
+        const error = new Error("Perfil de mentor não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    return updatedProfile;
+}
+
+module.exports = { getMentorProfile, updateMentorProfile };
