@@ -17,6 +17,10 @@ const NAV_ITEMS = [
 
 export default function Header() {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState("");
+    const { theme, toggleTheme } = useTheme();
+
     if (!user) return null;
 
     let unreadConversationsCount = 0;
@@ -29,9 +33,6 @@ export default function Header() {
             (conv) => conv.menteeId === user.id && conv.hasUnread
         ).length;
     }
-
-    const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState("");
 
     function search(e) {
         e.preventDefault();
@@ -46,8 +47,6 @@ export default function Header() {
     }
 
     const visibleNavItems = NAV_ITEMS.filter((item) => item.roles.includes(user.role));
-
-    const { theme, toggleTheme } = useTheme();
 
     return (
         <header className="header">

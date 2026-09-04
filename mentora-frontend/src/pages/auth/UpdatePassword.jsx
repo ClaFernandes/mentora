@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import { resetPassword } from "../../services/authService.js";
 import { FiEye, FiEyeOff, FiLock, FiCheck, FiX } from "react-icons/fi";
 import logo from "../../assets/logo-transparente-mostarda.png";
 import "./Auth.css";
@@ -45,7 +46,7 @@ export default function UpdatePassword() {
 
         setLoading(true);
         try {
-            // Backend
+            await resetPassword({ token, newPassword: password, confirmNewPassword: confirmPassword });
             navigate("/login", { replace: true });
         } catch {
             setError("Erro ao atualizar a palavra-passe. Tenta novamente.");

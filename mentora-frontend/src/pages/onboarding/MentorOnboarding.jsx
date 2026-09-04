@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useTheme } from "../../hooks/useTheme.js";
+import { updateMentorProfile } from "../../services/mentorService.js";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import { FiCheck, FiInfo, FiMoon, FiSun } from "react-icons/fi";
 import logo from "../../assets/logo-transparente-mostarda.png";
@@ -9,7 +10,7 @@ import "./Onboarding.css";
 
 export default function MentorOnboarding() {
     const navigate = useNavigate();
-    const { updateUser } = useAuth();
+    const { token, setUser } = useAuth();
     const { theme, toggleTheme } = useTheme();
 
     const [areas, setAreas] = useState([]);
@@ -37,30 +38,24 @@ export default function MentorOnboarding() {
 
     const visibleAreas = showAllAreas ? MENTORSHIP_AREAS : MENTORSHIP_AREAS.slice(0, 6);
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         setError(null);
-
         if (areas.length === 0) {
             setError("Seleciona pelo menos uma área de mentoria.");
             return;
         }
-
         if (!bio.trim()) {
             setError("Escreve uma breve bio.");
             return;
         }
-
         setLoading(true);
-        updateUser({
-            bio,
-            mentorProfile: {
-                areas,
-                offerings: [],
-                isVerified: false,
-                avgRating: 0,
-            },
-        });
+        const updatedProfile = await updateMentorProfile(token, { bio, areas });
+        setUser((prev) => ({
+            ...prev,
+            bio: updatedProfile.bio,
+            mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
+        }));
         navigate("/perfil");
     }
 

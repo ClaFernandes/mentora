@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
+import { deleteAccount } from "../../services/userService.js";
+import { updateMenteeProfile } from "../../services/menteeService.js";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MOCK_MENTORS } from "../../mocks/mockData.js";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
@@ -12,7 +14,7 @@ import "./MenteeProfile.css";
 import "../mentors/MentorsPage.css";
 
 export default function OwnProfileMentee({ mentee }) {
-  const { updateUser, logout } = useAuth();
+  const { token, setUser, updateUser, logout } = useAuth();
   const navigate = useNavigate();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
@@ -24,9 +26,9 @@ export default function OwnProfileMentee({ mentee }) {
   const [showCustomInterestInput, setShowCustomInterestInput] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
 
-  // Guarda a bio editada
-  function saveBio() {
-    updateUser({ bio: bioText });
+  async function saveBio() {
+    const updatedProfile = await updateMenteeProfile(token, { bio: bioText });
+    setUser((prev) => ({ ...prev, bio: updatedProfile.bio }));
     setIsEditingBio(false);
   }
 
@@ -50,10 +52,12 @@ export default function OwnProfileMentee({ mentee }) {
   }
 
   // Guarda os interesses escolhidos
-  function saveInterests() {
-    updateUser({
-      menteeProfile: { ...mentee.menteeProfile, interests: selectedInterests },
-    });
+  async function saveInterests() {
+    const updatedProfile = await updateMenteeProfile(token, { interests: selectedInterests });
+    setUser((prev) => ({
+      ...prev,
+      menteeProfile: { ...prev.menteeProfile, interests: updatedProfile.interests }
+    }));
     setIsEditingInterests(false);
   }
 
@@ -76,7 +80,8 @@ export default function OwnProfileMentee({ mentee }) {
   }
 
   // Apaga a própria conta — no backend vai chamar DELETE /users/me
-  function handleDeleteAccount() {
+  async function handleDeleteAccount() {
+    await deleteAccount(token);
     logout();
     navigate("/");
   }

@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
+import { updateMentorProfile } from "../../services/mentorService.js";
+import { deleteAccount } from "../../services/userService.js";
+import { createOffering, updateOffering, deleteOffering } from "../../services/offeringServices.js";
 import Avatar from "../../components/Avatar.jsx";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
@@ -16,15 +19,15 @@ import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
 
 export default function OwnProfileMentor({ mentor }) {
-  const { updateUser, logout } = useAuth();
+  const { token, setUser, updateUser, logout } = useAuth();
+
   const navigate = useNavigate();
+
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState(mentor.bio);
   const [isEditingAreas, setIsEditingAreas] = useState(false);
-  const [selectedAreas, setSelectedAreas] = useState(
-    mentor.mentorProfile.areas,
-  );
+  const [selectedAreas, setSelectedAreas] = useState(mentor.mentorProfile.areas);
   const [showCustomAreaInput, setShowCustomAreaInput] = useState(false);
   const [customArea, setCustomArea] = useState("");
   const [editingOfferingId, setEditingOfferingId] = useState(null);
@@ -34,8 +37,7 @@ export default function OwnProfileMentor({ mentor }) {
     sessionPrice: "",
     description: "",
   });
-  const [editingOfferingAreaMode, setEditingOfferingAreaMode] =
-    useState("select");
+  const [editingOfferingAreaMode, setEditingOfferingAreaMode] = useState("select");
   const [isAddingOffering, setIsAddingOffering] = useState(false);
   const [newOffering, setNewOffering] = useState({
     title: "",
@@ -45,9 +47,9 @@ export default function OwnProfileMentor({ mentor }) {
   });
   const [newOfferingAreaMode, setNewOfferingAreaMode] = useState("select");
 
-  // Guarda a bio editada
-  function saveBio() {
-    updateUser({ bio: bioText });
+  async function saveBio() {
+    const updatedProfile = await updateMentorProfile(token, { bio: bioText });
+    setUser((prev) => ({ ...prev, bio: updatedProfile.bio }));
     setIsEditingBio(false);
   }
 
@@ -69,10 +71,12 @@ export default function OwnProfileMentor({ mentor }) {
   }
 
   // Guarda as áreas escolhidas
-  function saveAreas() {
-    updateUser({
-      mentorProfile: { ...mentor.mentorProfile, areas: selectedAreas },
-    });
+  async function saveAreas() {
+    const updatedProfile = await updateMentorProfile(token, { areas: selectedAreas });
+    setUser((prev) => ({
+      ...prev,
+      mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
+    }));
     setIsEditingAreas(false);
   }
 
@@ -84,9 +88,9 @@ export default function OwnProfileMentor({ mentor }) {
     setIsEditingAreas(false);
   }
 
-  // Prepara o estado de edição com os dados atuais da oferta clicada
+  // Prepara edição com os dados atuais da oferta clicada
   function startEditingOffering(offering) {
-    setEditingOfferingId(offering.id);
+    setEditingOfferingId(offering._id);
     setEditingOfferingData({
       title: offering.title,
       area: offering.area,
@@ -104,24 +108,30 @@ export default function OwnProfileMentor({ mentor }) {
   }
 
   // Aplica as alterações
-  function saveOffering(offeringId) {
-    const updatedOfferings = mentor.mentorProfile.offerings.map((o) =>
-      o.id === offeringId ? { ...o, ...editingOfferingData } : o,
-    );
-    updateUser({
-      mentorProfile: { ...mentor.mentorProfile, offerings: updatedOfferings },
-    });
+  async function saveOffering(offeringId) {
+    const updatedOffering = await updateOffering(token, offeringId, editingOfferingData);
+    setUser((prev) => ({
+      ...prev,
+      mentorProfile: {
+        ...prev.mentorProfile,
+        offerings: prev.mentorProfile.offerings.map((o) =>
+          o._id === offeringId ? updatedOffering : o,
+        ),
+      },
+    }));
     setEditingOfferingId(null);
   }
 
   // Remove uma oferta do array
-  function removeOffering(offeringId) {
-    const updatedOfferings = mentor.mentorProfile.offerings.filter(
-      (o) => o.id !== offeringId,
-    );
-    updateUser({
-      mentorProfile: { ...mentor.mentorProfile, offerings: updatedOfferings },
-    });
+  async function removeOffering(offeringId) {
+    await deleteOffering(token, offeringId);
+    setUser((prev) => ({
+      ...prev,
+      mentorProfile: {
+        ...prev.mentorProfile,
+        offerings: prev.mentorProfile.offerings.filter((o) => o._id !== offeringId),
+      },
+    }));
   }
 
   // Guarda a nova disponibilidade sempre que o calendário for editado
@@ -132,20 +142,22 @@ export default function OwnProfileMentor({ mentor }) {
   }
 
   // Apaga a própria conta 
-  function handleDeleteAccount() {
+  async function handleDeleteAccount() {
+    await deleteAccount(token);
     logout();
     navigate("/");
   }
 
   // Cria uma nova oferta com um id único
-  function addOffering() {
-    const offeringWithId = { ...newOffering, id: `o-${Date.now()}` };
-    updateUser({
+  async function addOffering() {
+    const createdOffering = await createOffering(token, newOffering);
+    setUser((prev) => ({
+      ...prev,
       mentorProfile: {
-        ...mentor.mentorProfile,
-        offerings: [...mentor.mentorProfile.offerings, offeringWithId],
+        ...prev.mentorProfile,
+        offerings: [...prev.mentorProfile.offerings, createdOffering],
       },
-    });
+    }));
     setNewOffering({ title: "", area: "", sessionPrice: "", description: "" });
     setNewOfferingAreaMode("select");
     setIsAddingOffering(false);
@@ -307,8 +319,8 @@ export default function OwnProfileMentor({ mentor }) {
         <h3>Ofertas</h3>
 
         {mentor.mentorProfile.offerings.map((offering) => (
-          <div key={offering.id} className="mentor-profile_offering">
-            {editingOfferingId === offering.id ? (
+          <div key={offering._id} className="mentor-profile_offering">
+            {editingOfferingId === offering._id ? (
               <div className="mentor-profile_offering-edit">
                 <input
                   type="text"
@@ -387,7 +399,7 @@ export default function OwnProfileMentor({ mentor }) {
                 />
                 <div className="mentor-profile_offering-edit-actions">
                   <button
-                    onClick={() => saveOffering(offering.id)}
+                    onClick={() => saveOffering(offering._id)}
                     aria-label="Guardar oferta"
                   >
                     <FaCheck />
@@ -418,7 +430,7 @@ export default function OwnProfileMentor({ mentor }) {
                     <FaPen />
                   </button>
                   <button
-                    onClick={() => removeOffering(offering.id)}
+                    onClick={() => removeOffering(offering._id)}
                     aria-label="Remover oferta"
                   >
                     <FaTrash />

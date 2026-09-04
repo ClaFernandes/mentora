@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useTheme } from "../../hooks/useTheme.js";
+import { updateMenteeProfile } from "../../services/menteeService.js";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import { MOCK_MENTORS } from "../../mocks/mockData.js";
 import Avatar from "../../components/Avatar.jsx";
@@ -13,7 +14,7 @@ const SUGGESTED_MENTORS = MOCK_MENTORS.slice(0, 6);
 
 export default function MenteeOnboarding() {
     const navigate = useNavigate();
-    const { updateUser } = useAuth();
+    const { token, setUser } = useAuth();
     const { theme, toggleTheme } = useTheme();
 
     const [interests, setInterests] = useState([]);
@@ -47,22 +48,19 @@ export default function MenteeOnboarding() {
 
     const visibleAreas = showAllAreas ? MENTORSHIP_AREAS : MENTORSHIP_AREAS.slice(0, 6);
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         setError(null);
-
         if (interests.length === 0) {
             setError("Seleciona pelo menos um interesse.");
             return;
         }
-
         setLoading(true);
-        updateUser({
-            menteeProfile: {
-                interests,
-                followingMentors,
-            },
-        });
+        const updatedProfile = await updateMenteeProfile(token, { interests });
+        setUser((prev) => ({
+            ...prev,
+            menteeProfile: { ...prev.menteeProfile, interests: updatedProfile.interests },
+        }));
         navigate("/feed");
     }
 

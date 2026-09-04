@@ -67,7 +67,7 @@ export default function Register() {
 
         setLoading(true);
         try {
-            await register(email, password, name, role);
+            await register({ name, email, password, confirmPassword, role });
         } catch {
             setError("Erro ao criar conta. Tenta novamente.");
             setLoading(false);

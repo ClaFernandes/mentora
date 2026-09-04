@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
+import { forgotPassword } from "../../services/authService.js";
 import { FiEye, FiEyeOff, FiLock, FiMail, FiArrowLeft } from "react-icons/fi";
 import logo from "../../assets/logo-transparente-mostarda.png";
 import "./Auth.css";
@@ -50,7 +51,7 @@ export default function AdminLogin() {
         setLoading(true);
 
         try {
-            // Mailtrap
+            await forgotPassword(email);
             setSuccess(email);
         } catch {
             setError("Não foi possível enviar o email. Verifica o endereço introduzido.");
@@ -173,7 +174,7 @@ export default function AdminLogin() {
                                         <FiMail />
                                         <p>
                                             Receberás um link para criar uma nova palavra-passe.
-                                            O link expira em 1 hora.
+                                            O link expira em 15 minutos.
                                         </p>
                                     </div>
                                 </>
