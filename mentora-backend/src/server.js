@@ -9,6 +9,8 @@ const menteeRoutes = require("./modules/users/mentee.routes");
 const mentorRoutes = require("./modules/users/mentor.routes");
 const offeringRoutes = require("./modules/users/offering.routes");
 const followRoutes = require("./modules/users/follow.routes");
+const notificationRoutes = require("./modules/notifications/notification.routes");
+const postRoutes = require("./modules/feed/post.routes");
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use("/mentees", menteeRoutes);
 app.use("/mentors", mentorRoutes);
 app.use("/mentors/me/offerings", offeringRoutes);
 app.use("/mentors", followRoutes);
+app.use("/notifications", notificationRoutes);
+app.use("/", postRoutes);
 
 app.use(errorHandler);
 
