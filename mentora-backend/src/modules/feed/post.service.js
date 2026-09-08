@@ -85,7 +85,7 @@ const deletePost = async (postId, userId) => {
     const error = new Error("Post não encontrado");
     error.statusCode = 404;
     throw error;
-  };
+  }
 
   const mentor = await MentorProfile.findById(post.mentorId);
   const ownerId = mentor.userId;
@@ -99,6 +99,18 @@ const deletePost = async (postId, userId) => {
   const deleted = await Post.findByIdAndDelete(postId);
 
   return deleted;
-}
+};
 
-module.exports = { createPost, getFeed, likePost, deletePost };
+const reportPost = async (postId) => {
+  const post = await Post.findByIdAndUpdate(postId, { reported: true });
+
+  if (!post) {
+    const error = new Error("Post não encontrado");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return { reported: true };
+};
+
+module.exports = { createPost, getFeed, likePost, deletePost, reportPost };

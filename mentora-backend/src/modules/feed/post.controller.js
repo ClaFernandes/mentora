@@ -1,4 +1,10 @@
-const { createPost, getFeed, likePost, deletePost } = require("./post.service");
+const {
+  createPost,
+  getFeed,
+  likePost,
+  deletePost,
+  reportPost,
+} = require("./post.service");
 
 const createPostController = async (req, res) => {
   const userId = req.user.id;
@@ -26,11 +32,18 @@ const deletePostController = async (req, res) => {
   const userId = req.user.id;
   const result = await deletePost(postId, userId);
   res.status(200).json(result);
-}
+};
+
+const reportPostController = async (req, res) => {
+  const postId = req.params.id;
+  const result = await reportPost(postId);
+  res.status(200).json(result);
+};
 
 module.exports = {
   createPostController,
   getFeedController,
   likePostController,
   deletePostController,
+  reportPostController,
 };
