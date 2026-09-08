@@ -11,6 +11,7 @@ const offeringRoutes = require("./modules/users/offering.routes");
 const followRoutes = require("./modules/users/follow.routes");
 const notificationRoutes = require("./modules/notifications/notification.routes");
 const postRoutes = require("./modules/feed/post.routes");
+const commentRoutes = require("./modules/feed/comment.routes");
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use("/mentors/me/offerings", offeringRoutes);
 app.use("/mentors", followRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/", postRoutes);
+app.use("/", commentRoutes);
 
 app.use(errorHandler);
 

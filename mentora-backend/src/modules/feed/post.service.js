@@ -4,6 +4,7 @@ const { createNotification } = require("../notifications/notification.service");
 
 const createPost = async (userId, postData) => {
   const mentorProfile = await MentorProfile.findOne({ userId });
+
   if (!mentorProfile) {
     const error = new Error("Apenas mentores podem postar");
     error.statusCode = 403;
@@ -14,6 +15,7 @@ const createPost = async (userId, postData) => {
     ...postData,
     mentorId: mentorProfile._id,
   });
+
   return newPost;
 };
 
@@ -39,6 +41,7 @@ const getFeed = async (cursor, limit) => {
 
 const likePost = async (postId, userId) => {
   const post = await Post.findById(postId);
+
   if (!post) {
     const error = new Error("Post não encontrado");
     error.statusCode = 404;
@@ -52,6 +55,7 @@ const likePost = async (postId, userId) => {
       { $pull: { likedBy: userId } },
       { new: true },
     );
+
     return { likesCount: updatedPost.likedBy.length };
   } else {
     const updatedPost = await Post.findByIdAndUpdate(
@@ -62,14 +66,39 @@ const likePost = async (postId, userId) => {
 
     const mentor = await MentorProfile.findById(post.mentorId);
     const recipientId = mentor.userId;
+
     await createNotification({
       type: "like",
       recipientId,
       actorId: userId,
       postId,
     });
+
     return { likesCount: updatedPost.likedBy.length };
   }
 };
 
-module.exports = { createPost, getFeed, likePost };
+const deletePost = async (postId, userId) => {
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    const error = new Error("Post não encontrado");
+    error.statusCode = 404;
+    throw error;
+  };
+
+  const mentor = await MentorProfile.findById(post.mentorId);
+  const ownerId = mentor.userId;
+
+  if (ownerId.toString() !== userId.toString()) {
+    const error = new Error("Não tens permissão para apagar este post");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const deleted = await Post.findByIdAndDelete(postId);
+
+  return deleted;
+}
+
+module.exports = { createPost, getFeed, likePost, deletePost };
