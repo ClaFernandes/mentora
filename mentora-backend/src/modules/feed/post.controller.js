@@ -4,6 +4,7 @@ const {
   likePost,
   deletePost,
   reportPost,
+  editPost,
 } = require("./post.service");
 
 const createPostController = async (req, res) => {
@@ -40,10 +41,19 @@ const reportPostController = async (req, res) => {
   res.status(200).json(result);
 };
 
+const editPostController = async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user.id;
+  const content = req.body.content;
+  const result = await editPost(postId, userId, content);
+  res.status(200).json(result);
+}
+
 module.exports = {
   createPostController,
   getFeedController,
   likePostController,
   deletePostController,
   reportPostController,
+  editPostController,
 };

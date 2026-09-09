@@ -113,4 +113,30 @@ const reportPost = async (postId) => {
   return { reported: true };
 };
 
-module.exports = { createPost, getFeed, likePost, deletePost, reportPost };
+const editPost = async (postId, userId, content) => {
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    const error = new Error("Post não encontrado");
+    error.statusCode = 404;
+    throw error;
+  };
+
+  const mentorProfile = await MentorProfile.findById(post.mentorId);
+
+  if (mentorProfile.userId.toString() !== userId.toString()) {
+    const error = new Error("Não tens permissão para editar este post");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const updated = await Post.findByIdAndUpdate(
+    postId,
+    { $set: { content } },
+    { new: true },
+  )
+
+  return updated;
+}
+
+module.exports = { createPost, getFeed, likePost, deletePost, reportPost, editPost };
