@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getMentor, updateMentor } = require("./mentor.controller");
+const { getMentorController, updateMentorController, searchMentorsController } = require("./mentor.controller");
 const { verifyToken } = require("../auth/auth.middleware");
 
-router.get("/:id", getMentor);
-router.put("/me", verifyToken, updateMentor);
+router.get("/", searchMentorsController);
+router.get("/:id", getMentorController);
+router.put("/me", verifyToken, updateMentorController);
 
 module.exports = router;
