@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
-import { findAuthorById } from "../../utils/authorHelpers";
 import { formatDistanceToNow } from "date-fns";
 import { pt } from "date-fns/locale";
 import { FaPen, FaTrash, FaCheck, FaTimes, FaHeart, FaRegHeart } from "react-icons/fa";
@@ -23,7 +22,7 @@ export default function CommentList({
   const [newCommentText, setNewCommentText] = useState("");
 
   function startEditing(comment) {
-    setEditingId(comment.id);
+    setEditingId(comment._id);
     setEditText(comment.text);
   }
 
@@ -52,11 +51,10 @@ export default function CommentList({
       ) : (
         <ul>
           {comments.map((comment) => {
-            const author = findAuthorById(comment.authorId);
-            if (!author) return null;
+            const author = comment.userId;
 
-            const isOwnComment = comment.authorId === currentUserId;
-            const isEditing = editingId === comment.id;
+            const isOwnComment = comment.userId._id === currentUserId;
+            const isEditing = editingId === comment._id;
             const isMentor = author.role === "mentor";
 
             const commentLikedBy = comment.likedBy || [];
@@ -64,16 +62,16 @@ export default function CommentList({
             const commentLikesCount = commentLikedBy.length;
 
             return (
-              <li key={comment.id} className="comment-list_item">
+              <li key={comment._id} className="comment-list_item">
                 <Avatar src={author.avatarUrl} name={author.name} size={28} />
 
                 <div className="comment-list_body">
                   <div className="comment-list_meta">
                     <div className="comment-list_meta-info">
                       {isMentor ? (
-                        <Link to={`/mentores/${author.id}`}>{author.name}</Link>
+                        <Link to={`/mentores/${author._id}`}>{author.name}</Link>
                       ) : (
-                        <Link to={`/mentorados/${author.id}`}>
+                        <Link to={`/mentorados/${author._id}`}>
                           {author.name}
                         </Link>
                       )}
@@ -94,7 +92,7 @@ export default function CommentList({
                           <FaPen />
                         </button>
                         <button
-                          onClick={() => onDelete(comment.id)}
+                          onClick={() => onDelete(comment._id)}
                           aria-label="Apagar comentário"
                         >
                           <FaTrash />
@@ -111,7 +109,7 @@ export default function CommentList({
                       />
                       <div className="comment-list_edit-actions">
                         <button
-                          onClick={() => saveEdit(comment.id)}
+                          onClick={() => saveEdit(comment._id)}
                           aria-label="Guardar"
                         >
                           <FaCheck />
@@ -129,7 +127,7 @@ export default function CommentList({
                         <button
                           type="button"
                           className="comment-list_like-btn"
-                          onClick={() => onToggleLike(comment.id)}
+                          onClick={() => onToggleLike(comment._id)}
                         >
                           {commentIsLiked ? <FaHeart /> : <FaRegHeart />} {commentLikesCount}
                         </button>
@@ -138,7 +136,7 @@ export default function CommentList({
                           <button
                             type="button"
                             className="comment-list_report-btn"
-                            onClick={() => onReport(comment.id)}
+                            onClick={() => onReport(comment._id)}
                             disabled={comment.reported}
                           >
                             <FiFlag /> {comment.reported ? "Denunciado" : "Denunciar"}

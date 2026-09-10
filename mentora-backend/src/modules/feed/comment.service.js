@@ -131,10 +131,19 @@ const reportComment = async (commentId) => {
   return { reported: true };
 };
 
+const getComments = async (postId) => {
+  const comments = await Comment.find({ postId })
+    .sort({ createdAt: 1 })
+    .populate("userId", "name email avatarUrl role");
+
+  return comments;
+}
+
 module.exports = {
   likeComment,
   createComment,
   updateComment,
   deleteComment,
   reportComment,
+  getComments,
 };

@@ -1,119 +1,102 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth.js";
+import { getFeed, likePost, reportPost, editPost, deletePost } from "../../services/feedService.js";
 import PostCard from "./PostCard";
 import EmptyState from "../../components/EmptyState";
-import { MOCK_POSTS, MOCK_COMMENTS } from "../../mocks/mockData";
 import "./FeedPage.css";
 
 const PAGE_SIZE = 4;
 
 export default function FeedPage() {
-    const { user } = useAuth();
+    const { user, token } = useAuth();
 
-    const [posts, setPosts] = useState(MOCK_POSTS);
-    const [comments, setComments] = useState(MOCK_COMMENTS);
-    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+    const [posts, setPosts] = useState([]);
+    const [cursor, setCursor] = useState(null);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [reportNotice, setReportNotice] = useState(null);
+
+    async function loadFeed() {
+        setLoading(true);
+
+        const result = await getFeed(token, cursor, PAGE_SIZE);
+
+        setPosts((prev) => [...prev, ...result.posts]);
+        setCursor(result.nextCursor);
+        setHasMore(result.posts.length === PAGE_SIZE);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        loadFeed();
+    }, []);
 
     function showReportNotice(message) {
         setReportNotice(message);
         setTimeout(() => setReportNotice(null), 3000);
     }
 
-    function handleToggleLike(postId) {
+    async function handleToggleLike(postId) {
+        const post = posts.find((p) => p._id === postId);
+        const wasLiked = post.likedBy.includes(user.id);
+
+        await likePost(token, postId);
+
         setPosts((prev) =>
-            prev.map((post) => {
-                if (post.id !== postId) return post;
+            prev.map((p) => {
+                if (p._id !== postId) return p;
 
-                const alreadyLiked = post.likedBy.includes(user.id);
-                const newLikedBy = alreadyLiked
-                    ? post.likedBy.filter((id) => id !== user.id)
-                    : [...post.likedBy, user.id];
+                const newLikedBy = wasLiked
+                    ? p.likedBy.filter((id) => id !== user.id)
+                    : [...p.likedBy, user.id];
 
-                return { ...post, likedBy: newLikedBy };
+                return { ...p, likedBy: newLikedBy };
             })
         );
     }
 
-    function handleReportPost(postId) {
+    async function handleReportPost(postId) {
+        await reportPost(token, postId);
+
         setPosts((prev) =>
-            prev.map((post) => (post.id === postId ? { ...post, reported: true } : post))
+            prev.map((post) =>
+                post._id === postId ? { ...post, reported: true } : post
+            )
         );
         showReportNotice("Post denunciado. A nossa equipa vai rever.");
     }
 
-    function handleReportComment(commentId) {
-        setComments((prev) =>
-            prev.map((c) => (c.id === commentId ? { ...c, reported: true } : c))
-        );
-        showReportNotice("Comentário denunciado. A nossa equipa vai rever.");
-    }
+    async function handleEditPost(postId, newContent) {
+        const updated = await editPost(token, postId, newContent);
 
-    function handleToggleLikeComment(commentId) {
-        setComments((prev) =>
-            prev.map((comment) => {
-                if (comment.id !== commentId) return comment;
-
-                const likedBy = comment.likedBy || [];
-                const alreadyLiked = likedBy.includes(user.id);
-                const newLikedBy = alreadyLiked
-                    ? likedBy.filter((id) => id !== user.id)
-                    : [...likedBy, user.id];
-
-                return { ...comment, likedBy: newLikedBy };
-            })
+        setPosts((prev) =>
+            prev.map((post) => (post._id === postId ? updated : post))
         );
     }
 
-    function handleDeleteComment(commentId) {
-        setComments((prev) => prev.filter((c) => c.id !== commentId));
+    async function handleDeletePost(postId) {
+        await deletePost(token, postId);
+
+        setPosts((prev) => prev.filter((post) => post._id !== postId));
     }
-
-    function handleEditComment(commentId, newText) {
-        setComments((prev) =>
-            prev.map((c) => (c.id === commentId ? { ...c, text: newText } : c))
-        );
-    }
-
-    function handleAddComment(postId, text) {
-        const newComment = {
-            id: `c${Date.now()}`,
-            postId,
-            authorId: user.id,
-            text,
-            createdAt: new Date().toISOString(),
-        };
-        setComments((prev) => [...prev, newComment]);
-    }
-
-    const sortedPosts = [...posts].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
-
-    const visiblePosts = sortedPosts.slice(0, visibleCount);
-    const hasMore = visibleCount < sortedPosts.length;
 
     return (
         <div className="container">
             <div className="feed">
                 {reportNotice && <div className="feed_notice">{reportNotice}</div>}
 
-                {sortedPosts.length === 0 ? (
+                {posts.length === 0 ? (
                     <EmptyState message="Ainda não há publicações." />
                 ) : (
-                    visiblePosts.map((post) => (
+                    posts.map((post) => (
                         <PostCard
-                            key={post.id}
+                            key={post._id}
                             post={post}
                             currentUserId={user.id}
                             onToggleLike={handleToggleLike}
                             onReportPost={handleReportPost}
-                            comments={comments}
-                            onEditComment={handleEditComment}
-                            onDeleteComment={handleDeleteComment}
-                            onAddComment={handleAddComment}
-                            onReportComment={handleReportComment}
-                            onToggleLikeComment={handleToggleLikeComment}
+                            onEditPost={handleEditPost}
+                            onDeletePost={handleDeletePost}
                         />
                     ))
                 )}
@@ -122,9 +105,10 @@ export default function FeedPage() {
                     <button
                         type="button"
                         className="feed_load-more"
-                        onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                        onClick={loadFeed}
+                        disabled={loading}
                     >
-                        Carregar mais
+                        {loading ? "A carregar..." : "Carregar mais"}
                     </button>
                 )}
             </div>

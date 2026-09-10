@@ -4,6 +4,7 @@ const {
   updateComment,
   deleteComment,
   reportComment,
+  getComments,
 } = require("./comment.service");
 
 const likeCommentController = async (req, res) => {
@@ -42,10 +43,17 @@ const reportCommentController = async (req, res) => {
   res.status(200).json(result);
 };
 
+const getCommentsController = async (req, res) => {
+  const postId = req.params.id;
+  const result = await getComments(postId);
+  res.status(200).json(result);
+}
+
 module.exports = {
   likeCommentController,
   createCommentController,
   updateCommentController,
   deleteCommentController,
   reportCommentController,
+  getCommentsController,
 };
