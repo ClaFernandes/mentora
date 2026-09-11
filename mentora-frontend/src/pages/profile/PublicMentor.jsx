@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
+import { followMentor, unfollowMentor } from "../../services/followService.js";
 import { findOrCreateConversation } from "../../utils/conversationHelpers.js";
 import { FaCheckCircle } from "react-icons/fa";
 import { FiCheck, FiPlus, FiMessageCircle } from "react-icons/fi";
@@ -9,36 +10,44 @@ import "./MentorProfile.css";
 
 export default function PublicMentor({ mentor }) {
   const navigate = useNavigate();
-  const { user, updateUser } = useAuth();
+  const { user, updateUser, token } = useAuth();
 
-  const isFollowing = user.menteeProfile?.followingMentors?.includes(mentor.id);
+  const isFollowing = user.menteeProfile?.followingMentors?.includes(mentor.userId._id);
 
-  function toggleFollow() {
+  async function toggleFollow() {
     const following = user.menteeProfile?.followingMentors || [];
+
+    if (isFollowing) {
+      await unfollowMentor(token, mentor.userId._id);
+    } else {
+      await followMentor(token, mentor.userId._id);
+    }
+
     const updated = isFollowing
-      ? following.filter((id) => id !== mentor.id)
-      : [...following, mentor.id];
+      ? following.filter((id) => id !== mentor.userId._id)
+      : [...following, mentor.userId._id];
+
     updateUser({
       menteeProfile: { ...user.menteeProfile, followingMentors: updated },
     });
   }
 
   function handleSendMessage() {
-    const conversation = findOrCreateConversation(mentor.id, user.id);
+    const conversation = findOrCreateConversation(mentor.userId._id, user.id);
     navigate("/chat", { state: { conversationId: conversation.id } });
   }
 
   function handleSchedule(offeringId) {
-    navigate(`/agendar/${mentor.id}`, { state: { offeringId } });
+    navigate(`/agendar/${mentor.userId._id}`, { state: { offeringId } });
   }
 
   return (
     <div className="mentor-profile">
       <header className="mentor-profile_header">
-        <Avatar src={mentor.avatarUrl} name={mentor.name} size={80} />
+        <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={80} />
         <div className="mentor-profile_header-info">
           <h2>
-            {mentor.name}
+            {mentor.userId.name}
             {mentor.isVerified && (
               <FaCheckCircle
                 className="mentor-profile_verified"
@@ -102,7 +111,7 @@ export default function PublicMentor({ mentor }) {
         <h3>Ofertas</h3>
 
         {mentor.offerings.map((offering) => (
-          <div key={offering.id} className="mentor-profile_offering">
+          <div key={offering._id} className="mentor-profile_offering">
             <div className="mentor-profile_offering-view">
               <div className="mentor-profile_offering-info">
                 <h4>{offering.title}</h4>
@@ -119,7 +128,7 @@ export default function PublicMentor({ mentor }) {
                 <button
                   type="button"
                   className="mentor-profile_offering-schedule-btn"
-                  onClick={() => handleSchedule(offering.id)}
+                  onClick={() => handleSchedule(offering._id)}
                 >
                   Agendar
                 </button>

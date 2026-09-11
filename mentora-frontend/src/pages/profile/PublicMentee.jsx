@@ -1,15 +1,27 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar.jsx";
-import { MOCK_MENTORS } from "../../mocks/mockData.js";
+import { getMentorProfile } from "../../services/mentorService.js";
 import { FiCheckCircle } from "react-icons/fi";
 import { AiFillStar } from "react-icons/ai";
 import "./MenteeProfile.css";
 import "../mentors/MentorsPage.css";
 
 export default function PublicMentee({ mentee }) {
-  const followedMentors = MOCK_MENTORS.filter((m) =>
-    mentee.followingMentors.includes(m.id),
-  );
+  const [followedMentors, setFollowedMentors] = useState([]);
+
+  useEffect(() => {
+    const followingIds = mentee.followingMentors || [];
+
+    if (followingIds.length === 0) {
+      setFollowedMentors([]);
+      return;
+    }
+
+    Promise.all(followingIds.map((id) => getMentorProfile(id))).then(
+      setFollowedMentors,
+    );
+  }, [mentee.followingMentors]);
 
   return (
     <div className="mentee-profile">
@@ -40,14 +52,14 @@ export default function PublicMentee({ mentee }) {
           ) : (
             followedMentors.map((mentor) => (
               <Link
-                key={mentor.id}
-                to={`/mentores/${mentor.id}`}
+                key={mentor._id}
+                to={`/mentores/${mentor.userId._id}`}
                 className="mentors-card"
               >
-                <Avatar src={mentor.avatarUrl} name={mentor.name} size={64} />
-                <h3>{mentor.name}</h3>
+                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={64} />
+                <h3>{mentor.userId.name}</h3>
                 <p className="mentors-card-offering">
-                  {mentor.offerings[0].title}
+                  {mentor.offerings[0]?.title}
                 </p>
                 <p className="mentors-card-rating">
                   <AiFillStar /> {mentor.avgRating}

@@ -1,5 +1,7 @@
 const MentorProfile = require("./mentor.model");
 const Offering = require("./offering.model");
+const Follow = require("../users/follow.model");
+const { MENTORSHIP_AREAS } = require("../../utils/constants");
 
 const getMentorProfile = async (userId) => {
     const mentorProfile = await MentorProfile.findOne({ userId }).populate("userId", "name email avatarUrl");
@@ -12,9 +14,12 @@ const getMentorProfile = async (userId) => {
 
     const offerings = await Offering.find({ mentorId: mentorProfile._id });
 
+    const followersCount = await Follow.countDocuments({ mentorId: mentorProfile._id });
+
     return {
         ...mentorProfile.toObject(),
         offerings,
+        followersCount,
     };
 };
 
@@ -40,72 +45,92 @@ const updateMentorProfile = async (userId, updates) => {
 };
 
 const searchMentors = async (filters, page, limit) => {
-    const offeringFilter = {};
+    const offeringMatch = {}; // monta filtro: área, preço, texto
 
-    // Filtro por área
     if (filters.area) {
-        offeringFilter.area = filters.area;
+        if (filters.area === "Outras") {
+            offeringMatch.area = { $nin: MENTORSHIP_AREAS };
+        } else {
+            offeringMatch.area = filters.area;
+        }
     };
 
-    // Filtros por preços min e max
     if (filters.minPrice || filters.maxPrice) {
-        offeringFilter.sessionPrice = {};
-        if (filters.minPrice) {
-            offeringFilter.sessionPrice.$gte = Number(filters.minPrice);
-        };
-        if (filters.maxPrice) {
-            offeringFilter.sessionPrice.$lte = Number(filters.maxPrice);
-        };
+        offeringMatch.sessionPrice = {};
+        if (filters.minPrice) offeringMatch.sessionPrice.$gte = Number(filters.minPrice);
+        if (filters.maxPrice) offeringMatch.sessionPrice.$lte = Number(filters.maxPrice);
     };
 
-    // Filtro por texto no título da oferta
     if (filters.q) {
-        offeringFilter.title = { $regex: filters.q, $options: "i" };
+        offeringMatch.title = { $regex: filters.q, $options: "i" };
+    };
+
+    const pipeline = [];
+
+    // antes de qualquer agrupamento — só corre se algum filtro foi definido
+    if (Object.keys(offeringMatch).length > 0) {
+        pipeline.push({ $match: offeringMatch });
     }
 
-    let mentorIdsFromOffering = null;
+    pipeline.push({
+        $group: {
+            _id: "$mentorId",
+            minPrice: { $min: "$sessionPrice" },
+        },
+    });
 
-    // só corre a query se algum filtro foi escolhido
-    if (Object.keys(offeringFilter).length > 0) {
-        mentorIdsFromOffering = await Offering.distinct("mentorId", offeringFilter);
+    pipeline.push({
+        $lookup: {
+            from: "mentorprofiles",
+            localField: "_id",
+            foreignField: "_id",
+            as: "mentor",
+        },
+    });
+    pipeline.push({ $unwind: "$mentor" });
+
+    const mentorMatch = {
+        "mentor.rejected": false,
+        "mentor.isVerified": true,
     };
-
-    // Filtros aplicados, independente da pesquisa
-    const mentorFilter = {
-        rejected: false,
-        isVerified: true,
-    };
-
-    // Filtro no MentorProfile
     if (filters.minRating) {
-        mentorFilter.avgRating = { $gte: Number(filters.minRating) };
-    };
+        mentorMatch["mentor.avgRating"] = { $gte: Number(filters.minRating) };
+    }
+    pipeline.push({ $match: mentorMatch });
 
-    // Restringe por id se correu no começo
-    if (mentorIdsFromOffering !== null) {
-        mentorFilter._id = { $in: mentorIdsFromOffering };
-    };
+    if (filters.sortBy === "priceAsc") {
+        pipeline.push({ $sort: { minPrice: 1 } });
+    } else {
+        pipeline.push({ $sort: { "mentor.avgRating": -1 } });
+    }
 
-    // Paginação
     const skip = (page - 1) * limit;
+    pipeline.push({
+        $facet: {
+            results: [{ $skip: skip }, { $limit: limit }],
+            totalCount: [{ $count: "count" }],
+        },
+    });
 
-    // Mentores ordenados
-    const mentors = await MentorProfile.find(mentorFilter)
-        .populate("userId", "name email avatarUrl")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
+    const [aggResult] = await Offering.aggregate(pipeline);
+    const total = aggResult.totalCount[0]?.count || 0;
+    const mentorIds = aggResult.results.map((r) => r._id);
 
-    // Total de mentores que cumprem o filtro
-    const total = await MentorProfile.countDocuments(mentorFilter);
+    const mentors = await MentorProfile.find({ _id: { $in: mentorIds } })
+        .populate("userId", "name email avatarUrl");
 
-    // Para cada mentor desta página, vai buscar as suas ofertas reais
+    const orderedMentors = mentorIds
+        .map((id) => mentors.find((m) => m._id.toString() === id.toString()))
+        .filter(Boolean);
+
+    // Para cada mentor desta página, vai buscar suas ofertas 
     const mentorsWithOfferings = await Promise.all(
-        mentors.map(async (mentor) => {
+        orderedMentors.map(async (mentor) => {
             const offerings = await Offering.find({ mentorId: mentor._id });
             return { ...mentor.toObject(), offerings };
         })
     );
+
     return {
         mentors: mentorsWithOfferings,
         total,
@@ -114,4 +139,20 @@ const searchMentors = async (filters, page, limit) => {
     };
 };
 
-module.exports = { getMentorProfile, updateMentorProfile, searchMentors };
+const verifyMentor = async (mentorUserId) => {
+    const mentorProfile = await MentorProfile.findOneAndUpdate(
+        { userId: mentorUserId },
+        { $set: { isVerified: true } },
+        { new: true }
+    );
+
+    if (!mentorProfile) {
+        const error = new Error("Perfil de mentor não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    return mentorProfile;
+};
+
+module.exports = { getMentorProfile, updateMentorProfile, searchMentors, verifyMentor };

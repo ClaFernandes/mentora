@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
-import { MOCK_MENTORS } from "../../mocks/mockData.js";
+import { searchMentors } from "../../services/mentorService.js";
+import { followMentor, unfollowMentor } from "../../services/followService.js";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import { AiFillStar } from "react-icons/ai";
 import { FiSearch, FiCheck, FiPlus, FiX } from "react-icons/fi";
@@ -14,18 +15,10 @@ const RATING_OPTIONS = [
     { value: 4.5, label: "4.5+" },
 ];
 
-// Quando tiver backend, trocar por paginação por cursor (?cursor=&limit=), carregando cada página via API em vez de um array local
 const PAGE_SIZE = 6;
 
-function getPriceRange(offerings) {
-    const prices = offerings.map((o) => o.sessionPrice);
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    return min === max ? `${min}€` : `${min}€–${max}€`;
-}
-
 export default function MentorsPage() {
-    const { user, updateUser } = useAuth();
+    const { user, updateUser, token } = useAuth();
 
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedArea, setSelectedArea] = useState("");
@@ -33,46 +26,39 @@ export default function MentorsPage() {
     const [maxPrice, setMaxPrice] = useState("");
     const [minRating, setMinRating] = useState(0);
     const [sortBy, setSortBy] = useState("rating");
-    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+    const [mentors, setMentors] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        setVisibleCount(PAGE_SIZE);
-    }, [searchQuery, selectedArea, minPrice, maxPrice, minRating, sortBy]);
+    async function loadMentors(pageToLoad) {
+        setLoading(true);
 
-    function mentorMatchesFilters(mentor) {
-        const matchesArea =
-            selectedArea === "" ||
-            (selectedArea === "Outras"
-                ? mentor.offerings.some((o) => !MENTORSHIP_AREAS.includes(o.area))
-                : mentor.offerings.some((o) => o.area === selectedArea));
+        const filters = {
+            area: selectedArea,
+            minPrice,
+            maxPrice,
+            minRating: minRating || undefined,
+            q: searchQuery,
+            sortBy,
+        };
 
-        const matchesSearch =
-            searchQuery.trim() === "" ||
-            mentor.offerings.some((o) =>
-                o.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
-            );
+        const result = await searchMentors(filters, pageToLoad, PAGE_SIZE);
 
-        const matchesPrice = mentor.offerings.some((o) => {
-            const aboveMin = minPrice === "" || o.sessionPrice >= Number(minPrice);
-            const belowMax = maxPrice === "" || o.sessionPrice <= Number(maxPrice);
-            return aboveMin && belowMax;
-        });
+        if (pageToLoad === 1) {
+            setMentors(result.mentors);
+        } else {
+            setMentors((prev) => [...prev, ...result.mentors]);
+        }
 
-        const matchesRating = mentor.avgRating >= minRating;
-
-        return matchesArea && matchesSearch && matchesPrice && matchesRating;
+        setPage(result.page);
+        setTotalPages(result.totalPages);
+        setLoading(false);
     }
 
-    const filteredMentors = MOCK_MENTORS.filter(mentorMatchesFilters).sort((a, b) => {
-        if (sortBy === "priceAsc") {
-            return Math.min(...a.offerings.map((o) => o.sessionPrice)) -
-                Math.min(...b.offerings.map((o) => o.sessionPrice));
-        }
-        return b.avgRating - a.avgRating; // "rating" — do mais bem avaliado
-    });
-
-    const visibleMentors = filteredMentors.slice(0, visibleCount);
-    const hasMore = visibleCount < filteredMentors.length;
+    useEffect(() => {
+        loadMentors(1);
+    }, [searchQuery, selectedArea, minPrice, maxPrice, minRating, sortBy]);
 
     const hasActiveFilters =
         searchQuery !== "" || selectedArea !== "" || minPrice !== "" || maxPrice !== "" || minRating !== 0;
@@ -85,13 +71,23 @@ export default function MentorsPage() {
         setMinRating(0);
     }
 
-    function toggleFollow(mentorId, e) {
+    async function toggleFollow(mentorId, e) {
         e.preventDefault();
         e.stopPropagation();
+
         const following = user.menteeProfile?.followingMentors || [];
-        const updated = following.includes(mentorId)
+        const isFollowing = following.includes(mentorId);
+
+        if (isFollowing) {
+            await unfollowMentor(token, mentorId);
+        } else {
+            await followMentor(token, mentorId);
+        }
+
+        const updated = isFollowing
             ? following.filter((id) => id !== mentorId)
             : [...following, mentorId];
+
         updateUser({
             menteeProfile: { ...user.menteeProfile, followingMentors: updated },
         });
@@ -174,44 +170,46 @@ export default function MentorsPage() {
             </div>
 
             <div className="mentors-grid">
-                {filteredMentors.length === 0 ? (
+                {mentors.length === 0 && !loading ? (
                     <p className="mentors-empty">Nenhum mentor encontrado com esses filtros.</p>
                 ) : (
-                    visibleMentors.map((mentor) => (
-                        <Link key={mentor.id} to={`/mentores/${mentor.id}`} className="mentors-card">
+                    mentors.map((mentor) => (
+                        <Link key={mentor._id} to={`/mentores/${mentor.userId._id}`} className="mentors-card">
                             {user.role === "mentee" && (
                                 <button
                                     type="button"
                                     className="mentors-card-follow"
-                                    onClick={(e) => toggleFollow(mentor.id, e)}
+                                    onClick={(e) => toggleFollow(mentor.userId._id, e)}
                                 >
-                                    {user.menteeProfile?.followingMentors?.includes(mentor.id) ? <FiCheck /> : <FiPlus />}
+                                    {user.menteeProfile?.followingMentors?.includes(mentor.userId._id) ? <FiCheck /> : <FiPlus />}
                                 </button>
                             )}
-                            <Avatar src={mentor.avatarUrl} name={mentor.name} size={64} />
-                            <h3>{mentor.name}</h3>
-                            <p className="mentors-card-offering">{mentor.offerings[0].title}</p>
+                            <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={64} />
+                            <h3>{mentor.userId.name}</h3>
+                            <p className="mentors-card-offering">{mentor.offerings[0]?.title}</p>
                             <p className="mentors-card-rating">
                                 <AiFillStar /> {mentor.avgRating}
                             </p>
                             <p className="mentors-card-price">
-                                {getPriceRange(mentor.offerings)}
+                                {mentor.offerings.length > 0
+                                    ? `${Math.min(...mentor.offerings.map((o) => o.sessionPrice))}€`
+                                    : ""}
                             </p>
                         </Link>
                     ))
                 )}
             </div>
 
-            {hasMore && (
+            {page < totalPages && (
                 <button
                     type="button"
                     className="mentors-load-more"
-                    onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
+                    onClick={() => loadMentors(page + 1)}
+                    disabled={loading}
                 >
-                    Carregar mais
+                    {loading ? "A carregar..." : "Carregar mais"}
                 </button>
             )}
-
         </div>
     );
 }

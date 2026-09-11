@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
 import { deleteAccount } from "../../services/userService.js";
 import { updateMenteeProfile } from "../../services/menteeService.js";
+import { getMentorProfile } from "../../services/mentorService.js";
+import { unfollowMentor } from "../../services/followService.js";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
-import { MOCK_MENTORS } from "../../mocks/mockData.js";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import { FaPen, FaCheck, FaTimes } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
@@ -21,10 +22,22 @@ export default function OwnProfileMentee({ mentee }) {
   const [bioText, setBioText] = useState(mentee.bio);
   const [isEditingInterests, setIsEditingInterests] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState(
-    mentee.menteeProfile.interests,
+    mentee.menteeProfile?.interests || [],
   );
   const [showCustomInterestInput, setShowCustomInterestInput] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
+  const [followedMentors, setFollowedMentors] = useState([]);
+
+  useEffect(() => {
+    const followingIds = mentee.menteeProfile.followingMentors || [];
+    if (followingIds.length === 0) {
+      setFollowedMentors([]);
+      return;
+    }
+    Promise.all(followingIds.map((id) => getMentorProfile(id))).then(
+      setFollowedMentors,
+    );
+  }, [mentee.menteeProfile.followingMentors]);
 
   async function saveBio() {
     const updatedProfile = await updateMenteeProfile(token, { bio: bioText });
@@ -32,7 +45,6 @@ export default function OwnProfileMentee({ mentee }) {
     setIsEditingBio(false);
   }
 
-  // Alterna um interesse selecionado
   function toggleInterest(interest) {
     setSelectedInterests((prev) =>
       prev.includes(interest)
@@ -41,7 +53,6 @@ export default function OwnProfileMentee({ mentee }) {
     );
   }
 
-  // Adiciona um interesse personalizado
   function addCustomInterest() {
     const trimmed = customInterest.trim();
     if (trimmed && !selectedInterests.includes(trimmed)) {
@@ -51,7 +62,6 @@ export default function OwnProfileMentee({ mentee }) {
     setShowCustomInterestInput(false);
   }
 
-  // Guarda os interesses escolhidos
   async function saveInterests() {
     const updatedProfile = await updateMenteeProfile(token, { interests: selectedInterests });
     setUser((prev) => ({
@@ -61,16 +71,16 @@ export default function OwnProfileMentee({ mentee }) {
     setIsEditingInterests(false);
   }
 
-  // Cancela a edição de interesses sem guardar
   function cancelEditingInterests() {
-    setSelectedInterests(mentee.menteeProfile.interests);
+    setSelectedInterests(mentee.menteeProfile?.interests || []);
     setShowCustomInterestInput(false);
     setCustomInterest("");
     setIsEditingInterests(false);
   }
 
-  // Deixa de seguir um mentor
-  function unfollow(mentorId) {
+  async function unfollow(mentorId) {
+    await unfollowMentor(token, mentorId);
+
     const updated = mentee.menteeProfile.followingMentors.filter(
       (id) => id !== mentorId,
     );
@@ -79,16 +89,11 @@ export default function OwnProfileMentee({ mentee }) {
     });
   }
 
-  // Apaga a própria conta — no backend vai chamar DELETE /users/me
   async function handleDeleteAccount() {
     await deleteAccount(token);
     logout();
     navigate("/");
   }
-
-  const followedMentors = MOCK_MENTORS.filter((m) =>
-    mentee.menteeProfile.followingMentors.includes(m.id),
-  );
 
   return (
     <div className="mentee-profile">
@@ -203,7 +208,7 @@ export default function OwnProfileMentee({ mentee }) {
         ) : (
           <div className="mentee-profile_interests-view">
             <div className="mentee-profile_interests-badges">
-              {mentee.menteeProfile.interests.map((interest) => (
+              {(mentee.menteeProfile?.interests || []).map((interest) => (
                 <span key={interest} className="mentee-profile_interest-badge">
                   {interest}
                 </span>
@@ -230,8 +235,8 @@ export default function OwnProfileMentee({ mentee }) {
           ) : (
             followedMentors.map((mentor) => (
               <Link
-                key={mentor.id}
-                to={`/mentores/${mentor.id}`}
+                key={mentor._id}
+                to={`/mentores/${mentor.userId._id}`}
                 className="mentors-card"
               >
                 <button
@@ -240,16 +245,16 @@ export default function OwnProfileMentee({ mentee }) {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    unfollow(mentor.id);
+                    unfollow(mentor.userId._id);
                   }}
                   aria-label="Deixar de seguir"
                 >
                   <FiX />
                 </button>
-                <Avatar src={mentor.avatarUrl} name={mentor.name} size={64} />
-                <h3>{mentor.name}</h3>
+                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={64} />
+                <h3>{mentor.userId.name}</h3>
                 <p className="mentors-card-offering">
-                  {mentor.offerings[0].title}
+                  {mentor.offerings[0]?.title}
                 </p>
                 <p className="mentors-card-rating">
                   <AiFillStar /> {mentor.avgRating}

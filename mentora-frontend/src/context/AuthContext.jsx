@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
         bio: profile.bio,
         menteeProfile: {
           interests: profile.interests,
-          followingMentors: [],
+          followingMentors: profile.followingMentors,
         },
       };
     }

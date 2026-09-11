@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { useParams, useLocation, Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
-import { MOCK_MENTORS, MOCK_MENTEES } from "../../mocks/mockData";
+import { getMentorProfile } from "../../services/mentorService.js";
+import { getMenteeProfile } from "../../services/menteeService.js";
 import OwnProfileMentor from "./OwnProfileMentor";
 import PublicMentor from "./PublicMentor";
 import OwnProfileMentee from "./OwnProfileMentee";
@@ -12,25 +14,45 @@ export default function ProfilePage() {
   const location = useLocation();
   const { user } = useAuth();
 
-  if (!user) return null;
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  const isOwnProfile = !id || id === user.id;
+  const isOwnProfile = !id || id === user?.id;
 
   const isPublicMentorRoute = location.pathname.startsWith("/mentores/");
 
   const role = isOwnProfile
-    ? user.role
+    ? user?.role
     : isPublicMentorRoute
       ? "mentor"
       : "mentee";
 
-  const profileData = isOwnProfile
-    ? user
-    : role === "mentor"
-      ? MOCK_MENTORS.find((m) => m.id === id)
-      : MOCK_MENTEES.find((m) => m.id === id);
+  useEffect(() => {
+    if (!user) return;
 
-  if (!profileData) return <Navigate to="/rota-invalida" replace />;
+    if (isOwnProfile) {
+      setProfileData(user);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    const fetchProfile = role === "mentor" ? getMentorProfile(id) : getMenteeProfile(id);
+
+    fetchProfile
+      .then((data) => {
+        setProfileData(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setNotFound(true);
+        setLoading(false);
+      });
+  }, [id, user]);
+
+  if (!user || loading) return null;
+  if (notFound || !profileData) return <Navigate to="/rota-invalida" replace />;
 
   return (
     <div className="container">

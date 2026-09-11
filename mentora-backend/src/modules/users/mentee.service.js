@@ -1,4 +1,5 @@
 const MenteeProfile = require("./mentee.model");
+const Follow = require("./follow.model");
 
 const getMenteeProfile = async (userId) => {
     const menteeProfile = await MenteeProfile.findOne({ userId }).populate("userId", "name email avatarUrl");
@@ -9,7 +10,13 @@ const getMenteeProfile = async (userId) => {
         throw error;
     }
 
-    return menteeProfile;
+    const follows = await Follow.find({ followerId: userId }).populate("mentorId", "userId");
+    const followingMentors = follows.map((f) => f.mentorId.userId.toString());
+
+    return {
+        ...menteeProfile.toObject(),
+        followingMentors,
+    };
 }
 
 const updateMenteeProfile = async (userId, updates) => {
