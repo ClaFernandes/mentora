@@ -378,3 +378,29 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+.onboarding-terms {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--color-text);
+    text-align: left;
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+
+.onboarding-terms input[type="checkbox"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.onboarding-terms a {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.onboarding-terms a:hover {
+    text-decoration: underline;
+}

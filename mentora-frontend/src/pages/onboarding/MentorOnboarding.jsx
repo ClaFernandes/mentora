@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useTheme } from "../../hooks/useTheme.js";
 import { updateMentorProfile } from "../../services/mentorService.js";
@@ -18,6 +18,7 @@ export default function MentorOnboarding() {
     const [showCustomInput, setShowCustomInput] = useState(false);
     const [showAllAreas, setShowAllAreas] = useState(false);
     const [bio, setBio] = useState("");
+    const [termsAccepted, setTermsAccepted] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -47,6 +48,10 @@ export default function MentorOnboarding() {
         }
         if (!bio.trim()) {
             setError("Escreve uma breve bio.");
+            return;
+        }
+        if (!termsAccepted) {
+            setError("Tens de aceitar os Termos e Condições para continuar.");
             return;
         }
         setLoading(true);
@@ -162,7 +167,24 @@ export default function MentorOnboarding() {
                         Depois de entrares, define os teus tipos de mentoria e a tua disponibilidade no teu perfil.
                     </p>
 
-                    <button type="submit" className="onboarding-btn" disabled={loading}>
+                    <label className="onboarding-terms">
+                        <input
+                            type="checkbox"
+                            checked={termsAccepted}
+                            onChange={(e) => setTermsAccepted(e.target.checked)}
+                            disabled={loading}
+                        />
+                        Li e aceito os{" "}
+                        <Link to="/legal" target="_blank" rel="noopener noreferrer">
+                            Termos e Condições
+                        </Link>
+                    </label>
+
+                    <button
+                        type="submit"
+                        className="onboarding-btn"
+                        disabled={loading || !termsAccepted}
+                    >
                         {loading ? "A guardar..." : "Continuar"}
                     </button>
                 </form>

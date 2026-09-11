@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useTheme } from "../../hooks/useTheme.js";
 import { updateMenteeProfile } from "../../services/menteeService.js";
@@ -22,6 +22,7 @@ export default function MenteeOnboarding() {
     const [customValue, setCustomValue] = useState("");
     const [followingMentors, setFollowingMentors] = useState([]);
     const [showAllAreas, setShowAllAreas] = useState(false);
+    const [termsAccepted, setTermsAccepted] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -53,6 +54,10 @@ export default function MenteeOnboarding() {
         setError(null);
         if (interests.length === 0) {
             setError("Seleciona pelo menos um interesse.");
+            return;
+        }
+        if (!termsAccepted) {
+            setError("Tens de aceitar os Termos e Condições para continuar.");
             return;
         }
         setLoading(true);
@@ -171,7 +176,24 @@ export default function MenteeOnboarding() {
                         </div>
                     </div>
 
-                    <button type="submit" className="onboarding-btn" disabled={loading}>
+                    <label className="onboarding-terms">
+                        <input
+                            type="checkbox"
+                            checked={termsAccepted}
+                            onChange={(e) => setTermsAccepted(e.target.checked)}
+                            disabled={loading}
+                        />
+                        Li e aceito os{" "}
+                        <Link to="/legal" target="_blank" rel="noopener noreferrer">
+                            Termos e Condições
+                        </Link>
+                    </label>
+
+                    <button
+                        type="submit"
+                        className="onboarding-btn"
+                        disabled={loading || !termsAccepted}
+                    >
                         {loading ? "A guardar..." : "Continuar"}
                     </button>
                 </form>

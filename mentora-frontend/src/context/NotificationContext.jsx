@@ -1,40 +1,46 @@
-import { createContext, useState, useMemo } from "react";
+import { createContext, useState, useMemo, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth.js";
-import { MOCK_NOTIFICATIONS } from "../mocks/mockData.js";
+import {
+    getNotifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+} from "../services/notificationService.js";
 
 export const NotificationContext = createContext();
 
 export function NotificationProvider({ children }) {
-    const { user } = useAuth();
-    const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
+    const { user, token } = useAuth();
+    const [notifications, setNotifications] = useState([]);
 
-    const myNotifications = user
-        ? notifications.filter((n) => n.recipientId === user.id)
-        : [];
+    useEffect(() => {
+        if (!user || !token) {
+            setNotifications([]);
+            return;
+        }
 
-    const unreadCount = myNotifications.filter((n) => !n.read).length;
+        getNotifications(token).then(setNotifications);
+    }, [user, token]);
 
-    function markAsRead(notificationId) {
+    const unreadCount = notifications.filter((n) => !n.read).length;
+
+    async function markAsRead(notificationId) {
+        await markNotificationAsRead(token, notificationId);
+
         setNotifications((prev) =>
-            prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n))
+            prev.map((n) => (n._id === notificationId ? { ...n, read: true } : n))
         );
     }
 
-    function markAllAsRead() {
-        setNotifications((prev) =>
-            prev.map((n) =>
-                n.recipientId === user?.id ? { ...n, read: true } : n
-            )
-        );
-    }
+    async function markAllAsRead() {
+        await markAllNotificationsAsRead(token);
 
-    function addNotification(notification) {
-        setNotifications((prev) => [...prev, notification]);
+        setNotifications((prev) =>
+            prev.map((n) => ({ ...n, read: true })));
     }
 
     const value = useMemo(
-        () => ({ notifications: myNotifications, unreadCount, markAsRead, markAllAsRead, addNotification }),
-        [myNotifications, unreadCount]
+        () => ({ notifications, unreadCount, markAsRead, markAllAsRead }),
+        [notifications, unreadCount]
     );
 
     return (

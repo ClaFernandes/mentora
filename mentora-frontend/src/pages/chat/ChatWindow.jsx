@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
-import { useNotifications } from "../../hooks/useNotifications.js";
 import { MOCK_CONVERSATIONS } from "../../mocks/mockData.js";
 import { findAuthorById } from "../../utils/authorHelpers.js";
 import Avatar from "../../components/Avatar.jsx";
@@ -9,7 +8,6 @@ import "./ChatWindow.css";
 
 export default function ChatWindow() {
     const { user } = useAuth();
-    const { addNotification } = useNotifications();
     const location = useLocation();
     const [conversations, setConversations] = useState(MOCK_CONVERSATIONS);
     const [selectedConversationId, setSelectedConversationId] = useState(
@@ -66,17 +64,6 @@ export default function ChatWindow() {
         });
         setConversations(updatedConversations);
         setNewMessageText("");
-
-        const recipientId = user.role === "mentor" ? selectedConversation.menteeId : selectedConversation.mentorId;
-        addNotification({
-            id: `notif-${Date.now()}`,
-            type: "message",
-            recipientId,
-            actorId: user.id,
-            postId: null,
-            read: false,
-            createdAt: new Date().toISOString(),
-        });
     }
 
     return (

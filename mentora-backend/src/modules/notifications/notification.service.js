@@ -10,7 +10,10 @@ const createNotification = async ({ type, recipientId, actorId, postId }) => {
 }
 
 const getNotification = async (userId) => {
-    const notifications = await Notification.find({ recipientId: userId }).sort({ createdAt: -1 });
+    const notifications = await Notification.find({ recipientId: userId })
+        .sort({ createdAt: -1 })
+        .populate("actorId", "name avatarUrl");
+
     return notifications;
 }
 
