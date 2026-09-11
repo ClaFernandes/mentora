@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../hooks/useAuth.js";
 import { getFeed, likePost, reportPost, editPost, deletePost } from "../../services/feedService.js";
+import PostForm from "./PostForm.jsx";
 import PostCard from "./PostCard";
 import EmptyState from "../../components/EmptyState";
 import "./FeedPage.css";
@@ -16,6 +17,8 @@ export default function FeedPage() {
     const [loading, setLoading] = useState(false);
     const [reportNotice, setReportNotice] = useState(null);
 
+    const hasLoadedRef = useRef(false);
+
     async function loadFeed() {
         setLoading(true);
 
@@ -28,12 +31,18 @@ export default function FeedPage() {
     }
 
     useEffect(() => {
+        if (hasLoadedRef.current) return;
+        hasLoadedRef.current = true;
         loadFeed();
     }, []);
 
     function showReportNotice(message) {
         setReportNotice(message);
         setTimeout(() => setReportNotice(null), 3000);
+    }
+
+    function handlePostCreated(newPost) {
+        setPosts((prev) => [newPost, ...prev]);
     }
 
     async function handleToggleLike(postId) {
@@ -66,8 +75,8 @@ export default function FeedPage() {
         showReportNotice("Post denunciado. A nossa equipa vai rever.");
     }
 
-    async function handleEditPost(postId, newContent) {
-        const updated = await editPost(token, postId, newContent);
+    async function handleEditPost(postId, updates) {
+        const updated = await editPost(token, postId, updates);
 
         setPosts((prev) =>
             prev.map((post) => (post._id === postId ? updated : post))
@@ -83,6 +92,10 @@ export default function FeedPage() {
     return (
         <div className="container">
             <div className="feed">
+                {user.role === "mentor" && (
+                    <PostForm onPostCreated={handlePostCreated} />
+                )}
+
                 {reportNotice && <div className="feed_notice">{reportNotice}</div>}
 
                 {posts.length === 0 ? (

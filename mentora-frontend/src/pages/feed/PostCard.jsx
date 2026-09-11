@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar";
@@ -12,10 +12,11 @@ import {
     likeComment,
     reportComment,
 } from "../../services/feedService.js";
+import { uploadImage } from "../../services/uploadService.js";
 import { formatDistanceToNow } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { FaHeart, FaRegHeart, FaPen, FaTrash } from "react-icons/fa";
-import { FiFlag, FiMoreVertical, FiCheck, FiX } from "react-icons/fi";
+import { FiFlag, FiMoreVertical, FiCheck, FiX, FiImage } from "react-icons/fi";
 import "./PostCard.css";
 
 export default function PostCard({
@@ -34,7 +35,11 @@ export default function PostCard({
     const [isEditingPost, setIsEditingPost] = useState(false);
     const [editedContent, setEditedContent] = useState(post.content);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [editedImage, setEditedImage] = useState(null);
+    const [editedPreviewUrl, setEditedPreviewUrl] = useState(null);
+    const [imageRemoved, setImageRemoved] = useState(false);
 
+    const editFileInputRef = useRef(null);
 
     const author = post.mentorId.userId;
     const isOwnPost = author._id === currentUserId;
@@ -48,13 +53,37 @@ export default function PostCard({
         }
     }, [showComments]);
 
-    function handleSaveEdit() {
-        onEditPost(post._id, editedContent);
+    useEffect(() => {
+        if (!editedImage) {
+            setEditedPreviewUrl(null);
+            return;
+        }
+        const url = URL.createObjectURL(editedImage);
+        setEditedPreviewUrl(url);
+        return () => URL.revokeObjectURL(url);
+    }, [editedImage]);
+
+    async function handleSaveEdit() {
+        const updates = { content: editedContent };
+
+        if (editedImage) {
+            const uploadResult = await uploadImage(token, editedImage);
+            updates.imageUrl = uploadResult.url;
+        } else if (imageRemoved) {
+            updates.imageUrl = null;
+        }
+
+        await onEditPost(post._id, updates);
+
         setIsEditingPost(false);
+        setEditedImage(null);
+        setImageRemoved(false);
     }
 
     function handleCancelEdit() {
         setEditedContent(post.content);
+        setEditedImage(null);
+        setImageRemoved(false);
         setIsEditingPost(false);
     }
 
@@ -156,6 +185,52 @@ export default function PostCard({
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
                     />
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={editFileInputRef}
+                        style={{ display: "none" }}
+                        onChange={(e) => {
+                            setEditedImage(e.target.files[0]);
+                            setImageRemoved(false);
+                        }}
+                    />
+
+                    {editedPreviewUrl ? (
+                        <div className="post-card_edit-image-preview">
+                            <img src={editedPreviewUrl} alt="Pré-visualização" />
+                            <button
+                                type="button"
+                                onClick={() => setEditedImage(null)}
+                                aria-label="Remover nova imagem"
+                            >
+                                <FiX />
+                            </button>
+                        </div>
+                    ) : (
+                        post.imageUrl && !imageRemoved && (
+                            <div className="post-card_edit-image-preview">
+                                <img src={post.imageUrl} alt="" />
+                                <button
+                                    type="button"
+                                    onClick={() => setImageRemoved(true)}
+                                    aria-label="Remover imagem"
+                                >
+                                    <FiX />
+                                </button>
+                            </div>
+                        )
+                    )}
+
+                    <button
+                        type="button"
+                        className="post-card_edit-image-btn"
+                        onClick={() => editFileInputRef.current.click()}
+                    >
+                        <FiImage /> {post.imageUrl || editedPreviewUrl ? "Trocar imagem" : "Adicionar imagem"}
+                    </button>
+
                     <div className="post-card_edit-actions">
                         <button onClick={handleSaveEdit} aria-label="Guardar">
                             <FiCheck />

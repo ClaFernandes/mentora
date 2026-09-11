@@ -44,8 +44,8 @@ const reportPostController = async (req, res) => {
 const editPostController = async (req, res) => {
   const postId = req.params.id;
   const userId = req.user.id;
-  const content = req.body.content;
-  const result = await editPost(postId, userId, content);
+  const updates = req.body;
+  const result = await editPost(postId, userId, updates);
   res.status(200).json(result);
 }
 

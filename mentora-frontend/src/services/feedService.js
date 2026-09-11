@@ -19,11 +19,11 @@ export async function createPost(token, postData) {
     });
 }
 
-export async function editPost(token, postId, content) {
+export async function editPost(token, postId, updates) {
     return apiRequest(`/posts/${postId}`, {
         method: "PUT",
         token,
-        body: { content },
+        body: updates,
     });
 }
 

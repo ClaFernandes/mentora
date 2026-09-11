@@ -16,6 +16,14 @@ const createPost = async (userId, postData) => {
     mentorId: mentorProfile._id,
   });
 
+  await newPost.populate({
+    path: "mentorId",
+    populate: {
+      path: "userId",
+      select: "name email avatarUrl",
+    }
+  });
+
   return newPost;
 };
 
@@ -113,7 +121,7 @@ const reportPost = async (postId) => {
   return { reported: true };
 };
 
-const editPost = async (postId, userId, content) => {
+const editPost = async (postId, userId, updates) => {
   const post = await Post.findById(postId);
 
   if (!post) {
@@ -130,11 +138,30 @@ const editPost = async (postId, userId, content) => {
     throw error;
   }
 
+  const fieldsToUpdate = {
+    content: updates.content,
+    edited: true,
+  };
+
+  if (updates.imageUrl === null) {
+    fieldsToUpdate.imageUrl = "";
+    fieldsToUpdate.type = "text";
+  } else if (updates.imageUrl !== undefined) {
+    fieldsToUpdate.imageUrl = updates.imageUrl;
+    fieldsToUpdate.type = "image";
+  }
+
   const updated = await Post.findByIdAndUpdate(
     postId,
-    { $set: { content } },
+    { $set: fieldsToUpdate },
     { new: true },
-  )
+  ).populate({
+    path: "mentorId",
+    populate: {
+      path: "userId",
+      select: "name email avatarUrl",
+    },
+  });
 
   return updated;
 }
