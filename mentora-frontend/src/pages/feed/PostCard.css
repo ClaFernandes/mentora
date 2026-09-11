@@ -273,3 +273,43 @@
     border-color: var(--color-accent);
     color: var(--color-accent);
 }
+
+.post-card_lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    cursor: pointer;
+}
+
+.post-card_lightbox-image {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    cursor: default;
+}
+
+.post-card_lightbox-close {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.post-card_lightbox-close:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
