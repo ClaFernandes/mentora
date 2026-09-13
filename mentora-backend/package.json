@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
+    "stripe:listen": "stripe.exe listen --forward-to localhost:3000/webhooks/stripe",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

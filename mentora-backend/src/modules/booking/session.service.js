@@ -1,6 +1,8 @@
 const { Session } = require("./booking.models");
 const MentorProfile = require("../users/mentor.model");
 const { getAvailableSlots } = require("./availability.service");
+const stripe = require("../../config/stripe");
+const Payment = require("../payments/payment.model");
 
 const createSession = async (userId, sessionData) => {
   const mentorProfile = await MentorProfile.findOne({
@@ -84,6 +86,17 @@ const cancelSession = async (sessionId, userId) => {
     const error = new Error("Só é possível cancelar até 24h antes da sessão");
     error.statusCode = 400;
     throw error;
+  }
+
+  const payment = await Payment.findOne({ sessionId, status: "paid" });
+
+  if (payment) {
+    await stripe.refunds.create({
+      payment_intent: payment.stripePaymentId,
+    });
+
+    payment.status = "refunded";
+    await payment.save();
   }
 
   const updatedSession = await Session.findByIdAndUpdate(

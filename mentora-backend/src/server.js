@@ -15,12 +15,23 @@ const commentRoutes = require("./modules/feed/comment.routes");
 const uploadRoutes = require("./modules/upload/upload.routes");
 const availabilityRoutes = require("./modules/booking/availability.routes");
 const sessionRoutes = require("./modules/booking/session.routes");
+const paymentRoutes = require("./modules/payments/payment.routes");
+const {
+  stripeWebhookController,
+} = require("./modules/payments/payment.controller");
 
 const app = express();
 
 connectDB();
 
 app.use(cors());
+
+app.use(
+  "/webhooks/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhookController,
+);
+
 app.use(express.json());
 
 app.use("/auth", authRoutes);
@@ -35,6 +46,7 @@ app.use("/", commentRoutes);
 app.use("/", uploadRoutes);
 app.use("/mentors", availabilityRoutes);
 app.use("/sessions", sessionRoutes);
+app.use("/sessions", paymentRoutes);
 
 app.use(errorHandler);
 
