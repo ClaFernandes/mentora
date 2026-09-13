@@ -13,6 +13,7 @@ const notificationRoutes = require("./modules/notifications/notification.routes"
 const postRoutes = require("./modules/feed/post.routes");
 const commentRoutes = require("./modules/feed/comment.routes");
 const uploadRoutes = require("./modules/upload/upload.routes");
+const availabilityRoutes = require("./modules/booking/availability.routes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/notifications", notificationRoutes);
 app.use("/", postRoutes);
 app.use("/", commentRoutes);
 app.use("/", uploadRoutes);
+app.use("/mentors", availabilityRoutes);
 
 app.use(errorHandler);
 
