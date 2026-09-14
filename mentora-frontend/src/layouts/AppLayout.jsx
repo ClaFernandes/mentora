@@ -6,9 +6,7 @@ import "./AppLayout.css";
 export default function AppLayout() {
     const location = useLocation();
 
-    const isBookingFlow =
-        location.pathname.startsWith("/agendar") ||
-        location.pathname.startsWith("/sessoes");
+    const isBookingFlow = location.pathname.startsWith("/agendar");
 
     return (
         <div className="app-layout">

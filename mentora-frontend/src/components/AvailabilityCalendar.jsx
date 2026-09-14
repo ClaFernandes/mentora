@@ -1,25 +1,17 @@
 import { useState } from "react";
-import { DAYS_OF_WEEK, SESSION_DURATION_MINUTES } from "../utils/constants";
-import { getSlotsForDay, blocksOverlap } from "../utils/availabilityHelpers";
+import { DAYS_OF_WEEK } from "../utils/constants";
+import { blocksOverlap } from "../utils/availabilityHelpers";
 import "./AvailabilityCalendar.css";
 
 export default function AvailabilityCalendar({
-    mode,
     availability,
     onAddBlock,
-    onRemoveBlock,
-    onSelectSlot
+    onRemoveBlock
 }) {
     const [selectedDay, setSelectedDay] = useState(null);
     const [newStartTime, setNewStartTime] = useState("");
     const [newEndTime, setNewEndTime] = useState("");
     const [addBlockError, setAddBlockError] = useState("");
-
-    let daySlots = [];
-    if (selectedDay !== null) {
-        daySlots = getSlotsForDay(availability, selectedDay, SESSION_DURATION_MINUTES);
-        daySlots.sort();
-    }
 
     let dayBlocks = [];
     if (selectedDay !== null) {
@@ -82,64 +74,45 @@ export default function AvailabilityCalendar({
 
             {selectedDay !== null && (
                 <div className="availability-day-detail">
+                    <div className="availability-blocks-list">
 
-                    {mode === "edit" ? (
-                        // Modo mentor - edit
-                        <div className="availability-blocks-list">
-
-                            {dayBlocks.map((block) => (
-                                <div key={block._id} className="availability-block-item">
-                                    <span>
-                                        {block.startTime} - {block.endTime}
-                                    </span>
-                                    <button
-                                        type="button"
-                                        className="availability-remove-btn"
-                                        onClick={() => handleRemoveBlock(block._id)}
-                                    >
-                                        Remover
-                                    </button>
-                                </div>
-                            ))}
-
-                            <div className="availability-add-block-form">
-                                <input
-                                    type="time"
-                                    value={newStartTime}
-                                    onChange={(e) => setNewStartTime(e.target.value)}
-                                />
-                                <span>até</span>
-                                <input
-                                    type="time"
-                                    value={newEndTime}
-                                    onChange={(e) => setNewEndTime(e.target.value)}
-                                />
-
-                                {addBlockError && (
-                                    <p className="availability-add-block-error">{addBlockError}</p>
-                                )}
-
-                                <button type="button" onClick={handleAddBlock}>
-                                    Adicionar
+                        {dayBlocks.map((block) => (
+                            <div key={block._id} className="availability-block-item">
+                                <span>
+                                    {block.startTime} - {block.endTime}
+                                </span>
+                                <button
+                                    type="button"
+                                    className="availability-remove-btn"
+                                    onClick={() => handleRemoveBlock(block._id)}
+                                >
+                                    Remover
                                 </button>
                             </div>
-                        </div>
+                        ))}
 
-                    ) : (
-                        // Mode mentee - select
-                        <div className="availability-slots-grid">
-                            {daySlots.map((slot) => (
-                                <button
-                                    key={slot}
-                                    type="button"
-                                    className="availability-slot-btn"
-                                    onClick={() => onSelectSlot({ dayOfWeek: selectedDay, time: slot })}
-                                >
-                                    {slot}
-                                </button>
-                            ))}
+                        <div className="availability-add-block-form">
+                            <input
+                                type="time"
+                                value={newStartTime}
+                                onChange={(e) => setNewStartTime(e.target.value)}
+                            />
+                            <span>até</span>
+                            <input
+                                type="time"
+                                value={newEndTime}
+                                onChange={(e) => setNewEndTime(e.target.value)}
+                            />
+
+                            {addBlockError && (
+                                <p className="availability-add-block-error">{addBlockError}</p>
+                            )}
+
+                            <button type="button" onClick={handleAddBlock}>
+                                Adicionar
+                            </button>
                         </div>
-                    )}
+                    </div>
                 </div>
             )}
         </div>

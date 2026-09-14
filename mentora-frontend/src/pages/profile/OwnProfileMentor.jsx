@@ -527,7 +527,6 @@ export default function OwnProfileMentor({ mentor }) {
       <section className="mentor-profile_availability">
         <h3>Disponibilidade</h3>
         <AvailabilityCalendar
-          mode="edit"
           availability={availability}
           onAddBlock={handleAddAvailabilityBlock}
           onRemoveBlock={handleRemoveAvailabilityBlock}

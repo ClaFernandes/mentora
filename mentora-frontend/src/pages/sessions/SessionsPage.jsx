@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
-import { MOCK_SESSIONS, MOCK_MENTORS } from "../../mocks/mockData.js";
-import { findAuthorById } from "../../utils/authorHelpers.js";
+import { getSessions, cancelSession } from "../../services/sessionService.js";
 import { resolveDisplayStatus } from "../../utils/sessionHelpers.js";
 import Avatar from "../../components/Avatar.jsx";
 import EmptyState from "../../components/EmptyState.jsx";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
-import RatingStars from "../../components/RatingStars.jsx";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import "./SessionsPage.css";
@@ -19,18 +18,16 @@ const FILTERS = [
 ];
 
 export default function SessionsPage() {
-    const { user } = useAuth();
+    const { user, token } = useAuth();
     const [activeFilter, setActiveFilter] = useState("all");
-    const [sessions, setSessions] = useState(MOCK_SESSIONS);
+    const [sessions, setSessions] = useState([]);
     const [cancelTarget, setCancelTarget] = useState(null);
-    const [ratingTargetId, setRatingTargetId] = useState(null);
 
-    let mySessions = [];
-    if (user.role === "mentor") {
-        mySessions = sessions.filter((s) => s.mentorId === user.id);
-    } else if (user.role === "mentee") {
-        mySessions = sessions.filter((s) => s.menteeId === user.id);
-    }
+    useEffect(() => {
+        getSessions(token).then(setSessions);
+    }, [token]);
+
+    const mySessions = sessions;
 
     let filteredSessions = mySessions;
     if (activeFilter !== "all") {
@@ -50,42 +47,13 @@ export default function SessionsPage() {
         setCancelTarget(session);
     }
 
-    function handleConfirmCancel() {
-        const target = sessions.find((s) => s.id === cancelTarget.id);
-        if (target) {
-            target.status = "cancelled";
-        }
-        setSessions([...sessions]);
-        setCancelTarget(null);
-    }
+    async function handleConfirmCancel() {
+        const updatedSession = await cancelSession(token, cancelTarget._id);
 
-    function recalculateMentorRating(mentorId) {
-        const mentor = MOCK_MENTORS.find((m) => m.id === mentorId);
-        if (!mentor) {
-            return;
-        }
-        const ratedSessions = sessions.filter(
-            (s) => s.mentorId === mentorId && s.rating != null
+        setSessions((prev) =>
+            prev.map((s) => (s._id === updatedSession._id ? updatedSession : s))
         );
-        if (ratedSessions.length === 0) {
-            return;
-        }
-        let sum = 0;
-        for (const s of ratedSessions) {
-            sum += s.rating;
-        }
-        mentor.avgRating = Math.round((sum / ratedSessions.length) * 10) / 10;
-    }
-
-    function handleSubmitRating(session, rating, reviewText) {
-        const target = sessions.find((s) => s.id === session.id);
-        if (target) {
-            target.rating = rating;
-            target.reviewText = reviewText;
-        }
-        setSessions([...sessions]);
-        recalculateMentorRating(session.mentorId);
-        setRatingTargetId(null);
+        setCancelTarget(null);
     }
 
     return (
@@ -118,83 +86,50 @@ export default function SessionsPage() {
             ) : (
                 <div className="sessions-list">
                     {filteredSessions.map((session) => {
-                        let otherPersonId;
-                        if (user.role === "mentor") {
-                            otherPersonId = session.menteeId;
-                        } else {
-                            otherPersonId = session.mentorId;
-                        }
-                        const otherPerson = findAuthorById(otherPersonId);
+                        const otherPerson =
+                            user.role === "mentor"
+                                ? session.menteeId
+                                : session.mentorId.userId;
 
-                        const sessionMentor = MOCK_MENTORS.find((m) => m.id === session.mentorId);
-                        const offering = sessionMentor?.offerings.find((o) => o.id === session.offeringId);
+                        const offering = session.offeringId;
 
                         const dateObj = new Date(`${session.date}T00:00:00`);
                         const formattedDate = format(dateObj, "d 'de' MMMM 'de' yyyy", { locale: pt });
                         const displayStatus = resolveDisplayStatus(session);
                         const canCancel = displayStatus === "confirmed";
-                        const isCompleted = displayStatus === "completed";
-                        const alreadyRated = session.rating != null;
-                        const isRatingThisOne = ratingTargetId === session.id;
 
                         return (
-                            <div key={session.id} className="session-card-wrapper">
-                                <div className="session-card">
-                                    <Avatar src={otherPerson.avatarUrl} name={otherPerson.name} size={48} />
-                                    <div className="session-card_info">
-                                        <h4>{otherPerson.name}</h4>
-                                        <p>{offering?.title}</p>
-                                        <p>{formattedDate} às {session.time}</p>
-                                    </div>
+                            <div key={session._id} className="session-card">
+                                <Avatar src={otherPerson.avatarUrl} name={otherPerson.name} size={48} />
+                                <div className="session-card_info">
+                                    <h4>{otherPerson.name}</h4>
+                                    <p>{offering?.title}</p>
+                                    <p>{formattedDate} às {session.time}</p>
 
-                                    <div className="session-card_side">
-                                        <span className={`session-status session-status--${displayStatus}`}>
-                                            {FILTERS.find((f) => f.key === displayStatus)?.label}
-                                        </span>
-
-                                        {canCancel && (
-                                            <button
-                                                type="button"
-                                                className="session-cancel-btn"
-                                                onClick={() => handleRequestCancel(session)}
-                                            >
-                                                Cancelar
-                                            </button>
-                                        )}
-
-                                        {isCompleted && !alreadyRated && user.role === "mentee" && !isRatingThisOne && (
-                                            <button
-                                                type="button"
-                                                className="session-rate-btn"
-                                                onClick={() => setRatingTargetId(session.id)}
-                                            >
-                                                Avaliar sessão
-                                            </button>
-                                        )}
-                                    </div>
+                                    {displayStatus === "confirmed" && (
+                                        <p className="session-chat-notice">
+                                            Combina o link da chamada com{" "}
+                                            {user.role === "mentor" ? "o mentorado" : "o mentor"} no{" "}
+                                            <Link to="/chat">chat</Link>.
+                                        </p>
+                                    )}
                                 </div>
 
-                                {isRatingThisOne && (
-                                    <div className="session-rating-panel">
-                                        <RatingStars
-                                            mode="write"
-                                            onSubmit={({ rating, reviewText }) =>
-                                                handleSubmitRating(session, rating, reviewText)
-                                            }
-                                            onCancel={() => setRatingTargetId(null)}
-                                        />
-                                    </div>
-                                )}
+                                <div className="session-card_side">
+                                    <span className={`session-status session-status--${displayStatus}`}>
+                                        {FILTERS.find((f) => f.key === displayStatus)?.label}
+                                    </span>
 
-                                {isCompleted && alreadyRated && (
-                                    <div className="session-rating-panel">
-                                        <RatingStars
-                                            mode="read"
-                                            rating={session.rating}
-                                            reviewText={session.reviewText}
-                                        />
-                                    </div>
-                                )}
+                                    {canCancel && (
+                                        <button
+                                            type="button"
+                                            className="session-cancel-btn"
+                                            onClick={() => handleRequestCancel(session)}
+                                        >
+                                            Cancelar
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         );
                     })}

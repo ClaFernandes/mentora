@@ -45,13 +45,15 @@ const getSessions = async (userId, userRole) => {
         path: "userId",
         select: "name email avatarUrl",
       },
-    });
+    })
+      .populate("offeringId")
+      .sort({ date: 1, time: 1 });
   } else if (userRole === "mentor") {
     const mentorProfile = await MentorProfile.findOne({ userId });
-    sessions = await Session.find({ mentorId: mentorProfile._id }).populate(
-      "menteeId",
-      "name email avatarUrl",
-    );
+    sessions = await Session.find({ mentorId: mentorProfile._id })
+      .populate("menteeId", "name email avatarUrl")
+      .populate("offeringId")
+      .sort({ date: 1, time: 1 });;
   }
   return sessions;
 };
@@ -103,7 +105,15 @@ const cancelSession = async (sessionId, userId) => {
     sessionId,
     { $set: { status: "cancelled" } },
     { new: true },
-  );
+  )
+    .populate({
+      path: "mentorId",
+      populate: {
+        path: "userId",
+        select: "name email avatarUrl",
+      },
+    })
+    .populate("menteeId", "name email avatarUrl");
 
   return updatedSession;
 };
