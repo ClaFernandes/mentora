@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { updateMentorProfile } from "../../services/mentorService.js";
 import { deleteAccount } from "../../services/userService.js";
 import { createOffering, updateOffering, deleteOffering } from "../../services/offeringServices.js";
+import { getAvailability, createAvailability, deleteAvailability } from "../../services/availabilityService.js";
 import Avatar from "../../components/Avatar.jsx";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
@@ -46,6 +47,11 @@ export default function OwnProfileMentor({ mentor }) {
     description: "",
   });
   const [newOfferingAreaMode, setNewOfferingAreaMode] = useState("select");
+  const [availability, setAvailability] = useState([]);
+
+  useEffect(() => {
+    getAvailability(mentor.id).then(setAvailability);
+  }, [mentor.id]);
 
   async function saveBio() {
     const updatedProfile = await updateMentorProfile(token, { bio: bioText });
@@ -53,14 +59,12 @@ export default function OwnProfileMentor({ mentor }) {
     setIsEditingBio(false);
   }
 
-  // Alterna uma área selecionada
   function toggleArea(area) {
     setSelectedAreas((prev) =>
       prev.includes(area) ? prev.filter((a) => a !== area) : [...prev, area],
     );
   }
 
-  // Adiciona uma área personalizada
   function addCustomArea() {
     const trimmed = customArea.trim();
     if (trimmed && !selectedAreas.includes(trimmed)) {
@@ -70,7 +74,6 @@ export default function OwnProfileMentor({ mentor }) {
     setShowCustomAreaInput(false);
   }
 
-  // Guarda as áreas escolhidas
   async function saveAreas() {
     const updatedProfile = await updateMentorProfile(token, { areas: selectedAreas });
     setUser((prev) => ({
@@ -80,7 +83,6 @@ export default function OwnProfileMentor({ mentor }) {
     setIsEditingAreas(false);
   }
 
-  // Cancela a edição de áreas sem guardar
   function cancelEditingAreas() {
     setSelectedAreas(mentor.mentorProfile.areas);
     setShowCustomAreaInput(false);
@@ -88,7 +90,6 @@ export default function OwnProfileMentor({ mentor }) {
     setIsEditingAreas(false);
   }
 
-  // Prepara edição com os dados atuais da oferta clicada
   function startEditingOffering(offering) {
     setEditingOfferingId(offering._id);
     setEditingOfferingData({
@@ -102,12 +103,10 @@ export default function OwnProfileMentor({ mentor }) {
     );
   }
 
-  // Cancela a edição de uma oferta
   function cancelEditingOffering() {
     setEditingOfferingId(null);
   }
 
-  // Aplica as alterações
   async function saveOffering(offeringId) {
     const updatedOffering = await updateOffering(token, offeringId, editingOfferingData);
     setUser((prev) => ({
@@ -122,7 +121,6 @@ export default function OwnProfileMentor({ mentor }) {
     setEditingOfferingId(null);
   }
 
-  // Remove uma oferta do array
   async function removeOffering(offeringId) {
     await deleteOffering(token, offeringId);
     setUser((prev) => ({
@@ -134,21 +132,22 @@ export default function OwnProfileMentor({ mentor }) {
     }));
   }
 
-  // Guarda a nova disponibilidade sempre que o calendário for editado
-  function updateAvailability(newAvailability) {
-    updateUser({
-      mentorProfile: { ...mentor.mentorProfile, availability: newAvailability },
-    });
+  async function handleAddAvailabilityBlock(blockData) {
+    const createdBlock = await createAvailability(token, blockData);
+    setAvailability((prev) => [...prev, createdBlock]);
   }
 
-  // Apaga a própria conta 
+  async function handleRemoveAvailabilityBlock(availabilityId) {
+    await deleteAvailability(token, availabilityId);
+    setAvailability((prev) => prev.filter((block) => block._id !== availabilityId));
+  }
+
   async function handleDeleteAccount() {
     await deleteAccount(token);
     logout();
     navigate("/");
   }
 
-  // Cria uma nova oferta com um id único
   async function addOffering() {
     const createdOffering = await createOffering(token, newOffering);
     setUser((prev) => ({
@@ -163,7 +162,6 @@ export default function OwnProfileMentor({ mentor }) {
     setIsAddingOffering(false);
   }
 
-  // Cancela a criação de nova oferta, limpando o formulário
   function cancelAddingOffering() {
     setNewOffering({ title: "", area: "", sessionPrice: "", description: "" });
     setNewOfferingAreaMode("select");
@@ -530,8 +528,9 @@ export default function OwnProfileMentor({ mentor }) {
         <h3>Disponibilidade</h3>
         <AvailabilityCalendar
           mode="edit"
-          availability={mentor.mentorProfile.availability || []}
-          onChange={updateAvailability}
+          availability={availability}
+          onAddBlock={handleAddAvailabilityBlock}
+          onRemoveBlock={handleRemoveAvailabilityBlock}
         />
       </section>
 

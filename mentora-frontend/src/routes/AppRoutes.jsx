@@ -15,6 +15,7 @@ import MentorsPage from "../pages/mentors/MentorsPage.jsx";
 import ProfilePage from "../pages/profile/ProfilePage.jsx";
 import ChatWindow from "../pages/chat/ChatWindow.jsx";
 import BookingFlow from "../pages/booking/BookingFlow.jsx";
+import BookingSuccess from "../pages/booking/BookingSuccess.jsx";
 import SessionsPage from "../pages/sessions/SessionsPage.jsx";
 import AdminLayout from "../layouts/AdminLayout.jsx";
 import AdminPage from "../pages/admin/AdminPage.jsx";
@@ -111,6 +112,15 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute>
               <BookingFlow />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/booking/success"
+          element={
+            <ProtectedRoute>
+              <BookingSuccess />
             </ProtectedRoute>
           }
         />

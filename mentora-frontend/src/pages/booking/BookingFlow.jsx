@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useBooking } from "../../hooks/useBooking.js";
 import Avatar from "../../components/Avatar.jsx";
 import EmptyState from "../../components/EmptyState.jsx";
-import { getSlotsForDay } from "../../utils/availabilityHelpers.js";
-import { SESSION_DURATION_MINUTES } from "../../utils/constants.js";
-import { MOCK_MENTORS, MOCK_SESSIONS } from "../../mocks/mockData.js";
+import { createSession, paySession } from "../../services/sessionService.js";
+import { getMentorProfile } from "../../services/mentorService.js";
+import { getAvailability, getAvailableSlots } from "../../services/availabilityService.js";
 import "./BookingFlow.css";
 
 export default function BookingFlow() {
     const { mentorId } = useParams();
     const location = useLocation();
-    const navigate = useNavigate();
-    const { user } = useAuth();
+    const { token } = useAuth();
 
     const {
         mentor,
@@ -25,10 +24,12 @@ export default function BookingFlow() {
         setSelectedTime,
         setStep,
         startBooking,
-        resetBooking,
     } = useBooking();
 
     const [currentViewDate, setCurrentViewDate] = useState(new Date());
+    const [mentorAvailability, setMentorAvailability] = useState([]);
+    const [timeSlots, setTimeSlots] = useState([]);
+    const [bookingError, setBookingError] = useState(null);
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -37,20 +38,37 @@ export default function BookingFlow() {
     const maxMonthDate = new Date(today.getFullYear(), today.getMonth() + 2, 1);
 
     useEffect(() => {
-        const foundMentor = MOCK_MENTORS.find((m) => m.id === mentorId);
         const offeringId = location.state?.offeringId;
-        const foundOffering = foundMentor?.offerings.find((o) => o.id === offeringId);
 
-        if (foundMentor && foundOffering) {
-            startBooking(foundMentor, foundOffering);
-        }
+        getMentorProfile(mentorId).then((foundMentor) => {
+            const foundOffering = foundMentor.offerings.find(
+                (o) => o._id === offeringId,);
+
+            if (foundMentor && foundOffering) {
+                startBooking(foundMentor, foundOffering);
+            }
+        })
     }, [mentorId]);
+
+    useEffect(() => {
+        getAvailability(mentorId).then(setMentorAvailability);
+    }, [mentorId]);
+
+    useEffect(() => {
+        if (!selectedDate) return;
+
+        getAvailableSlots(mentorId, selectedDate).then((slots) => {
+            setTimeSlots([...slots].sort());
+        });
+    }, [selectedDate, mentorId]);
 
     if (!mentor || !offering) {
         return <p>A carregar...</p>;
     }
 
-    const activeDaysOfWeek = [...new Set(mentor.availability.map((block) => block.dayOfWeek))];
+    const activeDaysOfWeek = [
+        ...new Set(mentorAvailability.map((block) => block.dayOfWeek))
+    ];
 
     const viewYear = currentViewDate.getFullYear();
     const viewMonth = currentViewDate.getMonth();
@@ -62,14 +80,6 @@ export default function BookingFlow() {
     const totalDaysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
 
     const calendarCells = [];
-
-    let timeSlots = [];
-    if (selectedDate) {
-        const dateObj = new Date(`${selectedDate}T00:00:00`);
-        const dayOfWeek = dateObj.getDay();
-        timeSlots = getSlotsForDay(mentor.availability, dayOfWeek, SESSION_DURATION_MINUTES);
-        timeSlots.sort();
-    }
 
     for (let i = 0; i < startDayIndex; i++) {
         calendarCells.push({ isBlank: true, key: `blank-${i}` });
@@ -114,22 +124,26 @@ export default function BookingFlow() {
         setStep("time");
     }
 
-    function handleConfirmPayment() {
-        const newSession = {
-            id: `session-${Date.now()}`,
-            mentorId: mentor.id,
-            menteeId: user.id,
-            offeringId: offering.id,
-            date: selectedDate,
-            time: selectedTime,
-            status: "confirmed",
-            rating: null,
-            reviewText: null,
-        };
+    async function handleConfirmBooking() {
+        setBookingError(null);
+        setStep("payment");
 
-        MOCK_SESSIONS.push(newSession);
-        resetBooking();
-        navigate("/sessoes");
+        try {
+            const newSession = await createSession(token, {
+                mentorId,
+                offeringId: offering._id,
+                date: selectedDate,
+                time: selectedTime,
+            });
+
+            const { checkoutUrl } = await paySession(token, newSession._id);
+
+            window.location.href = checkoutUrl;
+        } catch (error) {
+            console.error("Erro ao criar a marcação:", error);
+            setBookingError("Não foi possível avançar para o pagamento. Tenta novamente.");
+            setStep("confirm");
+        }
     }
 
     const monthLabel = currentViewDate.toLocaleDateString("pt-PT", { month: "long" });
@@ -139,9 +153,9 @@ export default function BookingFlow() {
     return (
         <div className="booking-flow">
             <div className="booking-flow_header">
-                <Avatar src={mentor.avatarUrl} name={mentor.name} size={56} />
+                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={56} />
                 <div className="booking-flow_header-info">
-                    <h3>{mentor.name}</h3>
+                    <h3>{mentor.userId.name}</h3>
                     <p>{offering.title}</p>
                 </div>
             </div>
@@ -224,16 +238,23 @@ export default function BookingFlow() {
                     <h2>Revisa a tua marcação</h2>
 
                     <div className="summary-card">
-                        <h3>{mentor.name}</h3>
+                        <h3>{mentor.userId.name}</h3>
                         <p><strong>Oferta:</strong> {offering.title} ({offering.sessionPrice}€)</p>
                         <p><strong>Dia:</strong> {selectedDate} às {selectedTime}</p>
                     </div>
+
+                    <p className="booking-chat-notice">
+                        O link da videochamada será combinado diretamente com o
+                        mentor através do chat, após a confirmação da sessão.
+                    </p>
+
+                    {bookingError && <p className="booking-error">{bookingError}</p>}
 
                     <div className="summary-btns">
                         <button type="button" className="onboarding-btn-back" onClick={() => setStep("time")}>
                             ← Voltar
                         </button>
-                        <button type="button" className="confirm-booking-btn" onClick={() => setStep("payment")}>
+                        <button type="button" className="confirm-booking-btn" onClick={handleConfirmBooking}>
                             Confirmar e ir para pagamento
                         </button>
                     </div>
@@ -242,13 +263,8 @@ export default function BookingFlow() {
 
             {step === "payment" && (
                 <div className="page-header page-concluded">
-                    <h2>Pagamento simulado</h2>
-                    <div className="summary-card">
-                        <p><strong>Total:</strong> {offering.sessionPrice}€</p>
-                    </div>
-                    <button type="button" className="confirm-booking-btn" onClick={handleConfirmPayment}>
-                        Confirmar pagamento
-                    </button>
+                    <h2>A preparar o pagamento...</h2>
+                    <p>Vais ser redirecionado para o Stripe em instantes.</p>
                 </div>
             )}
         </div>

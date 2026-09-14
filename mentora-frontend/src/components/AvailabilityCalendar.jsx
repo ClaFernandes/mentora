@@ -3,7 +3,13 @@ import { DAYS_OF_WEEK, SESSION_DURATION_MINUTES } from "../utils/constants";
 import { getSlotsForDay, blocksOverlap } from "../utils/availabilityHelpers";
 import "./AvailabilityCalendar.css";
 
-export default function AvailabilityCalendar({ mode, availability, onChange, onSelectSlot }) {
+export default function AvailabilityCalendar({
+    mode,
+    availability,
+    onAddBlock,
+    onRemoveBlock,
+    onSelectSlot
+}) {
     const [selectedDay, setSelectedDay] = useState(null);
     const [newStartTime, setNewStartTime] = useState("");
     const [newEndTime, setNewEndTime] = useState("");
@@ -17,22 +23,17 @@ export default function AvailabilityCalendar({ mode, availability, onChange, onS
 
     let dayBlocks = [];
     if (selectedDay !== null) {
-        for (let i = 0; i < availability.length; i++) {
-            if (availability[i].dayOfWeek === selectedDay) {
-                dayBlocks.push({ block: availability[i], index: i });
-            }
-        }
-        dayBlocks.sort((a, b) => {
-            if (a.block.startTime < b.block.startTime) return -1;
-            if (a.block.startTime > b.block.startTime) return 1;
-            return 0;
-        });
+        dayBlocks = availability
+            .filter((block) => block.dayOfWeek === selectedDay)
+            .sort((a, b) => {
+                if (a.startTime < b.startTime) return -1;
+                if (a.startTime > b.startTime) return 1;
+                return 0;
+            });
     }
 
-
-    function handleRemoveBlock(indexToRemove) {
-        const newAvailability = availability.filter((block, i) => i !== indexToRemove);
-        onChange(newAvailability);
+    function handleRemoveBlock(availabilityId) {
+        onRemoveBlock(availabilityId);
     }
 
     function handleAddBlock() {
@@ -44,14 +45,14 @@ export default function AvailabilityCalendar({ mode, availability, onChange, onS
             startTime: newStartTime,
             endTime: newEndTime,
         };
-        for (const item of dayBlocks) {
-            if (blocksOverlap(newBlock, item.block)) {
+        for (const block of dayBlocks) {
+            if (blocksOverlap(newBlock, block)) {
                 setAddBlockError("Este horário sobrepõe-se a um já existente.");
                 return;
             }
         }
         setAddBlockError("");
-        onChange([...availability, newBlock]);
+        onAddBlock(newBlock);
         setNewStartTime("");
         setNewEndTime("");
     }
@@ -61,9 +62,7 @@ export default function AvailabilityCalendar({ mode, availability, onChange, onS
 
             <div className="availability-days-row">
                 {DAYS_OF_WEEK.map((day) => {
-                    // Classe base do botão, aplicada sempre
                     let buttonClass = "availability-day-btn";
-                    // Dia selecionado, fundo mostarda
                     if (selectedDay === day.value) {
                         buttonClass = "availability-day-btn availability-day-btn--active";
                     }
@@ -88,15 +87,15 @@ export default function AvailabilityCalendar({ mode, availability, onChange, onS
                         // Modo mentor - edit
                         <div className="availability-blocks-list">
 
-                            {dayBlocks.map((item) => (
-                                <div key={item.index} className="availability-block-item">
+                            {dayBlocks.map((block) => (
+                                <div key={block._id} className="availability-block-item">
                                     <span>
-                                        {item.block.startTime} - {item.block.endTime}
+                                        {block.startTime} - {block.endTime}
                                     </span>
                                     <button
                                         type="button"
                                         className="availability-remove-btn"
-                                        onClick={() => handleRemoveBlock(item.index)}
+                                        onClick={() => handleRemoveBlock(block._id)}
                                     >
                                         Remover
                                     </button>
