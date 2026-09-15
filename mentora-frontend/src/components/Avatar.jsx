@@ -1,21 +1,21 @@
 import "./Avatar.css";
-function getInitials(name) {
-    if (!name) return "?";
-    const stop = new Set(["do", "da", "de", "dos", "das", "e", "o", "a"]);
-    const words = name.trim().split(/\s+/).filter((w) => !stop.has(w.toLowerCase()));
-    if (words.length === 0) return name.slice(0, 2).toUpperCase();
-    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
-    return (words[0][0] + words[1][0]).toUpperCase();
+
+function getInitials(name, surname) {
+    const first = name?.[0] || "";
+    const last = surname?.[0] || "";
+    if (!first && !last) return "?";
+    return (first + last).toUpperCase();
 }
 
-export default function Avatar({ src, name, size = 36 }) {
-    const initials = getInitials(name);
+export default function Avatar({ src, name, surname, size = 36 }) {
+    const initials = getInitials(name, surname);
+    const fullName = surname ? `${name} ${surname}` : name;
 
     if (src) {
         return (
             <img
                 src={src}
-                alt={name}
+                alt={fullName}
                 className="avatar"
                 style={{ width: size, height: size }}
             />

@@ -134,7 +134,7 @@ const reportComment = async (commentId) => {
 const getComments = async (postId) => {
   const comments = await Comment.find({ postId })
     .sort({ createdAt: 1 })
-    .populate("userId", "name email avatarUrl role");
+    .populate("userId", "name surname email avatarUrl role");
 
   return comments;
 }

@@ -134,8 +134,8 @@ export default function PostCard({
     <article className="post-card">
       <header className="post-card_header">
         <Link to={`/mentores/${author._id}`} className="post-card_author">
-          <Avatar src={author.avatarUrl} name={author.name} />
-          <span>{author.name}</span>
+          <Avatar src={author.avatarUrl} name={author.name} surname={author.surname} />
+          <span>{author.name} {author.surname}</span>
         </Link>
         <time>
           {formatDistanceToNow(new Date(post.createdAt), {

@@ -102,8 +102,8 @@ export default function Header() {
                 </button>
 
                 <NavLink to="/perfil" className="header_user">
-                    <Avatar src={user.avatarUrl} name={user.name} size={32} />
-                    <span>{user.name}</span>
+                    <Avatar src={user.avatarUrl} name={user.name} surname={user.surname} size={32} />
+                    <span>{user.name} {user.surname}</span>
                 </NavLink>
 
                 <button type="button" onClick={handleLogout} className="header_logout">

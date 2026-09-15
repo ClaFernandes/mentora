@@ -184,8 +184,8 @@ export default function MentorsPage() {
                                     {user.menteeProfile?.followingMentors?.includes(mentor.userId._id) ? <FiCheck /> : <FiPlus />}
                                 </button>
                             )}
-                            <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={64} />
-                            <h3>{mentor.userId.name}</h3>
+                            <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} surname={mentor.userId.surname} size={64} />
+                            <h3>{mentor.userId.name} {mentor.userId.surname}</h3>
                             <p className="mentors-card-offering">{mentor.offerings[0]?.title}</p>
                             <p className="mentors-card-rating">
                                 <AiFillStar /> {mentor.avgRating}

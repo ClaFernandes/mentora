@@ -101,8 +101,8 @@ export default function AdminModeration({
                             <tr key={mentor.id}>
                                 <td>
                                     <div className="admin-table-name">
-                                        <Avatar src={mentor.avatarUrl} name={mentor.name} size={28} />
-                                        {mentor.name}
+                                        <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={28} />
+                                        {mentor.name} {mentor.surname}
                                     </div>
                                 </td>
                                 <td>
@@ -121,7 +121,7 @@ export default function AdminModeration({
                                                     : "admin-reactivate-btn"
                                             }
                                             onClick={() =>
-                                                handleRequestStatusChange("mentor", mentor.id, mentor.name, mentor.status)
+                                                handleRequestStatusChange("mentor", mentor.id, `${mentor.name} ${mentor.surname}`, mentor.status)
                                             }
                                         >
                                             {mentor.status === "active" ? "Suspender" : "Reativar"}
@@ -130,7 +130,7 @@ export default function AdminModeration({
                                         <button
                                             type="button"
                                             className="admin-delete-btn"
-                                            onClick={() => handleRequestDeleteAccount("mentor", mentor.id, mentor.name)}
+                                            onClick={() => handleRequestDeleteAccount("mentor", mentor.id, `${mentor.name} ${mentor.surname}`)}
                                         >
                                             <FiTrash2 />
                                         </button>
@@ -171,8 +171,8 @@ export default function AdminModeration({
                             <tr key={mentee.id}>
                                 <td>
                                     <div className="admin-table-name">
-                                        <Avatar src={mentee.avatarUrl} name={mentee.name} size={28} />
-                                        {mentee.name}
+                                        <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={28} />
+                                        {mentee.name} {mentee.surname}
                                     </div>
                                 </td>
                                 <td>
@@ -191,7 +191,7 @@ export default function AdminModeration({
                                                     : "admin-reactivate-btn"
                                             }
                                             onClick={() =>
-                                                handleRequestStatusChange("mentee", mentee.id, mentee.name, mentee.status)
+                                                handleRequestStatusChange("mentee", mentee.id, `${mentee.name} ${mentee.surname}`, mentee.status)
                                             }
                                         >
                                             {mentee.status === "active" ? "Suspender" : "Reativar"}
@@ -199,7 +199,7 @@ export default function AdminModeration({
                                         <button
                                             type="button"
                                             className="admin-delete-btn"
-                                            onClick={() => handleRequestDeleteAccount("mentee", mentee.id, mentee.name)}
+                                            onClick={() => handleRequestDeleteAccount("mentee", mentee.id, `${mentee.name} ${mentee.surname}`)}
                                         >
                                             <FiTrash2 />
                                         </button>

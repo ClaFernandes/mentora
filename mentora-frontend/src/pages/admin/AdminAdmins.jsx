@@ -31,8 +31,8 @@ export default function AdminAdmins({
                         <tr>
                             <td>
                                 <div className="admin-table-name">
-                                    <Avatar src={currentAdmin.avatarUrl} name={currentAdmin.name} size={28} />
-                                    {currentAdmin.name} (tu)
+                                    <Avatar src={currentAdmin.avatarUrl} name={currentAdmin.name} surname={currentAdmin.surname} size={28} />
+                                    {currentAdmin.name} {currentAdmin.surname} (tu)
                                 </div>
                             </td>
                             <td>{currentAdmin.email}</td>
@@ -43,8 +43,8 @@ export default function AdminAdmins({
                             <tr key={admin.id}>
                                 <td>
                                     <div className="admin-table-name">
-                                        <Avatar name={admin.name} size={28} />
-                                        {admin.name}
+                                        <Avatar name={admin.name} surname={admin.surname} size={28} />
+                                        {admin.name} {admin.surname}
                                     </div>
                                 </td>
                                 <td>{admin.email}</td>
@@ -53,7 +53,7 @@ export default function AdminAdmins({
                                         type="button"
                                         className="admin-delete-btn"
                                         title="Remover"
-                                        onClick={() => handleRequestRemoveAdmin(admin.id, admin.name)}
+                                        onClick={() => handleRequestRemoveAdmin(admin.id, `${admin.name} ${admin.surname}`)}
                                     >
                                         <FiTrash2 />
                                     </button>

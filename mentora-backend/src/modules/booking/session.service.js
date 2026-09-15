@@ -43,7 +43,7 @@ const getSessions = async (userId, userRole) => {
       path: "mentorId",
       populate: {
         path: "userId",
-        select: "name email avatarUrl",
+        select: "name surname email avatarUrl",
       },
     })
       .populate("offeringId")
@@ -51,7 +51,7 @@ const getSessions = async (userId, userRole) => {
   } else if (userRole === "mentor") {
     const mentorProfile = await MentorProfile.findOne({ userId });
     sessions = await Session.find({ mentorId: mentorProfile._id })
-      .populate("menteeId", "name email avatarUrl")
+      .populate("menteeId", "name surname email avatarUrl")
       .populate("offeringId")
       .sort({ date: 1, time: 1 });;
   }
@@ -110,10 +110,10 @@ const cancelSession = async (sessionId, userId) => {
       path: "mentorId",
       populate: {
         path: "userId",
-        select: "name email avatarUrl",
+        select: "name surname email avatarUrl",
       },
     })
-    .populate("menteeId", "name email avatarUrl");
+    .populate("menteeId", "name surname email avatarUrl");
 
   return updatedSession;
 };

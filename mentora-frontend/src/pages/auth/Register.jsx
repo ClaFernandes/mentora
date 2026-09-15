@@ -27,6 +27,8 @@ export default function Register() {
 
     const [role, setRole] = useState(null);
     const [name, setName] = useState("");
+    const [surname, setSurname] = useState("");
+    const [birthDate, setBirthDate] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -67,7 +69,7 @@ export default function Register() {
 
         setLoading(true);
         try {
-            await register({ name, email, password, confirmPassword, role });
+            await register({ name, surname, birthDate, email, password, confirmPassword, role });
         } catch {
             setError("Erro ao criar conta. Tenta novamente.");
             setLoading(false);
@@ -124,7 +126,7 @@ export default function Register() {
 
                     <form onSubmit={handleRegister}>
                         <div className="auth-field">
-                            <label htmlFor="name">Nome completo</label>
+                            <label htmlFor="name">Nome</label>
                             <div className="auth-input-wrapper">
                                 <FiUser className="auth-input-icon" />
                                 <input
@@ -133,6 +135,37 @@ export default function Register() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="O teu nome"
+                                    required
+                                    disabled={loading}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="surname">Apelido</label>
+                            <div className="auth-input-wrapper">
+                                <FiUser className="auth-input-icon" />
+                                <input
+                                    id="surname"
+                                    type="text"
+                                    value={surname}
+                                    onChange={(e) => setSurname(e.target.value)}
+                                    placeholder="O teu apelido"
+                                    required
+                                    disabled={loading}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="auth-field">
+                            <label htmlFor="birthDate">Data de nascimento</label>
+                            <div className="auth-input-wrapper">
+                                <FiUser className="auth-input-icon" />
+                                <input
+                                    id="birthDate"
+                                    type="date"
+                                    value={birthDate}
+                                    onChange={(e) => setBirthDate(e.target.value)}
                                     required
                                     disabled={loading}
                                 />

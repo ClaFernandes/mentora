@@ -100,9 +100,9 @@ export default function SessionsPage() {
 
                         return (
                             <div key={session._id} className="session-card">
-                                <Avatar src={otherPerson.avatarUrl} name={otherPerson.name} size={48} />
+                                <Avatar src={otherPerson.avatarUrl} name={otherPerson.name} surname={otherPerson.surname} size={48} />
                                 <div className="session-card_info">
-                                    <h4>{otherPerson.name}</h4>
+                                    <h4>{otherPerson.name} {otherPerson.surname}</h4>
                                     <p>{offering?.title}</p>
                                     <p>{formattedDate} às {session.time}</p>
 

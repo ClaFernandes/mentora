@@ -93,8 +93,8 @@ export default function AdminDashboard({
                 {topRatedMentors.map((mentor, index) => (
                     <div key={mentor.id} className="admin-top-mentor-item">
                         <span className="admin-top-mentor-rank">{index + 1}</span>
-                        <Avatar src={mentor.avatarUrl} name={mentor.name} size={36} />
-                        <span className="admin-top-mentor-name">{mentor.name}</span>
+                        <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={36} />
+                        <span className="admin-top-mentor-name">{mentor.name} {mentor.surname}</span>
                         <span className="admin-top-mentor-rating">
                             <AiFillStar /> {mentor.avgRating}
                         </span>

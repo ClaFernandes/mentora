@@ -172,10 +172,10 @@ export default function OwnProfileMentor({ mentor }) {
     <div className="mentor-profile">
       {/* CABEÇALHO */}
       <header className="mentor-profile_header">
-        <Avatar src={mentor.avatarUrl} name={mentor.name} size={80} />
+        <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={80} />
         <div className="mentor-profile_header-info">
           <h2>
-            {mentor.name}
+            {mentor.name} {mentor.surname}
             {mentor.mentorProfile.isVerified && (
               <FaCheckCircle
                 className="mentor-profile_verified"

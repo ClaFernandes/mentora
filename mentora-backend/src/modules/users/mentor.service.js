@@ -4,7 +4,7 @@ const Follow = require("../users/follow.model");
 const { MENTORSHIP_AREAS } = require("../../utils/constants");
 
 const getMentorProfile = async (userId) => {
-    const mentorProfile = await MentorProfile.findOne({ userId }).populate("userId", "name email avatarUrl");
+    const mentorProfile = await MentorProfile.findOne({ userId }).populate("userId", "name surname email avatarUrl");
 
     if (!mentorProfile) {
         const error = new Error("Perfil de mentor não encontrado");
@@ -45,7 +45,7 @@ const updateMentorProfile = async (userId, updates) => {
 };
 
 const searchMentors = async (filters, page, limit) => {
-    const offeringMatch = {}; // monta filtro: área, preço, texto
+    const offeringMatch = {};
 
     if (filters.area) {
         if (filters.area === "Outras") {
@@ -117,7 +117,7 @@ const searchMentors = async (filters, page, limit) => {
     const mentorIds = aggResult.results.map((r) => r._id);
 
     const mentors = await MentorProfile.find({ _id: { $in: mentorIds } })
-        .populate("userId", "name email avatarUrl");
+        .populate("userId", "name surname email avatarUrl");
 
     const orderedMentors = mentorIds
         .map((id) => mentors.find((m) => m._id.toString() === id.toString()))

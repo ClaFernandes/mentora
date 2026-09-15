@@ -29,7 +29,9 @@ export default function NotificationBell() {
     }
 
     function getMessage(notification) {
-        const actorName = notification.actorId?.name || "Alguém";
+        const actorName = notification.actorId
+            ? `${notification.actorId.name} ${notification.actorId.surname}`
+            : "Alguém";
 
         if (notification.type === "like") {
             return `${actorName} gostou da tua publicação`;

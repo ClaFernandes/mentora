@@ -63,16 +63,16 @@ export default function CommentList({
 
             return (
               <li key={comment._id} className="comment-list_item">
-                <Avatar src={author.avatarUrl} name={author.name} size={28} />
+                <Avatar src={author.avatarUrl} name={author.name} surname={author.surname} size={28} />
 
                 <div className="comment-list_body">
                   <div className="comment-list_meta">
                     <div className="comment-list_meta-info">
                       {isMentor ? (
-                        <Link to={`/mentores/${author._id}`}>{author.name}</Link>
+                        <Link to={`/mentores/${author._id}`}>{author.name} {author.surname}</Link>
                       ) : (
                         <Link to={`/mentorados/${author._id}`}>
-                          {author.name}
+                          {author.name} {author.surname}
                         </Link>
                       )}
                       <time>

@@ -26,9 +26,9 @@ export default function PublicMentee({ mentee }) {
   return (
     <div className="mentee-profile">
       <header className="mentee-profile_header">
-        <Avatar src={mentee.avatarUrl} name={mentee.name} size={80} />
+        <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={80} />
         <div className="mentee-profile_header-info">
-          <h2>{mentee.name}</h2>
+          <h2>{mentee.name} {mentee.surname}</h2>
         </div>
       </header>
 
@@ -56,8 +56,8 @@ export default function PublicMentee({ mentee }) {
                 to={`/mentores/${mentor.userId._id}`}
                 className="mentors-card"
               >
-                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={64} />
-                <h3>{mentor.userId.name}</h3>
+                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} surname={mentor.userId.surname} size={64} />
+                <h3>{mentor.userId.name} {mentor.userId.surname}</h3>
                 <p className="mentors-card-offering">
                   {mentor.offerings[0]?.title}
                 </p>

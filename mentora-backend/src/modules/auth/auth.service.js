@@ -8,6 +8,8 @@ const MenteeProfile = require("../users/mentee.model");
 
 const registerUser = async ({
   name,
+  surname,
+  birthDate,
   email,
   password,
   confirmPassword,
@@ -38,6 +40,33 @@ const registerUser = async ({
     throw error;
   }
 
+  if (!birthDate) {
+    const error = new Error("A data de nascimento é obrigatória");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const today = new Date();
+  const birth = new Date(birthDate);
+
+  if (isNaN(birth.getTime())) {
+    const error = new Error("Data de nascimento inválida");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  let age = today.getFullYear() - birth.getFullYear();
+  const hasHadBirthdayThisYear =
+    today.getMonth() > birth.getMonth() ||
+    (today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate());
+  if (!hasHadBirthdayThisYear) age--;
+
+  if (age < 18) {
+    const error = new Error("É necessário ter pelo menos 18 anos para te registares");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     const error = new Error("Já existe uma conta com este email");
@@ -50,6 +79,8 @@ const registerUser = async ({
   const user = await User.create({
     name,
     email,
+    surname,
+    birthDate,
     passwordHash,
     role,
   });
@@ -73,6 +104,8 @@ const registerUser = async ({
     user: {
       id: user._id,
       name: user.name,
+      surname: user.surname,
+      birthDate: user.birthDate,
       email: user.email,
       role: user.role,
     },
@@ -106,6 +139,8 @@ const loginUser = async ({ email, password }) => {
     user: {
       id: user._id,
       name: user.name,
+      surname: user.surname,
+      birthDate: user.birthDate,
       email: user.email,
       role: user.role,
     },
@@ -122,6 +157,8 @@ const getMe = async (userId) => {
   return {
     id: user._id,
     name: user.name,
+    surname: user.surname,
+    birthDate: user.birthDate,
     email: user.email,
     avatarUrl: user.avatarUrl,
     role: user.role,

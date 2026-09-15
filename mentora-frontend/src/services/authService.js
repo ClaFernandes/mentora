@@ -7,10 +7,10 @@ export async function loginUser(email, password) {
     });
 }
 
-export async function registerUser({ email, password, confirmPassword, name, role }) {
+export async function registerUser({ email, password, confirmPassword, name, surname, birthDate, role }) {
     return apiRequest("/auth/register", {
         method: "POST",
-        body: { email, password, confirmPassword, name, role },
+        body: { email, password, confirmPassword, name, surname, birthDate, role },
     });
 }
 

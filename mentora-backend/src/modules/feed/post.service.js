@@ -20,7 +20,7 @@ const createPost = async (userId, postData) => {
     path: "mentorId",
     populate: {
       path: "userId",
-      select: "name email avatarUrl",
+      select: "name surname email avatarUrl",
     }
   });
 
@@ -37,7 +37,7 @@ const getFeed = async (cursor, limit) => {
       path: "mentorId",
       populate: {
         path: "userId",
-        select: "name email avatarUrl",
+        select: "name surname email avatarUrl",
       },
     });
 
@@ -159,7 +159,7 @@ const editPost = async (postId, userId, updates) => {
     path: "mentorId",
     populate: {
       path: "userId",
-      select: "name email avatarUrl",
+      select: "name surname email avatarUrl",
     },
   });
 

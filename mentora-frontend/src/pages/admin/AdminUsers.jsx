@@ -31,9 +31,9 @@ export default function AdminUsers({
                     <div className="admin-mentors-list">
                         {pendingMentors.map((mentor) => (
                             <div key={mentor.id} className="admin-mentor-item">
-                                <Avatar src={mentor.avatarUrl} name={mentor.name} size={48} />
+                                <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={48} />
                                 <div className="admin-mentor-info">
-                                    <h4>{mentor.name}</h4>
+                                    <h4>{mentor.name} {mentor.surname}</h4>
                                     <p>{mentor.bio}</p>
                                 </div>
                                 <div className="admin-mentor-actions">
@@ -48,7 +48,7 @@ export default function AdminUsers({
                                     <button
                                         type="button"
                                         className="admin-remove-btn"
-                                        onClick={() => handleRequestRejectMentor(mentor.id, mentor.name)}
+                                        onClick={() => handleRequestRejectMentor(mentor.id, `${mentor.name} ${mentor.surname}`)}
                                     >
                                         Rejeitar
                                     </button>
@@ -79,8 +79,8 @@ export default function AdminUsers({
                             <tr key={mentor.id}>
                                 <td>
                                     <div className="admin-table-name">
-                                        <Avatar src={mentor.avatarUrl} name={mentor.name} size={28} />
-                                        {mentor.name}
+                                        <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={28} />
+                                        {mentor.name} {mentor.surname}
                                     </div>
                                 </td>
                                 <td>
@@ -128,8 +128,8 @@ export default function AdminUsers({
                             <tr key={mentee.id}>
                                 <td>
                                     <div className="admin-table-name">
-                                        <Avatar src={mentee.avatarUrl} name={mentee.name} size={28} />
-                                        {mentee.name}
+                                        <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={28} />
+                                        {mentee.name} {mentee.surname}
                                     </div>
                                 </td>
                                 <td>{mentee.completedSessions}</td>

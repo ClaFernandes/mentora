@@ -153,9 +153,9 @@ export default function BookingFlow() {
     return (
         <div className="booking-flow">
             <div className="booking-flow_header">
-                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={56} />
+                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} surname={mentor.userId.surname} size={56} />
                 <div className="booking-flow_header-info">
-                    <h3>{mentor.userId.name}</h3>
+                    <h3>{mentor.userId.name} {mentor.userId.surname}</h3>
                     <p>{offering.title}</p>
                 </div>
             </div>
@@ -238,7 +238,7 @@ export default function BookingFlow() {
                     <h2>Revisa a tua marcação</h2>
 
                     <div className="summary-card">
-                        <h3>{mentor.userId.name}</h3>
+                        <h3>{mentor.userId.name} {mentor.userId.surname}</h3>
                         <p><strong>Oferta:</strong> {offering.title} ({offering.sessionPrice}€)</p>
                         <p><strong>Dia:</strong> {selectedDate} às {selectedTime}</p>
                     </div>

@@ -2,7 +2,7 @@ const MenteeProfile = require("./mentee.model");
 const Follow = require("./follow.model");
 
 const getMenteeProfile = async (userId) => {
-    const menteeProfile = await MenteeProfile.findOne({ userId }).populate("userId", "name email avatarUrl");
+    const menteeProfile = await MenteeProfile.findOne({ userId }).populate("userId", "name surname email avatarUrl");
 
     if (!menteeProfile) {
         const error = new Error("Perfil de mentorado não encontrado");

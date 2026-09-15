@@ -44,10 +44,10 @@ export default function PublicMentor({ mentor }) {
   return (
     <div className="mentor-profile">
       <header className="mentor-profile_header">
-        <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} size={80} />
+        <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} surname={mentor.userId.surname} size={80} />
         <div className="mentor-profile_header-info">
           <h2>
-            {mentor.userId.name}
+            {mentor.userId.name} {mentor.userId.surname}
             {mentor.isVerified && (
               <FaCheckCircle
                 className="mentor-profile_verified"
