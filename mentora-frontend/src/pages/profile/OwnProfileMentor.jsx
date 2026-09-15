@@ -4,8 +4,16 @@ import { useAuth } from "../../hooks/useAuth.js";
 import { updateMentorProfile } from "../../services/mentorService.js";
 import { uploadImage } from "../../services/uploadService.js";
 import { deleteAccount, updateAvatar } from "../../services/userService.js";
-import { createOffering, updateOffering, deleteOffering } from "../../services/offeringServices.js";
-import { getAvailability, createAvailability, deleteAvailability } from "../../services/availabilityService.js";
+import {
+  createOffering,
+  updateOffering,
+  deleteOffering,
+} from "../../services/offeringServices.js";
+import {
+  getAvailability,
+  createAvailability,
+  deleteAvailability,
+} from "../../services/availabilityService.js";
 import Avatar from "../../components/Avatar.jsx";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
@@ -22,7 +30,7 @@ import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
 
 export default function OwnProfileMentor({ mentor }) {
-  const { token, setUser, updateUser, logout } = useAuth();
+  const { token, setUser, logout } = useAuth();
 
   const navigate = useNavigate();
 
@@ -30,7 +38,9 @@ export default function OwnProfileMentor({ mentor }) {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioText, setBioText] = useState(mentor.bio);
   const [isEditingAreas, setIsEditingAreas] = useState(false);
-  const [selectedAreas, setSelectedAreas] = useState(mentor.mentorProfile.areas);
+  const [selectedAreas, setSelectedAreas] = useState(
+    mentor.mentorProfile.areas,
+  );
   const [showCustomAreaInput, setShowCustomAreaInput] = useState(false);
   const [customArea, setCustomArea] = useState("");
   const [editingOfferingId, setEditingOfferingId] = useState(null);
@@ -39,14 +49,17 @@ export default function OwnProfileMentor({ mentor }) {
     area: "",
     sessionPrice: "",
     description: "",
+    level: "",
   });
-  const [editingOfferingAreaMode, setEditingOfferingAreaMode] = useState("select");
+  const [editingOfferingAreaMode, setEditingOfferingAreaMode] =
+    useState("select");
   const [isAddingOffering, setIsAddingOffering] = useState(false);
   const [newOffering, setNewOffering] = useState({
     title: "",
     area: "",
     sessionPrice: "",
     description: "",
+    level: "",
   });
   const [newOfferingAreaMode, setNewOfferingAreaMode] = useState("select");
   const [availability, setAvailability] = useState([]);
@@ -118,7 +131,9 @@ export default function OwnProfileMentor({ mentor }) {
   }
 
   async function saveAreas() {
-    const updatedProfile = await updateMentorProfile(token, { areas: selectedAreas });
+    const updatedProfile = await updateMentorProfile(token, {
+      areas: selectedAreas,
+    });
     setUser((prev) => ({
       ...prev,
       mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
@@ -140,6 +155,7 @@ export default function OwnProfileMentor({ mentor }) {
       area: offering.area,
       sessionPrice: offering.sessionPrice,
       description: offering.description,
+      level: offering.level,
     });
     setEditingOfferingAreaMode(
       MENTORSHIP_AREAS.includes(offering.area) ? "select" : "custom",
@@ -151,7 +167,11 @@ export default function OwnProfileMentor({ mentor }) {
   }
 
   async function saveOffering(offeringId) {
-    const updatedOffering = await updateOffering(token, offeringId, editingOfferingData);
+    const updatedOffering = await updateOffering(
+      token,
+      offeringId,
+      editingOfferingData,
+    );
     setUser((prev) => ({
       ...prev,
       mentorProfile: {
@@ -170,7 +190,9 @@ export default function OwnProfileMentor({ mentor }) {
       ...prev,
       mentorProfile: {
         ...prev.mentorProfile,
-        offerings: prev.mentorProfile.offerings.filter((o) => o._id !== offeringId),
+        offerings: prev.mentorProfile.offerings.filter(
+          (o) => o._id !== offeringId,
+        ),
       },
     }));
   }
@@ -182,7 +204,9 @@ export default function OwnProfileMentor({ mentor }) {
 
   async function handleRemoveAvailabilityBlock(availabilityId) {
     await deleteAvailability(token, availabilityId);
-    setAvailability((prev) => prev.filter((block) => block._id !== availabilityId));
+    setAvailability((prev) =>
+      prev.filter((block) => block._id !== availabilityId),
+    );
   }
 
   async function handleDeleteAccount() {
@@ -200,13 +224,25 @@ export default function OwnProfileMentor({ mentor }) {
         offerings: [...prev.mentorProfile.offerings, createdOffering],
       },
     }));
-    setNewOffering({ title: "", area: "", sessionPrice: "", description: "" });
+    setNewOffering({
+      title: "",
+      area: "",
+      sessionPrice: "",
+      description: "",
+      level: "",
+    });
     setNewOfferingAreaMode("select");
     setIsAddingOffering(false);
   }
 
   function cancelAddingOffering() {
-    setNewOffering({ title: "", area: "", sessionPrice: "", description: "" });
+    setNewOffering({
+      title: "",
+      area: "",
+      sessionPrice: "",
+      description: "",
+      level: "",
+    });
     setNewOfferingAreaMode("select");
     setIsAddingOffering(false);
   }
@@ -216,7 +252,12 @@ export default function OwnProfileMentor({ mentor }) {
       {/* CABEÇALHO */}
       <header className="mentor-profile_header">
         <div className="mentor-profile_avatar-wrapper" ref={avatarMenuRef}>
-          <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={80} />
+          <Avatar
+            src={mentor.avatarUrl}
+            name={mentor.name}
+            surname={mentor.surname}
+            size={80}
+          />
           <button
             type="button"
             className="mentor-profile_avatar-badge"
@@ -229,11 +270,18 @@ export default function OwnProfileMentor({ mentor }) {
 
           {showAvatarMenu && (
             <div className="mentor-profile_avatar-menu">
-              <button type="button" onClick={() => avatarInputRef.current.click()}>
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current.click()}
+              >
                 <FiCamera /> Carregar foto
               </button>
               {mentor.avatarUrl && (
-                <button type="button" className="mentor-profile_avatar-menu-danger" onClick={handleRemoveAvatar}>
+                <button
+                  type="button"
+                  className="mentor-profile_avatar-menu-danger"
+                  onClick={handleRemoveAvatar}
+                >
                   <FiTrash2 /> Remover foto
                 </button>
               )}
@@ -461,6 +509,22 @@ export default function OwnProfileMentor({ mentor }) {
                     })
                   }
                 />
+
+                <select
+                  value={editingOfferingData.level}
+                  onChange={(e) =>
+                    setEditingOfferingData({
+                      ...editingOfferingData,
+                      level: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Selecionar nível</option>
+                  <option value="iniciante">Iniciante</option>
+                  <option value="intermedio">Intermédio</option>
+                  <option value="avancado">Avançado</option>
+                </select>
+
                 <textarea
                   placeholder="Descrição"
                   value={editingOfferingData.description}
@@ -569,6 +633,17 @@ export default function OwnProfileMentor({ mentor }) {
                 })
               }
             />
+            <select
+              value={newOffering.level}
+              onChange={(e) =>
+                setNewOffering({ ...newOffering, level: e.target.value })
+              }
+            >
+              <option value="">Selecionar nível</option>
+              <option value="iniciante">Iniciante</option>
+              <option value="intermedio">Intermédio</option>
+              <option value="avancado">Avançado</option>
+            </select>
             <textarea
               placeholder="Descrição"
               value={newOffering.description}
@@ -622,17 +697,15 @@ export default function OwnProfileMentor({ mentor }) {
         </button>
       </section>
 
-      {
-        showDeleteConfirm && (
-          <ConfirmModal
-            title="Apagar a tua conta?"
-            message="Esta ação não pode ser desfeita. Todos os teus dados serão removidos da plataforma."
-            confirmLabel="Sim, apagar conta"
-            onCancel={() => setShowDeleteConfirm(false)}
-            onConfirm={handleDeleteAccount}
-          />
-        )
-      }
-    </div >
+      {showDeleteConfirm && (
+        <ConfirmModal
+          title="Apagar a tua conta?"
+          message="Esta ação não pode ser desfeita. Todos os teus dados serão removidos da plataforma."
+          confirmLabel="Sim, apagar conta"
+          onCancel={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDeleteAccount}
+        />
+      )}
+    </div>
   );
 }

@@ -1,69 +1,101 @@
-const Offering = require('./offering.model');
-const MentorProfile = require('./mentor.model');
+const Offering = require("./offering.model");
+const MentorProfile = require("./mentor.model");
 
 const createOffering = async (userId, offeringData) => {
-    const mentorProfile = await MentorProfile.findOne({ userId });
+  const mentorProfile = await MentorProfile.findOne({ userId });
 
-    if (!mentorProfile) {
-        const error = new Error("Apenas mentores podem gerir ofertas");
-        error.statusCode = 403;
-        throw error;
-    }
+  if (!mentorProfile) {
+    const error = new Error("Apenas mentores podem gerir ofertas");
+    error.statusCode = 403;
+    throw error;
+  }
 
-    const newOffering = await Offering.create({ ...offeringData, mentorId: mentorProfile._id });
+  const newOffering = await Offering.create({
+    ...offeringData,
+    mentorId: mentorProfile._id,
+  });
 
-    return newOffering;
-}
+  return newOffering;
+};
 
 const updateOffering = async (offeringId, userId, updates) => {
-    const mentorProfile = await MentorProfile.findOne({ userId });
+  const mentorProfile = await MentorProfile.findOne({ userId });
 
-    if (!mentorProfile) {
-        const error = new Error("Apenas mentores podem gerir ofertas");
-        error.statusCode = 403;
-        throw error;
-    }
+  if (!mentorProfile) {
+    const error = new Error("Apenas mentores podem gerir ofertas");
+    error.statusCode = 403;
+    throw error;
+  }
 
-    const allowedUpdates = {};
+  const allowedUpdates = {};
 
-    if (updates.title !== undefined) allowedUpdates.title = updates.title;
-    if (updates.area !== undefined) allowedUpdates.area = updates.area;
-    if (updates.sessionPrice !== undefined) allowedUpdates.sessionPrice = updates.sessionPrice;
-    if (updates.description !== undefined) allowedUpdates.description = updates.description;
+  if (updates.title !== undefined) allowedUpdates.title = updates.title;
+  if (updates.area !== undefined) allowedUpdates.area = updates.area;
+  if (updates.sessionPrice !== undefined)
+    allowedUpdates.sessionPrice = updates.sessionPrice;
+  if (updates.description !== undefined)
+    allowedUpdates.description = updates.description;
+  if (updates.level !== undefined) allowedUpdates.level = updates.level;
 
-    const offering = await Offering.findOneAndUpdate(
-        { _id: offeringId, mentorId: mentorProfile._id },
-        { $set: allowedUpdates },
-        { new: true, runValidators: true }
-    )
+  const offering = await Offering.findOneAndUpdate(
+    { _id: offeringId, mentorId: mentorProfile._id },
+    { $set: allowedUpdates },
+    { new: true, runValidators: true },
+  );
 
-    if (!offering) {
-        const error = new Error("Oferta não encontrada ou acesso negado");
-        error.statusCode = 404;
-        throw error;
-    }
+  if (!offering) {
+    const error = new Error("Oferta não encontrada ou acesso negado");
+    error.statusCode = 404;
+    throw error;
+  }
 
-    return offering;
-}
+  return offering;
+};
 
 const deleteOffering = async (offeringId, userId) => {
-    const mentorProfile = await MentorProfile.findOne({ userId });
+  const mentorProfile = await MentorProfile.findOne({ userId });
 
-    if (!mentorProfile) {
-        const error = new Error("Apenas mentores podem gerir ofertas");
-        error.statusCode = 403;
-        throw error;
-    }
+  if (!mentorProfile) {
+    const error = new Error("Apenas mentores podem gerir ofertas");
+    error.statusCode = 403;
+    throw error;
+  }
 
-    const offering = await Offering.findOneAndDelete({ _id: offeringId, mentorId: mentorProfile._id });
+  const offering = await Offering.findOneAndDelete({
+    _id: offeringId,
+    mentorId: mentorProfile._id,
+  });
 
-    if (!offering) {
-        const error = new Error("Oferta não encontrada ou acesso negado");
-        error.statusCode = 404;
-        throw error;
-    }
+  if (!offering) {
+    const error = new Error("Oferta não encontrada ou acesso negado");
+    error.statusCode = 404;
+    throw error;
+  }
 
-    return { message: "Oferta apagada com sucesso" };
-}
+  return { message: "Oferta apagada com sucesso" };
+};
 
-module.exports = { createOffering, updateOffering, deleteOffering };
+const getAllOfferings = async () => {
+  const offerings = await Offering.find();
+  return offerings;
+};
+
+const getOfferingById = async (offeringId) => {
+  const offering = await Offering.findById(offeringId);
+
+  if (!offering) {
+    const error = new Error("Oferta não encontrada");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return offering;
+};
+
+module.exports = {
+  createOffering,
+  updateOffering,
+  deleteOffering,
+  getAllOfferings,
+  getOfferingById,
+};
