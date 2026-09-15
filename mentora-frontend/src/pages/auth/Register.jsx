@@ -70,8 +70,8 @@ export default function Register() {
         setLoading(true);
         try {
             await register({ name, surname, birthDate, email, password, confirmPassword, role });
-        } catch {
-            setError("Erro ao criar conta. Tenta novamente.");
+        } catch (err) {
+            setError(err.message || "Erro ao criar conta. Tenta novamente.");
             setLoading(false);
         }
     }

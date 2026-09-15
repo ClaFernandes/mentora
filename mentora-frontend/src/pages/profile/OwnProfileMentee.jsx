@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
-import { deleteAccount } from "../../services/userService.js";
 import { updateMenteeProfile } from "../../services/menteeService.js";
 import { getMentorProfile } from "../../services/mentorService.js";
 import { unfollowMentor } from "../../services/followService.js";
+import { uploadImage } from "../../services/uploadService.js";
+import { deleteAccount, updateAvatar } from "../../services/userService.js";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import { FaPen, FaCheck, FaTimes } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
-import { FiX } from "react-icons/fi";
+import { FiX, FiCamera, FiTrash2 } from "react-icons/fi";
 import "./MenteeProfile.css";
 import "../mentors/MentorsPage.css";
 
@@ -27,6 +28,11 @@ export default function OwnProfileMentee({ mentee }) {
   const [showCustomInterestInput, setShowCustomInterestInput] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
   const [followedMentors, setFollowedMentors] = useState([]);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+
+  const avatarInputRef = useRef(null);
+  const avatarMenuRef = useRef(null);
 
   useEffect(() => {
     const followingIds = mentee.menteeProfile.followingMentors || [];
@@ -39,10 +45,45 @@ export default function OwnProfileMentee({ mentee }) {
     );
   }, [mentee.menteeProfile.followingMentors]);
 
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target)) {
+        setShowAvatarMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   async function saveBio() {
     const updatedProfile = await updateMenteeProfile(token, { bio: bioText });
     setUser((prev) => ({ ...prev, bio: updatedProfile.bio }));
     setIsEditingBio(false);
+  }
+  async function handleAvatarChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingAvatar(true);
+    try {
+      const uploadResult = await uploadImage(token, file);
+      await updateAvatar(token, uploadResult.url);
+      setUser((prev) => ({ ...prev, avatarUrl: uploadResult.url }));
+    } finally {
+      setUploadingAvatar(false);
+      setShowAvatarMenu(false);
+    }
+  }
+
+  async function handleRemoveAvatar() {
+    setUploadingAvatar(true);
+    try {
+      await updateAvatar(token, "");
+      setUser((prev) => ({ ...prev, avatarUrl: "" }));
+    } finally {
+      setUploadingAvatar(false);
+      setShowAvatarMenu(false);
+    }
   }
 
   function toggleInterest(interest) {
@@ -98,7 +139,40 @@ export default function OwnProfileMentee({ mentee }) {
   return (
     <div className="mentee-profile">
       <header className="mentee-profile_header">
-        <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={80} />
+        <div className="mentee-profile_avatar-wrapper" ref={avatarMenuRef}>
+          <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={80} />
+          <button
+            type="button"
+            className="mentee-profile_avatar-badge"
+            onClick={() => setShowAvatarMenu((prev) => !prev)}
+            disabled={uploadingAvatar}
+            aria-label="Opções de foto de perfil"
+          >
+            <FiCamera />
+          </button>
+
+          {showAvatarMenu && (
+            <div className="mentee-profile_avatar-menu">
+              <button type="button" onClick={() => avatarInputRef.current.click()}>
+                <FiCamera /> Carregar foto
+              </button>
+              {mentee.avatarUrl && (
+                <button type="button" className="mentee-profile_avatar-menu-danger" onClick={handleRemoveAvatar}>
+                  <FiTrash2 /> Remover foto
+                </button>
+              )}
+            </div>
+          )}
+
+          <input
+            type="file"
+            accept="image/*"
+            ref={avatarInputRef}
+            style={{ display: "none" }}
+            onChange={handleAvatarChange}
+          />
+        </div>
+
         <div className="mentee-profile_header-info">
           <h2>{mentee.name} {mentee.surname}</h2>
         </div>

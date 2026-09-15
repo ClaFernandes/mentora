@@ -25,4 +25,20 @@ const deleteUser = async (userId) => {
     return { message: "Conta apagada com sucesso" };
 }
 
-module.exports = { deleteUser };    
+const updateAvatar = async (userId, avatarUrl) => {
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { $set: { avatarUrl } },
+        { new: true, runValidators: true }
+    );
+
+    if (!user) {
+        const error = new Error("Utilizador não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    return { avatarUrl: user.avatarUrl };
+};
+
+module.exports = { deleteUser, updateAvatar };    

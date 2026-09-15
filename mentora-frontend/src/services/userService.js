@@ -6,3 +6,11 @@ export async function deleteAccount(token) {
         token,
     });
 }
+
+export async function updateAvatar(token, avatarUrl) {
+    return apiRequest("/users/me/avatar", {
+        method: "PUT",
+        token,
+        body: { avatarUrl },
+    });
+}

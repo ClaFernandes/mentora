@@ -107,6 +107,7 @@ const registerUser = async ({
       surname: user.surname,
       birthDate: user.birthDate,
       email: user.email,
+      avatarUrl: user.avatarUrl,
       role: user.role,
     },
   };
@@ -142,6 +143,7 @@ const loginUser = async ({ email, password }) => {
       surname: user.surname,
       birthDate: user.birthDate,
       email: user.email,
+      avatarUrl: user.avatarUrl,
       role: user.role,
     },
   };

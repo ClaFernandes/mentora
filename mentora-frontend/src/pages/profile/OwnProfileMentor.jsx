@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { updateMentorProfile } from "../../services/mentorService.js";
-import { deleteAccount } from "../../services/userService.js";
+import { uploadImage } from "../../services/uploadService.js";
+import { deleteAccount, updateAvatar } from "../../services/userService.js";
 import { createOffering, updateOffering, deleteOffering } from "../../services/offeringServices.js";
 import { getAvailability, createAvailability, deleteAvailability } from "../../services/availabilityService.js";
 import Avatar from "../../components/Avatar.jsx";
@@ -16,6 +17,7 @@ import {
   FaTimes,
   FaTrash,
 } from "react-icons/fa";
+import { FiCamera, FiTrash2 } from "react-icons/fi";
 import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
 
@@ -48,10 +50,51 @@ export default function OwnProfileMentor({ mentor }) {
   });
   const [newOfferingAreaMode, setNewOfferingAreaMode] = useState("select");
   const [availability, setAvailability] = useState([]);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+
+  const avatarInputRef = useRef(null);
+  const avatarMenuRef = useRef(null);
 
   useEffect(() => {
     getAvailability(mentor.id).then(setAvailability);
   }, [mentor.id]);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target)) {
+        setShowAvatarMenu(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  async function handleAvatarChange(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingAvatar(true);
+    try {
+      const uploadResult = await uploadImage(token, file);
+      await updateAvatar(token, uploadResult.url);
+      setUser((prev) => ({ ...prev, avatarUrl: uploadResult.url }));
+    } finally {
+      setUploadingAvatar(false);
+      setShowAvatarMenu(false);
+    }
+  }
+
+  async function handleRemoveAvatar() {
+    setUploadingAvatar(true);
+    try {
+      await updateAvatar(token, "");
+      setUser((prev) => ({ ...prev, avatarUrl: "" }));
+    } finally {
+      setUploadingAvatar(false);
+      setShowAvatarMenu(false);
+    }
+  }
 
   async function saveBio() {
     const updatedProfile = await updateMentorProfile(token, { bio: bioText });
@@ -172,7 +215,40 @@ export default function OwnProfileMentor({ mentor }) {
     <div className="mentor-profile">
       {/* CABEÇALHO */}
       <header className="mentor-profile_header">
-        <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={80} />
+        <div className="mentor-profile_avatar-wrapper" ref={avatarMenuRef}>
+          <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={80} />
+          <button
+            type="button"
+            className="mentor-profile_avatar-badge"
+            onClick={() => setShowAvatarMenu((prev) => !prev)}
+            disabled={uploadingAvatar}
+            aria-label="Opções de foto de perfil"
+          >
+            <FiCamera />
+          </button>
+
+          {showAvatarMenu && (
+            <div className="mentor-profile_avatar-menu">
+              <button type="button" onClick={() => avatarInputRef.current.click()}>
+                <FiCamera /> Carregar foto
+              </button>
+              {mentor.avatarUrl && (
+                <button type="button" className="mentor-profile_avatar-menu-danger" onClick={handleRemoveAvatar}>
+                  <FiTrash2 /> Remover foto
+                </button>
+              )}
+            </div>
+          )}
+
+          <input
+            type="file"
+            accept="image/*"
+            ref={avatarInputRef}
+            style={{ display: "none" }}
+            onChange={handleAvatarChange}
+          />
+        </div>
+
         <div className="mentor-profile_header-info">
           <h2>
             {mentor.name} {mentor.surname}
@@ -546,15 +622,17 @@ export default function OwnProfileMentor({ mentor }) {
         </button>
       </section>
 
-      {showDeleteConfirm && (
-        <ConfirmModal
-          title="Apagar a tua conta?"
-          message="Esta ação não pode ser desfeita. Todos os teus dados serão removidos da plataforma."
-          confirmLabel="Sim, apagar conta"
-          onCancel={() => setShowDeleteConfirm(false)}
-          onConfirm={handleDeleteAccount}
-        />
-      )}
-    </div>
+      {
+        showDeleteConfirm && (
+          <ConfirmModal
+            title="Apagar a tua conta?"
+            message="Esta ação não pode ser desfeita. Todos os teus dados serão removidos da plataforma."
+            confirmLabel="Sim, apagar conta"
+            onCancel={() => setShowDeleteConfirm(false)}
+            onConfirm={handleDeleteAccount}
+          />
+        )
+      }
+    </div >
   );
 }
