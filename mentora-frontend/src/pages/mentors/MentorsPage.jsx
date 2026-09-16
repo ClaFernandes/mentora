@@ -6,6 +6,7 @@ import { searchMentors } from "../../services/mentorService.js";
 import { followMentor, unfollowMentor } from "../../services/followService.js";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
 import { AiFillStar } from "react-icons/ai";
+import { FaCheckCircle } from "react-icons/fa";
 import { FiSearch, FiCheck, FiPlus, FiX } from "react-icons/fi";
 import "./MentorsPage.css";
 
@@ -185,7 +186,11 @@ export default function MentorsPage() {
                                 </button>
                             )}
                             <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} surname={mentor.userId.surname} size={64} />
-                            <h3>{mentor.userId.name} {mentor.userId.surname}</h3>
+                            <h3>{mentor.userId.name} {mentor.userId.surname}
+                                {mentor.isVerified && (
+                                    <FaCheckCircle className="mentors-card-verified" title="Mentor verificado" />
+                                )}
+                            </h3>
                             <p className="mentors-card-offering">{mentor.offerings[0]?.title}</p>
                             <p className="mentors-card-rating">
                                 <AiFillStar /> {mentor.avgRating}

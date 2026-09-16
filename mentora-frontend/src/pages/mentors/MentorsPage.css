@@ -199,6 +199,13 @@
     margin-bottom: 4px;
 }
 
+.mentors-card-verified {
+    color: var(--color-mustard);
+    font-size: 0.85rem;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
 .mentors-card-offering {
     color: var(--color-text-secondary);
     font-size: 0.85rem;

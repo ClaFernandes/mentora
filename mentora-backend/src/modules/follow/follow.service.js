@@ -1,5 +1,5 @@
 const Follow = require("./follow.model");
-const MentorProfile = require("./mentor.model");
+const MentorProfile = require("../users/mentor.model");
 
 const followMentor = async (followerId, followerRole, mentorUserId) => {
   if (followerRole !== "mentee") {

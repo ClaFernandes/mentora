@@ -1,5 +1,5 @@
 const MenteeProfile = require("./mentee.model");
-const Follow = require("./follow.model");
+const Follow = require("../follow/follow.model");
 
 const getMenteeProfile = async (userId) => {
     const menteeProfile = await MenteeProfile.findOne({ userId }).populate("userId", "name surname email avatarUrl");

@@ -1,6 +1,6 @@
 const MentorProfile = require("./mentor.model");
-const Offering = require("./offering.model");
-const Follow = require("../users/follow.model");
+const Offering = require("../offerings/offering.model");
+const Follow = require("../follow/follow.model");
 const { MENTORSHIP_AREAS } = require("../../utils/constants");
 
 const getMentorProfile = async (userId) => {
@@ -91,7 +91,6 @@ const searchMentors = async (filters, page, limit) => {
 
     const mentorMatch = {
         "mentor.rejected": false,
-        "mentor.isVerified": true,
     };
     if (filters.minRating) {
         mentorMatch["mentor.avgRating"] = { $gte: Number(filters.minRating) };

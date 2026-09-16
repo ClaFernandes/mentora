@@ -1,5 +1,5 @@
 const Offering = require("./offering.model");
-const MentorProfile = require("./mentor.model");
+const MentorProfile = require("../users/mentor.model");
 
 const createOffering = async (userId, offeringData) => {
   const mentorProfile = await MentorProfile.findOne({ userId });

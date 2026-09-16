@@ -28,6 +28,13 @@
     font-size: 0.95rem;
 }
 
+.post-card_verified {
+    color: var(--color-mustard);
+    font-size: 0.8rem;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
 .post-card_header time {
     font-size: 0.8rem;
     color: var(--color-text-secondary);

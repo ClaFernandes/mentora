@@ -420,6 +420,33 @@
     opacity: 0.9;
 }
 
+.mentor-profile_offering-actions-mentee {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.mentor-profile_offering-message-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: transparent;
+    border: 1px solid var(--color-accent-secondary);
+    color: var(--color-accent-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mentor-profile_offering-message-btn:hover {
+    background-color: var(--color-accent-secondary);
+    color: var(--color-accent-text);
+}
+
 .mentor-profile_offering-actions {
     display: flex;
     gap: 8px;

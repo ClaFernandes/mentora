@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
 import { followMentor, unfollowMentor } from "../../services/followService.js";
-import { findOrCreateConversation } from "../../utils/conversationHelpers.js";
 import { FaCheckCircle } from "react-icons/fa";
 import { FiCheck, FiPlus, FiMessageCircle } from "react-icons/fi";
 import { AiFillStar } from "react-icons/ai";
@@ -32,9 +31,14 @@ export default function PublicMentor({ mentor }) {
     });
   }
 
-  function handleSendMessage() {
-    const conversation = findOrCreateConversation(mentor.userId._id, user.id);
-    navigate("/chat", { state: { conversationId: conversation.id } });
+  function handleSendMessage(offering) {
+    navigate("/chat", {
+      state: {
+        offeringId: offering._id,
+        offeringTitle: offering.title,
+        otherUser: mentor.userId,
+      },
+    });
   }
 
   function handleSchedule(offeringId) {
@@ -93,17 +97,6 @@ export default function PublicMentor({ mentor }) {
               {isFollowing ? "A seguir" : "Seguir"}
             </button>
           )}
-
-          {isFollowing && (
-            <button
-              type="button"
-              onClick={handleSendMessage}
-              className="mentor-profile_message-btn"
-            >
-              <FiMessageCircle />
-              Enviar mensagem
-            </button>
-          )}
         </div>
       </section>
 
@@ -124,20 +117,30 @@ export default function PublicMentor({ mentor }) {
                 <p>{offering.description}</p>
               </div>
 
-              {user.role === "mentee" && (
+              <div className="mentor-profile_offering-actions-mentee">
+
                 <button
                   type="button"
-                  className="mentor-profile_offering-schedule-btn"
-                  onClick={() => handleSchedule(offering._id)}
+                  className="mentor-profile_offering-message-btn"
+                  onClick={() => handleSendMessage(offering)}
                 >
-                  Agendar
+                  <FiMessageCircle /> Mensagem
                 </button>
-              )}
 
+                {user.role === "mentee" && (
+                  <button
+                    type="button"
+                    className="mentor-profile_offering-schedule-btn"
+                    onClick={() => handleSchedule(offering._id)}
+                  >
+                    Agendar
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         ))}
       </section>
     </div>
   );
-}
+} 

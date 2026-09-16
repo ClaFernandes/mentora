@@ -15,7 +15,7 @@ import {
 import { uploadImage } from "../../services/uploadService.js";
 import { formatDistanceToNow } from "date-fns";
 import { pt } from "date-fns/locale";
-import { FaHeart, FaRegHeart, FaPen, FaTrash } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaPen, FaTrash, FaCheckCircle } from "react-icons/fa";
 import { FiFlag, FiMoreVertical, FiCheck, FiX, FiImage } from "react-icons/fi";
 import "./PostCard.css";
 
@@ -135,7 +135,12 @@ export default function PostCard({
       <header className="post-card_header">
         <Link to={`/mentores/${author._id}`} className="post-card_author">
           <Avatar src={author.avatarUrl} name={author.name} surname={author.surname} />
-          <span>{author.name} {author.surname}</span>
+          <span>
+            {author.name} {author.surname}
+            {post.mentorId.isVerified && (
+              <FaCheckCircle className="post-card_verified" title="Mentor verificado" />
+            )}
+          </span>
         </Link>
         <time>
           {formatDistanceToNow(new Date(post.createdAt), {

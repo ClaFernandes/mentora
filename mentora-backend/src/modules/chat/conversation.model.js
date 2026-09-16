@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
 const conversationSchema = new mongoose.Schema({
-    mentorId: {
+    offeringId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "MentorProfile",
+        ref: "Offering",
         required: true,
     },
     menteeId: {
@@ -21,7 +21,7 @@ const conversationSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
-conversationSchema.index({ mentorId: 1, menteeId: 1 }, { unique: true });
+conversationSchema.index({ offeringId: 1, menteeId: 1 }, { unique: true });
 
 const Conversation = mongoose.model("Conversation", conversationSchema);
 

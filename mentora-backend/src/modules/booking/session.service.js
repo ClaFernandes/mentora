@@ -3,6 +3,9 @@ const MentorProfile = require("../users/mentor.model");
 const { getAvailableSlots } = require("./availability.service");
 const stripe = require("../../config/stripe");
 const Payment = require("../payments/payment.model");
+const Conversation = require("../chat/conversation.model");
+const Message = require("../chat/message.model");
+const { createNotification } = require("../notifications/notification.service");
 
 const createSession = async (userId, sessionData) => {
   const mentorProfile = await MentorProfile.findOne({
@@ -31,6 +34,40 @@ const createSession = async (userId, sessionData) => {
     mentorId: mentorProfile._id,
     menteeId: userId,
   });
+
+  try {
+    let conversation = await Conversation.findOne({
+      offeringId: sessionData.offeringId,
+      menteeId: userId,
+    });
+
+    if (!conversation) {
+      conversation = await Conversation.create({
+        offeringId: sessionData.offeringId,
+        menteeId: userId,
+      });
+    }
+
+    await Message.create({
+      conversationId: conversation._id,
+      senderId: mentorProfile.userId,
+      text: "Sessão marcada! Usa este chat para combinar os detalhes (link da chamada, horário, etc.) antes da tua sessão.",
+    });
+
+    conversation.unreadByMentee = true;
+    await conversation.save();
+
+    await createNotification({
+      type: "message",
+      recipientId: userId,
+      actorId: mentorProfile.userId,
+    });
+  } catch (chatError) {
+    console.error(
+      "Falha ao abrir o chat automático da sessão:",
+      chatError,
+    );
+  }
 
   return newSession;
 };
