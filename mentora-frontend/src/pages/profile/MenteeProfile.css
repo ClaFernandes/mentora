@@ -323,6 +323,78 @@
     text-align: center;
 }
 
+.mentee-profile_favorites {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+}
+
+.mentee-profile_favorites h3 {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+}
+
+.mentee-profile_favorites-empty {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.mentee-profile_favorites-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.mentee-profile_favorite-card {
+    display: block;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    min-width: 180px;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+}
+
+.mentee-profile_favorite-card:hover {
+    border-color: var(--color-mustard);
+}
+
+.mentee-profile_favorite-card h4 {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.mentee-profile_favorite-card span {
+    display: block;
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+    margin-bottom: 6px;
+}
+
+.mentee-profile_favorite-card p {
+    color: var(--color-mustard);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.mentee-profile_favorite-card--unavailable {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.mentee-profile_favorite-card--unavailable h4 {
+    color: var(--color-text-secondary);
+}
+
+.mentee-profile_favorite-card--unavailable p {
+    color: var(--color-text-secondary);
+    font-weight: 400;
+}
+
 .mentee-profile_danger-zone {
     margin-top: 32px;
     padding-top: 24px;

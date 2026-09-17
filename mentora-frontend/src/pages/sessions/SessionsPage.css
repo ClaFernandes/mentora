@@ -130,6 +130,25 @@
     background-color: rgba(179, 64, 31, 0.1);
 }
 
+.session-favorite-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: 1px solid var(--color-accent-secondary);
+    color: var(--color-accent-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.session-favorite-btn:hover {
+    background-color: rgba(122, 158, 147, 0.1);
+}
+
 .session-rate-btn {
     background: none;
     border: 1px solid var(--color-mustard);

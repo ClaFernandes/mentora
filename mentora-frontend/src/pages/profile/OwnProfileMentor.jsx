@@ -8,7 +8,7 @@ import {
   createOffering,
   updateOffering,
   deleteOffering,
-} from "../../services/offeringServices.js";
+} from "../../services/offeringService.js";
 import {
   getAvailability,
   createAvailability,

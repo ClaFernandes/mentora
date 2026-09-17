@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { getSessions, cancelSession } from "../../services/sessionService.js";
+import { addFavorite, removeFavorite, getFavorites } from "../../services/favoriteService.js";
 import { resolveDisplayStatus } from "../../utils/sessionHelpers.js";
 import Avatar from "../../components/Avatar.jsx";
 import EmptyState from "../../components/EmptyState.jsx";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
 import "./SessionsPage.css";
@@ -22,10 +24,18 @@ export default function SessionsPage() {
     const [activeFilter, setActiveFilter] = useState("all");
     const [sessions, setSessions] = useState([]);
     const [cancelTarget, setCancelTarget] = useState(null);
+    const [favoritedOfferingIds, setFavoritedOfferingIds] = useState([]);
 
     useEffect(() => {
         getSessions(token).then(setSessions);
     }, [token]);
+
+    useEffect(() => {
+        if (user.role !== "mentee") return;
+        getFavorites(token).then((favorites) => {
+            setFavoritedOfferingIds(favorites.map((f) => f.offeringId?._id).filter(Boolean));
+        });
+    }, [user.role, token]);
 
     const mySessions = sessions;
 
@@ -54,6 +64,18 @@ export default function SessionsPage() {
             prev.map((s) => (s._id === updatedSession._id ? updatedSession : s))
         );
         setCancelTarget(null);
+    }
+
+    async function handleToggleFavorite(offeringId) {
+        const isFavorited = favoritedOfferingIds.includes(offeringId);
+
+        if (isFavorited) {
+            await removeFavorite(token, offeringId);
+            setFavoritedOfferingIds((prev) => prev.filter((id) => id !== offeringId));
+        } else {
+            await addFavorite(token, offeringId);
+            setFavoritedOfferingIds((prev) => [...prev, offeringId]);
+        }
     }
 
     return (
@@ -92,7 +114,6 @@ export default function SessionsPage() {
                                 : session.mentorId.userId;
 
                         const offering = session.offeringId;
-
                         const dateObj = new Date(`${session.date}T00:00:00`);
                         const formattedDate = format(dateObj, "d 'de' MMMM 'de' yyyy", { locale: pt });
                         const displayStatus = resolveDisplayStatus(session);
@@ -114,7 +135,6 @@ export default function SessionsPage() {
                                         </p>
                                     )}
                                 </div>
-
                                 <div className="session-card_side">
                                     <span className={`session-status session-status--${displayStatus}`}>
                                         {FILTERS.find((f) => f.key === displayStatus)?.label}
@@ -127,6 +147,24 @@ export default function SessionsPage() {
                                             onClick={() => handleRequestCancel(session)}
                                         >
                                             Cancelar
+                                        </button>
+                                    )}
+
+                                    {user.role === "mentee" && displayStatus === "completed" && offering && (
+                                        <button
+                                            type="button"
+                                            className="session-favorite-btn"
+                                            onClick={() => handleToggleFavorite(offering._id)}
+                                        >
+                                            {favoritedOfferingIds.includes(offering._id) ? (
+                                                <>
+                                                    <AiFillHeart /> Favorito
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <AiOutlineHeart /> Favoritar
+                                                </>
+                                            )}
                                         </button>
                                     )}
                                 </div>

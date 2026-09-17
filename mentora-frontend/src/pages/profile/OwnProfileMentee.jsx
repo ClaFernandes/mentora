@@ -7,16 +7,18 @@ import { getMentorProfile } from "../../services/mentorService.js";
 import { unfollowMentor } from "../../services/followService.js";
 import { uploadImage } from "../../services/uploadService.js";
 import { deleteAccount, updateAvatar } from "../../services/userService.js";
+import { getFavorites } from "../../services/favoriteService.js";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
 import { MENTORSHIP_AREAS } from "../../utils/constants.js";
-import { FaPen, FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
-import { FiX, FiCamera, FiTrash2 } from "react-icons/fi";
+import { FiX, FiCamera, FiTrash2, FiEdit2 } from "react-icons/fi";
 import "./MenteeProfile.css";
 import "../mentors/MentorsPage.css";
 
 export default function OwnProfileMentee({ mentee }) {
   const { token, setUser, updateUser, logout } = useAuth();
+
   const navigate = useNavigate();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isEditingBio, setIsEditingBio] = useState(false);
@@ -30,6 +32,7 @@ export default function OwnProfileMentee({ mentee }) {
   const [followedMentors, setFollowedMentors] = useState([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const avatarInputRef = useRef(null);
   const avatarMenuRef = useRef(null);
@@ -54,6 +57,10 @@ export default function OwnProfileMentee({ mentee }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    getFavorites(token).then(setFavorites);
+  }, [token]);
 
   async function saveBio() {
     const updatedProfile = await updateMenteeProfile(token, { bio: bioText });
@@ -205,7 +212,7 @@ export default function OwnProfileMentee({ mentee }) {
               onClick={() => setIsEditingBio(true)}
               aria-label="Editar bio"
             >
-              <FaPen />
+              <FiEdit2 /> {/* ← MUDOU: trocado de FaPen para FiEdit2 */}
             </button>
           </div>
         )}
@@ -269,7 +276,6 @@ export default function OwnProfileMentee({ mentee }) {
                 </button>
               </div>
             )}
-
             <div className="mentee-profile_interests-edit-actions">
               <button onClick={saveInterests} aria-label="Guardar interesses">
                 <FaCheck />
@@ -292,7 +298,7 @@ export default function OwnProfileMentee({ mentee }) {
               onClick={() => setIsEditingInterests(true)}
               aria-label="Editar interesses"
             >
-              <FaPen />
+              <FiEdit2 /> {/* ← MUDOU: trocado de FaPen para FiEdit2 */}
             </button>
           </div>
         )}
@@ -337,6 +343,37 @@ export default function OwnProfileMentee({ mentee }) {
             ))
           )}
         </div>
+      </section>
+
+      {/* OFERTAS FAVORITAS */}
+      <section className="mentee-profile_favorites">
+        <h3>Ofertas favoritas</h3>
+        {favorites.length === 0 ? (
+          <p className="mentee-profile_favorites-empty">
+            Ainda não tens nenhuma oferta favorita.
+          </p>
+        ) : (
+          <div className="mentee-profile_favorites-list">
+            {favorites.map((fav) =>
+              fav.offeringId ? (
+                <Link
+                  key={fav._id}
+                  to={`/mentores/${fav.offeringId.mentorId.userId}`}
+                  className="mentee-profile_favorite-card"
+                >
+                  <h4>{fav.offeringId.title}</h4>
+                  <span>{fav.offeringId.area}</span>
+                  <p>{fav.offeringId.sessionPrice}€</p>
+                </Link>
+              ) : (
+                <div key={fav._id} className="mentee-profile_favorite-card mentee-profile_favorite-card--unavailable">
+                  <h4>Oferta indisponível</h4>
+                  <p>Esta oferta já não existe.</p>
+                </div>
+              )
+            )}
+          </div>
+        )}
       </section>
 
       {/* APAGAR CONTA */}

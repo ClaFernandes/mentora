@@ -63,7 +63,13 @@ const removeFavorite = async (menteeId, offeringId) => {
 };
 
 const getFavorites = async (menteeId) => {
-    const favorites = await Favorite.find({ menteeId }).populate("offeringId");
+    const favorites = await Favorite.find({ menteeId }).populate({
+        path: "offeringId",
+        populate: {
+            path: "mentorId",
+            select: "userId",
+        },
+    });
     return favorites;
 };
 
