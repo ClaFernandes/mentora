@@ -11,6 +11,7 @@ import UpdatePassword from "../pages/auth/UpdatePassword.jsx";
 import MentorOnboarding from "../pages/onboarding/MentorOnboarding.jsx";
 import MenteeOnboarding from "../pages/onboarding/MenteeOnboarding.jsx";
 import FeedPage from "../pages/feed/FeedPage.jsx";
+import PostPage from "../pages/feed/PostPage.jsx";
 import MentorsPage from "../pages/mentors/MentorsPage.jsx";
 import ProfilePage from "../pages/profile/ProfilePage.jsx";
 import ChatWindow from "../pages/chat/ChatWindow.jsx";
@@ -58,6 +59,15 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute>
               <FeedPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/posts/:id"
+          element={
+            <ProtectedRoute>
+              <PostPage />
             </ProtectedRoute>
           }
         />

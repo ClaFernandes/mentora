@@ -61,6 +61,7 @@ const createSession = async (userId, sessionData) => {
       type: "message",
       recipientId: userId,
       actorId: mentorProfile.userId,
+      offeringId: sessionData.offeringId,
     });
   } catch (chatError) {
     console.error(

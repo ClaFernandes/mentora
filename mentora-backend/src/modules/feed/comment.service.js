@@ -32,11 +32,12 @@ const likeComment = async (commentId, userId) => {
     );
 
     const recipientId = comment.userId;
+
     await createNotification({
       type: "like",
       recipientId,
       actorId: userId,
-      commentId,
+      postId: comment.postId,
     });
 
     return { likesCount: updatedComment.likedBy.length };

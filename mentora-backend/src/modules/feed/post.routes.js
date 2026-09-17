@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createPostController,
   getFeedController,
+  getPostByIdController,
   likePostController,
   deletePostController,
   reportPostController,
@@ -12,6 +13,7 @@ const { verifyToken } = require("../auth/auth.middleware");
 
 router.post("/posts", verifyToken, createPostController);
 router.get("/feed", verifyToken, getFeedController);
+router.get("/posts/:id", verifyToken, getPostByIdController);
 router.post("/posts/:id/like", verifyToken, likePostController);
 router.delete("/posts/:id", verifyToken, deletePostController);
 router.post("/posts/:id/report", verifyToken, reportPostController);

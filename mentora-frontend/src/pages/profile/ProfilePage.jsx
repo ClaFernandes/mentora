@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { getMentorProfile } from "../../services/mentorService.js";
@@ -17,6 +17,14 @@ export default function ProfilePage() {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  const previousIdRef = useRef(id);
+
+  if (previousIdRef.current !== id) {
+    previousIdRef.current = id;
+    if (!loading) setLoading(true);
+    if (profileData !== null) setProfileData(null);
+  }
 
   const isOwnProfile = !id || id === user?.id;
 

@@ -11,6 +11,13 @@ export async function getFeed(token, cursor, limit) {
     });
 }
 
+export async function getPostById(token, postId) {
+    return apiRequest(`/posts/${postId}`, {
+        method: "GET",
+        token,
+    });
+}
+
 export async function createPost(token, postData) {
     return apiRequest("/posts", {
         method: "POST",

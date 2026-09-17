@@ -212,7 +212,7 @@ export default function OwnProfileMentee({ mentee }) {
               onClick={() => setIsEditingBio(true)}
               aria-label="Editar bio"
             >
-              <FiEdit2 /> {/* ← MUDOU: trocado de FaPen para FiEdit2 */}
+              <FiEdit2 />
             </button>
           </div>
         )}
@@ -298,7 +298,7 @@ export default function OwnProfileMentee({ mentee }) {
               onClick={() => setIsEditingInterests(true)}
               aria-label="Editar interesses"
             >
-              <FiEdit2 /> {/* ← MUDOU: trocado de FaPen para FiEdit2 */}
+              <FiEdit2 />
             </button>
           </div>
         )}

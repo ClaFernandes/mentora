@@ -3,6 +3,7 @@ const {
     sendMessage,
     getAllMessages,
     getMessagesBySender,
+    markConversationAsRead,
 } = require("./conversation.service");
 
 const getConversationsController = async (req, res) => {
@@ -35,9 +36,18 @@ const getMessagesBySenderController = async (req, res) => {
     res.status(200).json(result);
 };
 
+const markConversationAsReadController = async (req, res) => {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const userRole = req.user.role;
+    const result = await markConversationAsRead(id, userId, userRole);
+    res.status(200).json(result);
+};
+
 module.exports = {
     getConversationsController,
     sendMessageController,
     getAllMessagesController,
     getMessagesBySenderController,
+    markConversationAsReadController,
 };

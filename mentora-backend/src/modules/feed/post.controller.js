@@ -1,6 +1,7 @@
 const {
   createPost,
   getFeed,
+  getPostById,
   likePost,
   deletePost,
   reportPost,
@@ -18,6 +19,12 @@ const getFeedController = async (req, res) => {
   const { cursor } = req.query;
   const limit = Number(req.query.limit) || 10;
   const result = await getFeed(cursor, limit);
+  res.status(200).json(result);
+};
+
+const getPostByIdController = async (req, res) => {
+  const { id } = req.params;
+  const result = await getPostById(id);
   res.status(200).json(result);
 };
 
@@ -52,6 +59,7 @@ const editPostController = async (req, res) => {
 module.exports = {
   createPostController,
   getFeedController,
+  getPostByIdController,
   likePostController,
   deletePostController,
   reportPostController,

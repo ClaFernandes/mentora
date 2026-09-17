@@ -28,3 +28,10 @@ export async function getMessagesBySender(token, offeringId, senderId) {
         token,
     });
 }
+
+export async function markConversationAsRead(token, conversationId) {
+    return apiRequest(`/conversations/${conversationId}/read`, {
+        method: "PUT",
+        token,
+    });
+}

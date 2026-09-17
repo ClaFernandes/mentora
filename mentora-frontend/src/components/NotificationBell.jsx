@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useNotifications } from "../hooks/useNotifications.js";
 import { FiBell } from "react-icons/fi";
 import { formatDistanceToNow } from "date-fns";
@@ -9,6 +10,7 @@ export default function NotificationBell() {
     const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
     const [isOpen, setIsOpen] = useState(false);
     const wrapperRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         function handleClickOutside(e) {
@@ -26,6 +28,9 @@ export default function NotificationBell() {
 
     function handleNotificationClick(notification) {
         markAsRead(notification._id);
+        if (notification.type === "like" || notification.type === "comment") {
+            navigate(`/posts/${notification.postId}`);
+        }
     }
 
     function getMessage(notification) {

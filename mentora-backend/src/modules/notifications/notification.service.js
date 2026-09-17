@@ -1,11 +1,11 @@
 const Notification = require("./notification.model");
 
-const createNotification = async ({ type, recipientId, actorId, postId }) => {
+const createNotification = async ({ type, recipientId, actorId, postId, offeringId }) => {
     if (recipientId.toString() === actorId.toString()) {
         return null;
     }
 
-    const notification = await Notification.create({ type, recipientId, actorId, postId });
+    const notification = await Notification.create({ type, recipientId, actorId, postId, offeringId });
     return notification;
 }
 

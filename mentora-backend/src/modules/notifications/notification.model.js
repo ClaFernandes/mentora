@@ -20,6 +20,10 @@ const notificationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
     },
+    offeringId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Offering",
+    },
     read: {
         type: Boolean,
         default: false

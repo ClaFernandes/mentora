@@ -29,7 +29,7 @@ export default function ChatWindow() {
 
             if (existing) {
                 openConversation(existing);
-            } else {
+            } else if (location.state.otherUser) {
                 const rawOtherUser = location.state.otherUser;
                 const placeholder = {
                     id: null,
@@ -47,6 +47,11 @@ export default function ChatWindow() {
                 };
                 setSelectedConv(placeholder);
                 setMessages([]);
+            } else {
+                console.error(
+                    "Conversa não encontrada para o offeringId recebido da notificação:",
+                    incomingOfferingId,
+                );
             }
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps

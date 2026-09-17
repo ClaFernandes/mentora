@@ -47,6 +47,24 @@ const getFeed = async (cursor, limit) => {
   return { posts, nextCursor };
 };
 
+const getPostById = async (postId) => {
+  const post = await Post.findById(postId).populate({
+    path: "mentorId",
+    populate: {
+      path: "userId",
+      select: "name surname email avatarUrl",
+    },
+  });
+
+  if (!post) {
+    const error = new Error("Post não encontrado");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return post;
+};
+
 const likePost = async (postId, userId) => {
   const post = await Post.findById(postId);
 
@@ -166,4 +184,4 @@ const editPost = async (postId, userId, updates) => {
   return updated;
 }
 
-module.exports = { createPost, getFeed, likePost, deletePost, reportPost, editPost };
+module.exports = { createPost, getFeed, getPostById, likePost, deletePost, reportPost, editPost };

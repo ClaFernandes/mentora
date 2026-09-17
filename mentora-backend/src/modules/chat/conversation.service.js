@@ -137,6 +137,7 @@ const sendMessage = async (offeringId, userId, userRole, { text, menteeId }) => 
         type: "message",
         recipientId,
         actorId: userId,
+        offeringId,
     });
 
     return message;
@@ -202,9 +203,46 @@ const getMessagesBySender = async (offeringId, senderId, userId) => {
     return messages;
 };
 
+const markConversationAsRead = async (conversationId, userId, userRole) => {
+    const conversation = await Conversation.findById(conversationId);
+
+    if (!conversation) {
+        const error = new Error("Conversa não encontrada");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    if (userRole === "mentee") {
+        if (conversation.menteeId.toString() !== userId.toString()) {
+            const error = new Error("Não tens permissão para marcar esta conversa como lida");
+            error.statusCode = 403;
+            throw error;
+        }
+        conversation.unreadByMentee = false;
+    } else if (userRole === "mentor") {
+        const offering = await Offering.findById(conversation.offeringId);
+        const mentorProfile = await MentorProfile.findById(offering.mentorId);
+
+        if (mentorProfile.userId.toString() !== userId.toString()) {
+            const error = new Error("Não tens permissão para marcar esta conversa como lida");
+            error.statusCode = 403;
+            throw error;
+        }
+        conversation.unreadByMentor = false;
+    } else {
+        const error = new Error("Apenas mentores e mentorados podem usar o chat");
+        error.statusCode = 403;
+        throw error;
+    }
+
+    await conversation.save();
+    return conversation;
+};
+
 module.exports = {
     getConversations,
     sendMessage,
     getAllMessages,
     getMessagesBySender,
+    markConversationAsRead,
 };
