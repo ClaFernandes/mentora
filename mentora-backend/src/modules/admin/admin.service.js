@@ -179,10 +179,15 @@ const toggleUserStatus = async (userId) => {
         throw error;
     }
 
-    user.status = user.status === "active" ? "suspended" : "active";
-    await user.save();
+    const newStatus = user.status === "active" ? "suspended" : "active";
 
-    return { id: user._id, status: user.status };
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: { status: newStatus } },
+        { new: true, runValidators: true },
+    );
+
+    return { id: updatedUser._id, status: updatedUser.status };
 };
 
 const deleteMentorAccount = async (userId) => {
