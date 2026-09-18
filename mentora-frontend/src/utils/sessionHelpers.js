@@ -7,11 +7,19 @@ export function resolveDisplayStatus(session) {
         return "cancelled";
     }
 
-    const sessionDateTime = getSessionDateTime(session);
-    const now = new Date();
-
-    if (sessionDateTime < now) {
+    if (session.status === "completed") {
         return "completed";
+    }
+
+    if (session.status === "confirmed") {
+        const sessionDateTime = getSessionDateTime(session);
+        const now = new Date();
+
+        if (sessionDateTime < now) {
+            return "completed";
+        }
+
+        return "confirmed";
     }
 
     return "confirmed";

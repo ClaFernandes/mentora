@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
-import { getSessions, cancelSession } from "../../services/sessionService.js";
+import { getSessions, cancelSession, rateSession } from "../../services/sessionService.js";
 import { addFavorite, removeFavorite, getFavorites } from "../../services/favoriteService.js";
 import { resolveDisplayStatus } from "../../utils/sessionHelpers.js";
 import Avatar from "../../components/Avatar.jsx";
 import EmptyState from "../../components/EmptyState.jsx";
 import ConfirmModal from "../../components/ConfirmModal.jsx";
+import RatingStars from "../../components/RatingStars.jsx";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { format } from "date-fns";
 import { pt } from "date-fns/locale";
@@ -25,6 +26,7 @@ export default function SessionsPage() {
     const [sessions, setSessions] = useState([]);
     const [cancelTarget, setCancelTarget] = useState(null);
     const [favoritedOfferingIds, setFavoritedOfferingIds] = useState([]);
+    const [ratingSessionId, setRatingSessionId] = useState(null);
 
     useEffect(() => {
         getSessions(token).then(setSessions);
@@ -76,6 +78,15 @@ export default function SessionsPage() {
             await addFavorite(token, offeringId);
             setFavoritedOfferingIds((prev) => [...prev, offeringId]);
         }
+    }
+
+    async function handleSubmitRating(sessionId, { rating, reviewText }) {
+        const updatedSession = await rateSession(token, sessionId, { rating, reviewText });
+
+        setSessions((prev) =>
+            prev.map((s) => (s._id === updatedSession._id ? updatedSession : s))
+        );
+        setRatingSessionId(null);
     }
 
     return (
@@ -167,7 +178,31 @@ export default function SessionsPage() {
                                             )}
                                         </button>
                                     )}
+
+                                    {user.role === "mentee" && displayStatus === "completed" && !session.rating && (
+                                        <button
+                                            type="button"
+                                            className="session-rate-btn"
+                                            onClick={() => setRatingSessionId(session._id)}
+                                        >
+                                            Avaliar
+                                        </button>
+                                    )}
+
+                                    {session.rating && (
+                                        <RatingStars mode="read" rating={session.rating} reviewText={session.reviewText} />
+                                    )}
                                 </div>
+
+                                {ratingSessionId === session._id && (
+                                    <div className="session-rating-panel">
+                                        <RatingStars
+                                            mode="write"
+                                            onSubmit={(data) => handleSubmitRating(session._id, data)}
+                                            onCancel={() => setRatingSessionId(null)}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         );
                     })}

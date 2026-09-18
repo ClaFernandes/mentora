@@ -156,4 +156,72 @@ const cancelSession = async (sessionId, userId) => {
   return updatedSession;
 };
 
-module.exports = { createSession, getSessions, cancelSession };
+const rateSession = async (sessionId, userId, { rating, reviewText }) => {
+  const session = await Session.findById(sessionId);
+
+  if (!session) {
+    const error = new Error("Sessão não encontrada");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (session.menteeId.toString() !== userId.toString()) {
+    const error = new Error("Não tens permissão para avaliar esta sessão");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  if (session.rating) {
+    const error = new Error("Esta sessão já foi avaliada");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const sessionDateTime = new Date(`${session.date}T${session.time}:00`);
+  const now = new Date();
+  const isCompleted = session.status === "confirmed" && sessionDateTime < now;
+
+  if (!isCompleted) {
+    const error = new Error("Só é possível avaliar sessões já concluídas");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (!rating || rating < 1 || rating > 5) {
+    const error = new Error("A avaliação deve ser um número entre 1 e 5");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  session.status = "completed";
+  session.rating = rating;
+  session.reviewText = reviewText || "";
+  await session.save();
+
+  const ratedSessions = await Session.find({
+    mentorId: session.mentorId,
+    rating: { $exists: true, $ne: null },
+  });
+
+  const totalRating = ratedSessions.reduce((sum, s) => sum + s.rating, 0);
+  const avgRating = totalRating / ratedSessions.length;
+
+  await MentorProfile.findByIdAndUpdate(session.mentorId, {
+    $set: { avgRating: Math.round(avgRating * 10) / 10 },
+  });
+
+  const populatedSession = await Session.findById(session._id)
+    .populate({
+      path: "mentorId",
+      populate: {
+        path: "userId",
+        select: "name surname email avatarUrl",
+      },
+    })
+    .populate("menteeId", "name surname email avatarUrl")
+    .populate("offeringId");
+
+  return populatedSession;
+};
+
+module.exports = { createSession, getSessions, cancelSession, rateSession };

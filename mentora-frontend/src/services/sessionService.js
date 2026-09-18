@@ -22,6 +22,14 @@ export async function cancelSession(token, sessionId) {
     });
 }
 
+export async function rateSession(token, sessionId, { rating, reviewText }) {
+    return apiRequest(`/sessions/${sessionId}/rate`, {
+        method: "PUT",
+        token,
+        body: { rating, reviewText },
+    });
+}
+
 export async function paySession(token, sessionId) {
     return apiRequest(`/sessions/${sessionId}/pay`, {
         method: "POST",

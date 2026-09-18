@@ -166,7 +166,8 @@
 }
 
 .session-rating-panel {
-    padding: 0 4px;
+    flex-shrink: 0;
+    width: 280px;
 }
 
 .session-chat-notice {

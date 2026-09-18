@@ -30,7 +30,7 @@
     background-color: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: 12px;
-    padding: 14px 16px;
+    padding: 10px 12px;
 }
 
 .rating-star-btn {
@@ -42,21 +42,21 @@
 }
 
 .rating-star-btn .rating-star {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     transition: color 0.1s ease;
 }
 
 .rating-textarea {
     width: 100%;
     font-family: "Inter", sans-serif;
-    font-size: 0.88rem;
-    padding: 8px 10px;
+    font-size: 0.75rem;
+    padding: 6px 8px;
     border-radius: 8px;
     border: 1px solid var(--color-border);
     background-color: var(--color-bg-elevated);
     color: var(--color-text);
     resize: vertical;
-    min-height: 60px;
+    min-height: 54px;
 }
 
 .rating-actions {
@@ -69,9 +69,9 @@
     background: none;
     border: 1px solid var(--color-border);
     color: var(--color-text-secondary);
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 999px;
-    font-size: 0.82rem;
+    font-size: 0.75rem;
     cursor: pointer;
 }
 
@@ -79,9 +79,9 @@
     background-color: var(--color-accent);
     color: var(--color-accent-text);
     border: none;
-    padding: 6px 16px;
+    padding: 5px 12px;
     border-radius: 999px;
-    font-size: 0.82rem;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     transition: opacity 0.15s ease;

@@ -2,6 +2,7 @@ const {
   createSession,
   getSessions,
   cancelSession,
+  rateSession,
 } = require("./session.service");
 
 const createSessionController = async (req, res) => {
@@ -25,8 +26,17 @@ const cancelSessionController = async (req, res) => {
   res.status(200).json(result);
 };
 
+const rateSessionController = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  const { rating, reviewText } = req.body;
+  const result = await rateSession(id, userId, { rating, reviewText });
+  res.status(200).json(result);
+};
+
 module.exports = {
   createSessionController,
   getSessionsController,
   cancelSessionController,
+  rateSessionController,
 };
