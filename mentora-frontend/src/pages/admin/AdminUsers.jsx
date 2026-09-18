@@ -30,7 +30,7 @@ export default function AdminUsers({
                 ) : (
                     <div className="admin-mentors-list">
                         {pendingMentors.map((mentor) => (
-                            <div key={mentor.id} className="admin-mentor-item">
+                            <div key={mentor._id} className="admin-mentor-item">
                                 <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={48} />
                                 <div className="admin-mentor-info">
                                     <h4>{mentor.name} {mentor.surname}</h4>
@@ -40,7 +40,7 @@ export default function AdminUsers({
                                     <button
                                         type="button"
                                         className="admin-approve-btn"
-                                        onClick={() => handleApproveMentor(mentor.id)}
+                                        onClick={() => handleApproveMentor(mentor._id)}
                                     >
                                         Aprovar
                                     </button>
@@ -48,7 +48,7 @@ export default function AdminUsers({
                                     <button
                                         type="button"
                                         className="admin-remove-btn"
-                                        onClick={() => handleRequestRejectMentor(mentor.id, `${mentor.name} ${mentor.surname}`)}
+                                        onClick={() => handleRequestRejectMentor(mentor._id, `${mentor.name} ${mentor.surname}`)}
                                     >
                                         Rejeitar
                                     </button>
@@ -76,7 +76,7 @@ export default function AdminUsers({
                     </thead>
                     <tbody>
                         {visibleMentors.map((mentor) => (
-                            <tr key={mentor.id}>
+                            <tr key={mentor._id}>
                                 <td>
                                     <div className="admin-table-name">
                                         <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={28} />
@@ -125,7 +125,7 @@ export default function AdminUsers({
                     </thead>
                     <tbody>
                         {visibleMentees.map((mentee) => (
-                            <tr key={mentee.id}>
+                            <tr key={mentee._id}>
                                 <td>
                                     <div className="admin-table-name">
                                         <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={28} />

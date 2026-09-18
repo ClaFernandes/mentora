@@ -40,7 +40,7 @@ export default function AdminAdmins({
                         </tr>
 
                         {admins.map((admin) => (
-                            <tr key={admin.id}>
+                            <tr key={admin._id}>
                                 <td>
                                     <div className="admin-table-name">
                                         <Avatar name={admin.name} surname={admin.surname} size={28} />
@@ -53,7 +53,7 @@ export default function AdminAdmins({
                                         type="button"
                                         className="admin-delete-btn"
                                         title="Remover"
-                                        onClick={() => handleRequestRemoveAdmin(admin.id, `${admin.name} ${admin.surname}`)}
+                                        onClick={() => handleRequestRemoveAdmin(admin._id, `${admin.name} ${admin.surname}`)}
                                     >
                                         <FiTrash2 />
                                     </button>

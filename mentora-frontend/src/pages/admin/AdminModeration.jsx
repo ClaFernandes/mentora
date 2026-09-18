@@ -34,21 +34,21 @@ export default function AdminModeration({
                 ) : (
                     <div className="admin-reported-list">
                         {reportedPosts.map((post) => (
-                            <div key={post.id} className="admin-reported-item">
+                            <div key={post._id} className="admin-reported-item">
                                 <span className="admin-reported-type">Post</span>
                                 <p className="admin-reported-content">{post.content}</p>
                                 <div className="admin-reported-actions">
                                     <button
                                         type="button"
                                         className="admin-dismiss-btn"
-                                        onClick={() => handleDismissReport("post", post.id)}
+                                        onClick={() => handleDismissReport("post", post._id)}
                                     >
                                         <FiCheck /> Rejeitar denúncia
                                     </button>
                                     <button
                                         type="button"
                                         className="admin-remove-btn"
-                                        onClick={() => handleRemoveContent("post", post.id)}
+                                        onClick={() => handleRemoveContent("post", post._id)}
                                     >
                                         <FiX /> Remover
                                     </button>
@@ -57,21 +57,21 @@ export default function AdminModeration({
                         ))}
 
                         {reportedComments.map((comment) => (
-                            <div key={comment.id} className="admin-reported-item">
+                            <div key={comment._id} className="admin-reported-item">
                                 <span className="admin-reported-type">Comentário</span>
                                 <p className="admin-reported-content">{comment.text}</p>
                                 <div className="admin-reported-actions">
                                     <button
                                         type="button"
                                         className="admin-dismiss-btn"
-                                        onClick={() => handleDismissReport("comment", comment.id)}
+                                        onClick={() => handleDismissReport("comment", comment._id)}
                                     >
                                         <FiCheck /> Rejeitar denúncia
                                     </button>
                                     <button
                                         type="button"
                                         className="admin-remove-btn"
-                                        onClick={() => handleRemoveContent("comment", comment.id)}
+                                        onClick={() => handleRemoveContent("comment", comment._id)}
                                     >
                                         <FiX /> Remover
                                     </button>
@@ -98,7 +98,7 @@ export default function AdminModeration({
                     </thead>
                     <tbody>
                         {visibleModMentors.map((mentor) => (
-                            <tr key={mentor.id}>
+                            <tr key={mentor._id}>
                                 <td>
                                     <div className="admin-table-name">
                                         <Avatar src={mentor.avatarUrl} name={mentor.name} surname={mentor.surname} size={28} />
@@ -121,7 +121,7 @@ export default function AdminModeration({
                                                     : "admin-reactivate-btn"
                                             }
                                             onClick={() =>
-                                                handleRequestStatusChange("mentor", mentor.id, `${mentor.name} ${mentor.surname}`, mentor.status)
+                                                handleRequestStatusChange("mentor", mentor._id, `${mentor.name} ${mentor.surname}`, mentor.status)
                                             }
                                         >
                                             {mentor.status === "active" ? "Suspender" : "Reativar"}
@@ -130,7 +130,7 @@ export default function AdminModeration({
                                         <button
                                             type="button"
                                             className="admin-delete-btn"
-                                            onClick={() => handleRequestDeleteAccount("mentor", mentor.id, `${mentor.name} ${mentor.surname}`)}
+                                            onClick={() => handleRequestDeleteAccount("mentor", mentor._id, `${mentor.name} ${mentor.surname}`)}
                                         >
                                             <FiTrash2 />
                                         </button>
@@ -168,7 +168,7 @@ export default function AdminModeration({
                     </thead>
                     <tbody>
                         {visibleModMentees.map((mentee) => (
-                            <tr key={mentee.id}>
+                            <tr key={mentee._id}>
                                 <td>
                                     <div className="admin-table-name">
                                         <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={28} />
@@ -191,7 +191,7 @@ export default function AdminModeration({
                                                     : "admin-reactivate-btn"
                                             }
                                             onClick={() =>
-                                                handleRequestStatusChange("mentee", mentee.id, `${mentee.name} ${mentee.surname}`, mentee.status)
+                                                handleRequestStatusChange("mentee", mentee._id, `${mentee.name} ${mentee.surname}`, mentee.status)
                                             }
                                         >
                                             {mentee.status === "active" ? "Suspender" : "Reativar"}
@@ -199,7 +199,7 @@ export default function AdminModeration({
                                         <button
                                             type="button"
                                             className="admin-delete-btn"
-                                            onClick={() => handleRequestDeleteAccount("mentee", mentee.id, `${mentee.name} ${mentee.surname}`)}
+                                            onClick={() => handleRequestDeleteAccount("mentee", mentee._id, `${mentee.name} ${mentee.surname}`)}
                                         >
                                             <FiTrash2 />
                                         </button>
