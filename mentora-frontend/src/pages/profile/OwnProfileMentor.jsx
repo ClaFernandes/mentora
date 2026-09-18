@@ -1,201 +1,28 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth.js";
-import { updateMentorProfile } from "../../services/mentorService.js";
-import { uploadImage } from "../../services/uploadService.js";
-import { deleteAccount, updateAvatar } from "../../services/userService.js";
-import {
-  createOffering,
-  updateOffering,
-  deleteOffering,
-} from "../../services/offeringService.js";
 import {
   getAvailability,
   createAvailability,
   deleteAvailability,
 } from "../../services/availabilityService.js";
-import Avatar from "../../components/Avatar.jsx";
-import ConfirmModal from "../../components/ConfirmModal.jsx";
-import { MENTORSHIP_AREAS } from "../../utils/constants.js";
+import ProfileAvatarUpload from "../../components/ProfileAvatarUpload.jsx";
+import DangerZoneSection from "../../components/DangerZoneSection.jsx";
 import AvailabilityCalendar from "../../components/AvailabilityCalendar.jsx";
-import {
-  FaCheckCircle,
-  FaPen,
-  FaCheck,
-  FaTimes,
-  FaTrash,
-} from "react-icons/fa";
-import { FiCamera, FiTrash2 } from "react-icons/fi";
+import MentorBioSection from "./MentorBioSection.jsx";
+import MentorAreasSection from "./MentorAreasSection.jsx";
+import MentorOfferingsSection from "./MentorOfferingsSection.jsx";
+import { FaCheckCircle } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
 
 export default function OwnProfileMentor({ mentor }) {
-  const { token, setUser, logout } = useAuth();
-
-  const navigate = useNavigate();
-
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [isEditingBio, setIsEditingBio] = useState(false);
-  const [bioText, setBioText] = useState(mentor.bio);
-  const [isEditingAreas, setIsEditingAreas] = useState(false);
-  const [selectedAreas, setSelectedAreas] = useState(
-    mentor.mentorProfile.areas,
-  );
-  const [showCustomAreaInput, setShowCustomAreaInput] = useState(false);
-  const [customArea, setCustomArea] = useState("");
-  const [editingOfferingId, setEditingOfferingId] = useState(null);
-  const [editingOfferingData, setEditingOfferingData] = useState({
-    title: "",
-    area: "",
-    sessionPrice: "",
-    description: "",
-    level: "",
-  });
-  const [editingOfferingAreaMode, setEditingOfferingAreaMode] =
-    useState("select");
-  const [isAddingOffering, setIsAddingOffering] = useState(false);
-  const [newOffering, setNewOffering] = useState({
-    title: "",
-    area: "",
-    sessionPrice: "",
-    description: "",
-    level: "",
-  });
-  const [newOfferingAreaMode, setNewOfferingAreaMode] = useState("select");
+  const { token } = useAuth();
   const [availability, setAvailability] = useState([]);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
-
-  const avatarInputRef = useRef(null);
-  const avatarMenuRef = useRef(null);
 
   useEffect(() => {
     getAvailability(mentor.id).then(setAvailability);
   }, [mentor.id]);
 
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target)) {
-        setShowAvatarMenu(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  async function handleAvatarChange(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setUploadingAvatar(true);
-    try {
-      const uploadResult = await uploadImage(token, file);
-      await updateAvatar(token, uploadResult.url);
-      setUser((prev) => ({ ...prev, avatarUrl: uploadResult.url }));
-    } finally {
-      setUploadingAvatar(false);
-      setShowAvatarMenu(false);
-    }
-  }
-
-  async function handleRemoveAvatar() {
-    setUploadingAvatar(true);
-    try {
-      await updateAvatar(token, "");
-      setUser((prev) => ({ ...prev, avatarUrl: "" }));
-    } finally {
-      setUploadingAvatar(false);
-      setShowAvatarMenu(false);
-    }
-  }
-
-  async function saveBio() {
-    const updatedProfile = await updateMentorProfile(token, { bio: bioText });
-    setUser((prev) => ({ ...prev, bio: updatedProfile.bio }));
-    setIsEditingBio(false);
-  }
-
-  function toggleArea(area) {
-    setSelectedAreas((prev) =>
-      prev.includes(area) ? prev.filter((a) => a !== area) : [...prev, area],
-    );
-  }
-
-  function addCustomArea() {
-    const trimmed = customArea.trim();
-    if (trimmed && !selectedAreas.includes(trimmed)) {
-      setSelectedAreas((prev) => [...prev, trimmed]);
-    }
-    setCustomArea("");
-    setShowCustomAreaInput(false);
-  }
-
-  async function saveAreas() {
-    const updatedProfile = await updateMentorProfile(token, {
-      areas: selectedAreas,
-    });
-    setUser((prev) => ({
-      ...prev,
-      mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
-    }));
-    setIsEditingAreas(false);
-  }
-
-  function cancelEditingAreas() {
-    setSelectedAreas(mentor.mentorProfile.areas);
-    setShowCustomAreaInput(false);
-    setCustomArea("");
-    setIsEditingAreas(false);
-  }
-
-  function startEditingOffering(offering) {
-    setEditingOfferingId(offering._id);
-    setEditingOfferingData({
-      title: offering.title,
-      area: offering.area,
-      sessionPrice: offering.sessionPrice,
-      description: offering.description,
-      level: offering.level,
-    });
-    setEditingOfferingAreaMode(
-      MENTORSHIP_AREAS.includes(offering.area) ? "select" : "custom",
-    );
-  }
-
-  function cancelEditingOffering() {
-    setEditingOfferingId(null);
-  }
-
-  async function saveOffering(offeringId) {
-    const updatedOffering = await updateOffering(
-      token,
-      offeringId,
-      editingOfferingData,
-    );
-    setUser((prev) => ({
-      ...prev,
-      mentorProfile: {
-        ...prev.mentorProfile,
-        offerings: prev.mentorProfile.offerings.map((o) =>
-          o._id === offeringId ? updatedOffering : o,
-        ),
-      },
-    }));
-    setEditingOfferingId(null);
-  }
-
-  async function removeOffering(offeringId) {
-    await deleteOffering(token, offeringId);
-    setUser((prev) => ({
-      ...prev,
-      mentorProfile: {
-        ...prev.mentorProfile,
-        offerings: prev.mentorProfile.offerings.filter(
-          (o) => o._id !== offeringId,
-        ),
-      },
-    }));
-  }
 
   async function handleAddAvailabilityBlock(blockData) {
     const createdBlock = await createAvailability(token, blockData);
@@ -209,93 +36,15 @@ export default function OwnProfileMentor({ mentor }) {
     );
   }
 
-  async function handleDeleteAccount() {
-    await deleteAccount(token);
-    logout();
-    navigate("/");
-  }
-
-  async function addOffering() {
-    const createdOffering = await createOffering(token, newOffering);
-    setUser((prev) => ({
-      ...prev,
-      mentorProfile: {
-        ...prev.mentorProfile,
-        offerings: [...prev.mentorProfile.offerings, createdOffering],
-      },
-    }));
-    setNewOffering({
-      title: "",
-      area: "",
-      sessionPrice: "",
-      description: "",
-      level: "",
-    });
-    setNewOfferingAreaMode("select");
-    setIsAddingOffering(false);
-  }
-
-  function cancelAddingOffering() {
-    setNewOffering({
-      title: "",
-      area: "",
-      sessionPrice: "",
-      description: "",
-      level: "",
-    });
-    setNewOfferingAreaMode("select");
-    setIsAddingOffering(false);
-  }
-
   return (
     <div className="mentor-profile">
-      {/* CABEÇALHO */}
       <header className="mentor-profile_header">
-        <div className="mentor-profile_avatar-wrapper" ref={avatarMenuRef}>
-          <Avatar
-            src={mentor.avatarUrl}
-            name={mentor.name}
-            surname={mentor.surname}
-            size={80}
-          />
-          <button
-            type="button"
-            className="mentor-profile_avatar-badge"
-            onClick={() => setShowAvatarMenu((prev) => !prev)}
-            disabled={uploadingAvatar}
-            aria-label="Opções de foto de perfil"
-          >
-            <FiCamera />
-          </button>
-
-          {showAvatarMenu && (
-            <div className="mentor-profile_avatar-menu">
-              <button
-                type="button"
-                onClick={() => avatarInputRef.current.click()}
-              >
-                <FiCamera /> Carregar foto
-              </button>
-              {mentor.avatarUrl && (
-                <button
-                  type="button"
-                  className="mentor-profile_avatar-menu-danger"
-                  onClick={handleRemoveAvatar}
-                >
-                  <FiTrash2 /> Remover foto
-                </button>
-              )}
-            </div>
-          )}
-
-          <input
-            type="file"
-            accept="image/*"
-            ref={avatarInputRef}
-            style={{ display: "none" }}
-            onChange={handleAvatarChange}
-          />
-        </div>
+        <ProfileAvatarUpload
+          name={mentor.name}
+          surname={mentor.surname}
+          avatarUrl={mentor.avatarUrl}
+          variant="mentor"
+        />
 
         <div className="mentor-profile_header-info">
           <h2>
@@ -310,7 +59,6 @@ export default function OwnProfileMentor({ mentor }) {
         </div>
       </header>
 
-      {/* ESTATÍSTICAS */}
       <section className="mentor-profile_meta mentor-profile_meta-readonly">
         <div className="mentor-profile_stats">
           <p className="mentor-profile_rating">
@@ -322,359 +70,12 @@ export default function OwnProfileMentor({ mentor }) {
         </div>
       </section>
 
-      {/* BIO */}
-      <section className="mentor-profile_bio">
-        {isEditingBio ? (
-          <div className="mentor-profile_bio-edit">
-            <textarea
-              value={bioText}
-              onChange={(e) => setBioText(e.target.value)}
-            />
-            <div className="mentor-profile_bio-edit-actions">
-              <button onClick={saveBio} aria-label="Guardar bio">
-                <FaCheck />
-              </button>
-              <button
-                onClick={() => setIsEditingBio(false)}
-                aria-label="Cancelar"
-              >
-                <FaTimes />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="mentor-profile_bio-view">
-            <p>{mentor.bio}</p>
-            <button
-              onClick={() => setIsEditingBio(true)}
-              aria-label="Editar bio"
-            >
-              <FaPen />
-            </button>
-          </div>
-        )}
-      </section>
+      <MentorBioSection bio={mentor.bio} />
 
-      {/* ÁREAS */}
-      <section className="mentor-profile_areas">
-        {isEditingAreas ? (
-          <div className="mentor-profile_areas-edit">
-            <div className="mentor-profile_areas-checkboxes">
-              {MENTORSHIP_AREAS.map((area) => (
-                <label key={area} className="mentor-profile_area-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={selectedAreas.includes(area)}
-                    onChange={() => toggleArea(area)}
-                  />
-                  {area}
-                </label>
-              ))}
+      <MentorAreasSection areas={mentor.mentorProfile.areas} />
 
-              {selectedAreas
-                .filter((a) => !MENTORSHIP_AREAS.includes(a))
-                .map((area) => (
-                  <label key={area} className="mentor-profile_area-checkbox">
-                    <input
-                      type="checkbox"
-                      checked
-                      onChange={() => toggleArea(area)}
-                    />
-                    {area}
-                  </label>
-                ))}
-            </div>
+      <MentorOfferingsSection offerings={mentor.mentorProfile.offerings} />
 
-            {!showCustomAreaInput ? (
-              <button
-                type="button"
-                onClick={() => setShowCustomAreaInput(true)}
-                className="mentor-profile_add-custom-area"
-              >
-                + Outra
-              </button>
-            ) : (
-              <div className="mentor-profile_custom-area">
-                <input
-                  type="text"
-                  value={customArea}
-                  onChange={(e) => setCustomArea(e.target.value)}
-                  placeholder="Escreve a área"
-                  autoFocus
-                />
-                <button type="button" onClick={addCustomArea}>
-                  Adicionar
-                </button>
-              </div>
-            )}
-
-            <div className="mentor-profile_areas-edit-actions">
-              <button onClick={saveAreas} aria-label="Guardar áreas">
-                <FaCheck />
-              </button>
-              <button onClick={cancelEditingAreas} aria-label="Cancelar">
-                <FaTimes />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="mentor-profile_areas-view">
-            <div className="mentor-profile_areas-badges">
-              {mentor.mentorProfile.areas.map((area) => (
-                <span key={area} className="mentor-profile_area-badge">
-                  {area}
-                </span>
-              ))}
-            </div>
-            <button
-              onClick={() => setIsEditingAreas(true)}
-              aria-label="Editar áreas"
-            >
-              <FaPen />
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* OFERTAS */}
-      <section className="mentor-profile_offerings">
-        <h3>Ofertas</h3>
-
-        {mentor.mentorProfile.offerings.map((offering) => (
-          <div key={offering._id} className="mentor-profile_offering">
-            {editingOfferingId === offering._id ? (
-              <div className="mentor-profile_offering-edit">
-                <input
-                  type="text"
-                  placeholder="Título"
-                  value={editingOfferingData.title}
-                  onChange={(e) =>
-                    setEditingOfferingData({
-                      ...editingOfferingData,
-                      title: e.target.value,
-                    })
-                  }
-                />
-                <select
-                  value={
-                    editingOfferingAreaMode === "custom"
-                      ? "Outras"
-                      : editingOfferingData.area
-                  }
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "Outras") {
-                      setEditingOfferingAreaMode("custom");
-                      setEditingOfferingData({
-                        ...editingOfferingData,
-                        area: "",
-                      });
-                    } else {
-                      setEditingOfferingAreaMode("select");
-                      setEditingOfferingData({
-                        ...editingOfferingData,
-                        area: value,
-                      });
-                    }
-                  }}
-                >
-                  {MENTORSHIP_AREAS.map((area) => (
-                    <option key={area} value={area}>
-                      {area}
-                    </option>
-                  ))}
-                  <option value="Outras">Outras</option>
-                </select>
-                {editingOfferingAreaMode === "custom" && (
-                  <input
-                    type="text"
-                    placeholder="Escreve a área"
-                    value={editingOfferingData.area}
-                    onChange={(e) =>
-                      setEditingOfferingData({
-                        ...editingOfferingData,
-                        area: e.target.value,
-                      })
-                    }
-                  />
-                )}
-                <input
-                  type="number"
-                  placeholder="Preço"
-                  value={editingOfferingData.sessionPrice}
-                  onChange={(e) =>
-                    setEditingOfferingData({
-                      ...editingOfferingData,
-                      sessionPrice: Number(e.target.value),
-                    })
-                  }
-                />
-
-                <select
-                  value={editingOfferingData.level}
-                  onChange={(e) =>
-                    setEditingOfferingData({
-                      ...editingOfferingData,
-                      level: e.target.value,
-                    })
-                  }
-                >
-                  <option value="">Selecionar nível</option>
-                  <option value="iniciante">Iniciante</option>
-                  <option value="intermedio">Intermédio</option>
-                  <option value="avancado">Avançado</option>
-                </select>
-
-                <textarea
-                  placeholder="Descrição"
-                  value={editingOfferingData.description}
-                  onChange={(e) =>
-                    setEditingOfferingData({
-                      ...editingOfferingData,
-                      description: e.target.value,
-                    })
-                  }
-                />
-                <div className="mentor-profile_offering-edit-actions">
-                  <button
-                    onClick={() => saveOffering(offering._id)}
-                    aria-label="Guardar oferta"
-                  >
-                    <FaCheck />
-                  </button>
-                  <button onClick={cancelEditingOffering} aria-label="Cancelar">
-                    <FaTimes />
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="mentor-profile_offering-view">
-                <div className="mentor-profile_offering-info">
-                  <h4>{offering.title}</h4>
-                  <span className="mentor-profile_offering-area">
-                    {offering.area}
-                  </span>
-                  <span className="mentor-profile_offering-price">
-                    {offering.sessionPrice}€
-                  </span>
-                  <p>{offering.description}</p>
-                </div>
-
-                <div className="mentor-profile_offering-actions">
-                  <button
-                    onClick={() => startEditingOffering(offering)}
-                    aria-label="Editar oferta"
-                  >
-                    <FaPen />
-                  </button>
-                  <button
-                    onClick={() => removeOffering(offering._id)}
-                    aria-label="Remover oferta"
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-
-        {isAddingOffering ? (
-          <div className="mentor-profile_offering-edit">
-            <input
-              type="text"
-              placeholder="Título"
-              value={newOffering.title}
-              onChange={(e) =>
-                setNewOffering({ ...newOffering, title: e.target.value })
-              }
-            />
-            <select
-              value={
-                newOfferingAreaMode === "custom" ? "Outras" : newOffering.area
-              }
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "Outras") {
-                  setNewOfferingAreaMode("custom");
-                  setNewOffering({ ...newOffering, area: "" });
-                } else {
-                  setNewOfferingAreaMode("select");
-                  setNewOffering({ ...newOffering, area: value });
-                }
-              }}
-            >
-              <option value="">Selecionar área</option>
-              {MENTORSHIP_AREAS.map((area) => (
-                <option key={area} value={area}>
-                  {area}
-                </option>
-              ))}
-              <option value="Outras">Outras</option>
-            </select>
-            {newOfferingAreaMode === "custom" && (
-              <input
-                type="text"
-                placeholder="Escreve a área"
-                value={newOffering.area}
-                onChange={(e) =>
-                  setNewOffering({ ...newOffering, area: e.target.value })
-                }
-              />
-            )}
-            <input
-              type="number"
-              placeholder="Preço"
-              value={newOffering.sessionPrice}
-              onChange={(e) =>
-                setNewOffering({
-                  ...newOffering,
-                  sessionPrice: Number(e.target.value),
-                })
-              }
-            />
-            <select
-              value={newOffering.level}
-              onChange={(e) =>
-                setNewOffering({ ...newOffering, level: e.target.value })
-              }
-            >
-              <option value="">Selecionar nível</option>
-              <option value="iniciante">Iniciante</option>
-              <option value="intermedio">Intermédio</option>
-              <option value="avancado">Avançado</option>
-            </select>
-            <textarea
-              placeholder="Descrição"
-              value={newOffering.description}
-              onChange={(e) =>
-                setNewOffering({
-                  ...newOffering,
-                  description: e.target.value,
-                })
-              }
-            />
-            <div className="mentor-profile_offering-edit-actions">
-              <button onClick={addOffering} aria-label="Guardar nova oferta">
-                <FaCheck />
-              </button>
-              <button onClick={cancelAddingOffering} aria-label="Cancelar">
-                <FaTimes />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <button
-            type="button"
-            className="mentor-profile_add-offering"
-            onClick={() => setIsAddingOffering(true)}
-          >
-            + Adicionar oferta
-          </button>
-        )}
-      </section>
-
-      {/* DISPONIBILIDADE */}
       <section className="mentor-profile_availability">
         <h3>Disponibilidade</h3>
         <AvailabilityCalendar
@@ -684,28 +85,8 @@ export default function OwnProfileMentor({ mentor }) {
         />
       </section>
 
-      {/* APAGAR CONTA */}
-      <section className="mentor-profile_danger-zone">
-        <h3>Zona de perigo</h3>
-        <p>Apagar a tua conta remove os teus dados de forma permanente.</p>
-        <button
-          type="button"
-          className="mentor-profile_delete-account-btn"
-          onClick={() => setShowDeleteConfirm(true)}
-        >
-          Apagar conta
-        </button>
-      </section>
+      <DangerZoneSection variant="mentor" />
 
-      {showDeleteConfirm && (
-        <ConfirmModal
-          title="Apagar a tua conta?"
-          message="Esta ação não pode ser desfeita. Todos os teus dados serão removidos da plataforma."
-          confirmLabel="Sim, apagar conta"
-          onCancel={() => setShowDeleteConfirm(false)}
-          onConfirm={handleDeleteAccount}
-        />
-      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
+import { forgotPassword } from "../../services/authService.js";
 import { FiEye, FiEyeOff, FiMail, FiLock, FiArrowLeft } from "react-icons/fi";
 import logo from "../../assets/logo-transparente-mostarda.png";
 import "./Auth.css";
@@ -43,13 +44,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            await fetch("http://localhost:3000/auth/forgot-password", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ email })
-            });
+            await forgotPassword(email);
             setSuccess(email);
         } catch {
             setError("Não foi possível enviar o email. Verifica o endereço introduzido.");

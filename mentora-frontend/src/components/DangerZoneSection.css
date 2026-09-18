@@ -1,0 +1,38 @@
+.mentor-profile_danger-zone,
+.mentee-profile_danger-zone {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+}
+
+.mentor-profile_danger-zone h3,
+.mentee-profile_danger-zone h3 {
+    color: var(--color-danger);
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+.mentor-profile_danger-zone p,
+.mentee-profile_danger-zone p {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+.mentor-profile_delete-account-btn,
+.mentee-profile_delete-account-btn {
+    background: none;
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.mentor-profile_delete-account-btn:hover,
+.mentee-profile_delete-account-btn:hover {
+    background-color: rgba(179, 64, 31, 0.1);
+}
