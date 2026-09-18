@@ -15,6 +15,12 @@ const registerUser = async ({
   confirmPassword,
   role,
 }) => {
+  if (role !== "mentor" && role !== "mentee") {
+    const error = new Error("Role inválida para registo");
+    error.statusCode = 400;
+    throw error;
+  }
+
   if (password !== confirmPassword) {
     const error = new Error("As palavras-passe não coincidem");
     error.statusCode = 400;

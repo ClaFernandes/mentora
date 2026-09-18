@@ -24,6 +24,7 @@ const menteeFavoritesRoutes = require("./modules/favorites/menteeFavorites.route
 const {
   stripeWebhookController,
 } = require("./modules/payments/payment.controller");
+const adminRoutes = require("./modules/admin/admin.routes");
 
 const app = express();
 
@@ -57,6 +58,7 @@ app.use("/", uploadRoutes);
 app.use("/mentors", availabilityRoutes);
 app.use("/sessions", sessionRoutes);
 app.use("/sessions", paymentRoutes);
+app.use("/admin", adminRoutes);
 
 app.use(errorHandler);
 

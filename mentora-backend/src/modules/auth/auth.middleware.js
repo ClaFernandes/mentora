@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const User = require("../users/user.model");
 
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -22,4 +23,22 @@ const verifyToken = (req, res, next) => {
     }
 }
 
-module.exports = { verifyToken };
+const requireAdmin = async (req, res, next) => {
+    if (req.user.role !== "admin") {
+        const error = new Error("Acesso restrito a administradores");
+        error.statusCode = 403;
+        throw error;
+    }
+
+    const admin = await User.findById(req.user.id);
+
+    if (!admin || admin.status !== "active") {
+        const error = new Error("Conta de administrador inativa ou inexistente");
+        error.statusCode = 403;
+        throw error;
+    }
+
+    next();
+}
+
+module.exports = { verifyToken, requireAdmin };
