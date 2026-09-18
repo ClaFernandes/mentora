@@ -5,7 +5,6 @@ const stripe = require("../../config/stripe");
 const Payment = require("../payments/payment.model");
 const Conversation = require("../chat/conversation.model");
 const Message = require("../chat/message.model");
-const { createNotification } = require("../notifications/notification.service");
 
 const createSession = async (userId, sessionData) => {
   const mentorProfile = await MentorProfile.findOne({
@@ -56,13 +55,6 @@ const createSession = async (userId, sessionData) => {
 
     conversation.unreadByMentee = true;
     await conversation.save();
-
-    await createNotification({
-      type: "message",
-      recipientId: userId,
-      actorId: mentorProfile.userId,
-      offeringId: sessionData.offeringId,
-    });
   } catch (chatError) {
     console.error(
       "Falha ao abrir o chat automático da sessão:",

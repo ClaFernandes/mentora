@@ -2,7 +2,6 @@ const Conversation = require("./conversation.model");
 const Message = require("./message.model");
 const Offering = require("../offerings/offering.model");
 const MentorProfile = require("../users/mentor.model");
-const { createNotification } = require("../notifications/notification.service");
 
 const getConversations = async (userId, userRole) => {
     let conversations;
@@ -129,16 +128,6 @@ const sendMessage = async (offeringId, userId, userRole, { text, menteeId }) => 
         conversation.unreadByMentee = true;
     }
     await conversation.save();
-
-    const recipientId =
-        userRole === "mentee" ? mentorProfile.userId : resolvedMenteeId;
-
-    await createNotification({
-        type: "message",
-        recipientId,
-        actorId: userId,
-        offeringId,
-    });
 
     return message;
 };

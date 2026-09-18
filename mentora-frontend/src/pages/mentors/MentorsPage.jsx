@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
 import { searchMentors } from "../../services/mentorService.js";
@@ -20,8 +20,9 @@ const PAGE_SIZE = 6;
 
 export default function MentorsPage() {
     const { user, updateUser, token } = useAuth();
+    const [searchParams] = useSearchParams();
 
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState(() => searchParams.get("q") || "");
     const [selectedArea, setSelectedArea] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");

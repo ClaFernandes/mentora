@@ -26,7 +26,7 @@ export default function Header() {
     function search(e) {
         e.preventDefault();
         if (searchQuery.trim() !== "") {
-            navigate(`/search?q=${searchQuery}`);
+            navigate(`/mentores?q=${encodeURIComponent(searchQuery.trim())}`);
         }
     }
 
