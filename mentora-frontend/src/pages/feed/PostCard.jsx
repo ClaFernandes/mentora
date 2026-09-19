@@ -15,8 +15,21 @@ import {
 import { uploadImage } from "../../services/uploadService.js";
 import { formatDistanceToNow } from "date-fns";
 import { pt } from "date-fns/locale";
-import { FaHeart, FaRegHeart, FaPen, FaTrash, FaCheckCircle } from "react-icons/fa";
-import { FiFlag, FiMoreVertical, FiCheck, FiX, FiImage } from "react-icons/fi";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaPen,
+  FaTrash,
+  FaCheckCircle,
+} from "react-icons/fa";
+import {
+  FiFlag,
+  FiMoreVertical,
+  FiCheck,
+  FiX,
+  FiImage,
+  FiMessageSquare,
+} from "react-icons/fi";
 import "./PostCard.css";
 
 export default function PostCard({
@@ -31,6 +44,7 @@ export default function PostCard({
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentsLoaded, setCommentsLoaded] = useState(false);
+  const [commentsCount, setCommentsCount] = useState(post.commentsCount ?? 0);
   const [showMenu, setShowMenu] = useState(false);
   const [isEditingPost, setIsEditingPost] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
@@ -95,7 +109,6 @@ export default function PostCard({
 
   async function handleToggleLikeComment(commentId) {
     await likeComment(token, commentId);
-
     setComments((prev) =>
       prev.map((c) => {
         if (c._id !== commentId) return c;
@@ -118,6 +131,7 @@ export default function PostCard({
   async function handleDeleteComment(commentId) {
     await deleteComment(token, commentId);
     setComments((prev) => prev.filter((c) => c._id !== commentId));
+    setCommentsCount((prev) => prev - 1);
   }
 
   async function handleEditComment(commentId, newText) {
@@ -128,17 +142,25 @@ export default function PostCard({
   async function handleAddComment(postId, text) {
     const newComment = await createComment(token, postId, text);
     setComments((prev) => [...prev, newComment]);
+    setCommentsCount((prev) => prev + 1);
   }
 
   return (
     <article className="post-card">
       <header className="post-card_header">
         <Link to={`/mentores/${author._id}`} className="post-card_author">
-          <Avatar src={author.avatarUrl} name={author.name} surname={author.surname} />
+          <Avatar
+            src={author.avatarUrl}
+            name={author.name}
+            surname={author.surname}
+          />
           <span>
             {author.name} {author.surname}
             {post.mentorId.isVerified && (
-              <FaCheckCircle className="post-card_verified" title="Mentor verificado" />
+              <FaCheckCircle
+                className="post-card_verified"
+                title="Mentor verificado"
+              />
             )}
           </span>
         </Link>
@@ -293,7 +315,7 @@ export default function PostCard({
           {post.likedBy.length}
         </button>
         <button onClick={() => setShowComments((prev) => !prev)}>
-          Comentários
+          <FiMessageSquare /> {commentsCount}
         </button>
 
         <button

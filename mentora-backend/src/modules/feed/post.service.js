@@ -1,6 +1,12 @@
 const Post = require("./post.model");
+const Comment = require("./comment.model");
 const MentorProfile = require("../users/mentor.model");
 const { createNotification } = require("../notifications/notification.service");
+
+async function attachCommentsCount(post) {
+  const commentsCount = await Comment.countDocuments({ postId: post._id });
+  return { ...post.toObject(), commentsCount };
+}
 
 const createPost = async (userId, postData) => {
   const mentorProfile = await MentorProfile.findOne({ userId });
@@ -21,10 +27,10 @@ const createPost = async (userId, postData) => {
     populate: {
       path: "userId",
       select: "name surname email avatarUrl",
-    }
+    },
   });
 
-  return newPost;
+  return { ...newPost.toObject(), commentsCount: 0 };
 };
 
 const getFeed = async (cursor, limit) => {
@@ -41,10 +47,12 @@ const getFeed = async (cursor, limit) => {
       },
     });
 
+  const postsWithCounts = await Promise.all(posts.map(attachCommentsCount));
+
   const nextCursor =
     posts.length > 0 ? posts[posts.length - 1].createdAt : null;
 
-  return { posts, nextCursor };
+  return { posts: postsWithCounts, nextCursor };
 };
 
 const getPostById = async (postId) => {
@@ -62,7 +70,7 @@ const getPostById = async (postId) => {
     throw error;
   }
 
-  return post;
+  return attachCommentsCount(post);
 };
 
 const likePost = async (postId, userId) => {
@@ -146,7 +154,7 @@ const editPost = async (postId, userId, updates) => {
     const error = new Error("Post não encontrado");
     error.statusCode = 404;
     throw error;
-  };
+  }
 
   const mentorProfile = await MentorProfile.findById(post.mentorId);
 
@@ -181,7 +189,15 @@ const editPost = async (postId, userId, updates) => {
     },
   });
 
-  return updated;
-}
+  return attachCommentsCount(updated);
+};
 
-module.exports = { createPost, getFeed, getPostById, likePost, deletePost, reportPost, editPost };
+module.exports = {
+  createPost,
+  getFeed,
+  getPostById,
+  likePost,
+  deletePost,
+  reportPost,
+  editPost,
+};
