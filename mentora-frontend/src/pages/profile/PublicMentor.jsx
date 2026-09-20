@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
+import MentorPostsSection from "./MentorPostsSection.jsx";
 import { followMentor, unfollowMentor } from "../../services/followService.js";
 import { FaCheckCircle } from "react-icons/fa";
 import { FiCheck, FiPlus, FiMessageCircle } from "react-icons/fi";
@@ -11,7 +12,9 @@ export default function PublicMentor({ mentor }) {
   const navigate = useNavigate();
   const { user, updateUser, token } = useAuth();
 
-  const isFollowing = user.menteeProfile?.followingMentors?.includes(mentor.userId._id);
+  const isFollowing = user.menteeProfile?.followingMentors?.includes(
+    mentor.userId._id,
+  );
 
   async function toggleFollow() {
     const following = user.menteeProfile?.followingMentors || [];
@@ -48,7 +51,12 @@ export default function PublicMentor({ mentor }) {
   return (
     <div className="mentor-profile">
       <header className="mentor-profile_header">
-        <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} surname={mentor.userId.surname} size={80} />
+        <Avatar
+          src={mentor.userId.avatarUrl}
+          name={mentor.userId.name}
+          surname={mentor.userId.surname}
+          size={80}
+        />
         <div className="mentor-profile_header-info">
           <h2>
             {mentor.userId.name} {mentor.userId.surname}
@@ -118,7 +126,6 @@ export default function PublicMentor({ mentor }) {
               </div>
 
               <div className="mentor-profile_offering-actions-mentee">
-
                 <button
                   type="button"
                   className="mentor-profile_offering-message-btn"
@@ -141,6 +148,8 @@ export default function PublicMentor({ mentor }) {
           </div>
         ))}
       </section>
+
+      <MentorPostsSection mentorId={mentor.userId._id} />
     </div>
   );
-} 
+}

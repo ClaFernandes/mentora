@@ -192,6 +192,39 @@ const editPost = async (postId, userId, updates) => {
   return attachCommentsCount(updated);
 };
 
+const getPostsByMentor = async (mentorUserId, cursor, limit) => {
+  const mentorProfile = await MentorProfile.findOne({ userId: mentorUserId });
+
+  if (!mentorProfile) {
+    const error = new Error("Mentor não encontrado");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const filter = { mentorId: mentorProfile._id };
+  if (cursor) {
+    filter.createdAt = { $lt: cursor };
+  }
+
+  const posts = await Post.find(filter)
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .populate({
+      path: "mentorId",
+      populate: {
+        path: "userId",
+        select: "name surname email avatarUrl",
+      },
+    });
+
+  const postsWithCounts = await Promise.all(posts.map(attachCommentsCount));
+
+  const nextCursor =
+    posts.length > 0 ? posts[posts.length - 1].createdAt : null;
+
+  return { posts: postsWithCounts, nextCursor };
+};
+
 module.exports = {
   createPost,
   getFeed,
@@ -200,4 +233,5 @@ module.exports = {
   deletePost,
   reportPost,
   editPost,
+  getPostsByMentor,
 };

@@ -11,6 +11,7 @@ import AvailabilityCalendar from "../../components/AvailabilityCalendar.jsx";
 import MentorBioSection from "./MentorBioSection.jsx";
 import MentorAreasSection from "./MentorAreasSection.jsx";
 import MentorOfferingsSection from "./MentorOfferingsSection.jsx";
+import MentorPostsSection from "./MentorPostsSection.jsx";
 import { FaCheckCircle } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
@@ -22,7 +23,6 @@ export default function OwnProfileMentor({ mentor }) {
   useEffect(() => {
     getAvailability(mentor.id).then(setAvailability);
   }, [mentor.id]);
-
 
   async function handleAddAvailabilityBlock(blockData) {
     const createdBlock = await createAvailability(token, blockData);
@@ -85,8 +85,9 @@ export default function OwnProfileMentor({ mentor }) {
         />
       </section>
 
-      <DangerZoneSection variant="mentor" />
+      <MentorPostsSection mentorId={mentor.id} />
 
+      <DangerZoneSection variant="mentor" />
     </div>
   );
 }

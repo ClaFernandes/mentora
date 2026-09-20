@@ -8,6 +8,7 @@ const {
   deletePostController,
   reportPostController,
   editPostController,
+  getPostsByMentorController,
 } = require("./post.controller");
 const { verifyToken } = require("../auth/auth.middleware");
 
@@ -18,5 +19,6 @@ router.post("/posts/:id/like", verifyToken, likePostController);
 router.delete("/posts/:id", verifyToken, deletePostController);
 router.post("/posts/:id/report", verifyToken, reportPostController);
 router.put("/posts/:id", verifyToken, editPostController);
+router.get("/mentors/:id/posts", getPostsByMentorController);
 
 module.exports = router;

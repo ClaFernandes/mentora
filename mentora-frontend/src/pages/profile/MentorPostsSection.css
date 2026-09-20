@@ -1,0 +1,30 @@
+.mentor-posts-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+}
+
+.mentor-posts-section h3 {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+}
+
+.mentor-posts-section_load-more {
+    display: block;
+    margin: 12px auto 0;
+    background-color: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 10px 28px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mentor-posts-section_load-more:hover {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+}

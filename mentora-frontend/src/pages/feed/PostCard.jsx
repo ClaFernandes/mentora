@@ -56,6 +56,10 @@ export default function PostCard({
 
   const editFileInputRef = useRef(null);
 
+  if (!post.mentorId || !post.mentorId.userId) {
+    return null;
+  }
+
   const author = post.mentorId.userId;
   const isOwnPost = author._id === currentUserId;
 

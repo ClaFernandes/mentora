@@ -33,6 +33,8 @@ const getAllMentorsAdmin = async (status, page = 1, limit = 10) => {
   }
 
   const buildMentorObject = async (mentorProfile) => {
+    if (!mentorProfile.userId) return null;
+
     const followersCount = await Follow.countDocuments({
       mentorId: mentorProfile._id,
     });
@@ -55,7 +57,9 @@ const getAllMentorsAdmin = async (status, page = 1, limit = 10) => {
       .limit(200)
       .populate("userId", "name surname avatarUrl status");
 
-    const mentors = await Promise.all(mentorProfiles.map(buildMentorObject));
+    const mentors = (
+      await Promise.all(mentorProfiles.map(buildMentorObject))
+    ).filter(Boolean);
     return { mentors, total: mentors.length, page: 1, totalPages: 1 };
   }
 
@@ -69,7 +73,9 @@ const getAllMentorsAdmin = async (status, page = 1, limit = 10) => {
     .limit(limit)
     .populate("userId", "name surname avatarUrl status");
 
-  const mentors = await Promise.all(mentorProfiles.map(buildMentorObject));
+  const mentors = (
+    await Promise.all(mentorProfiles.map(buildMentorObject))
+  ).filter(Boolean);
 
   return { mentors, total, page, totalPages };
 };
@@ -266,7 +272,7 @@ const deleteMenteeAccount = async (userId) => {
   return deleteUser(userId);
 };
 
-const getAllAdmins = async () => {
+const getAllAdmins = async (currentAdminId) => {
   const admins = await User.find({
     role: "admin",
     _id: { $ne: currentAdminId },

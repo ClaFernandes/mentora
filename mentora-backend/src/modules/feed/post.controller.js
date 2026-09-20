@@ -6,6 +6,7 @@ const {
   deletePost,
   reportPost,
   editPost,
+  getPostsByMentor,
 } = require("./post.service");
 
 const createPostController = async (req, res) => {
@@ -54,7 +55,15 @@ const editPostController = async (req, res) => {
   const updates = req.body;
   const result = await editPost(postId, userId, updates);
   res.status(200).json(result);
-}
+};
+
+const getPostsByMentorController = async (req, res) => {
+  const { id } = req.params;
+  const { cursor } = req.query;
+  const limit = Number(req.query.limit) || 3;
+  const result = await getPostsByMentor(id, cursor, limit);
+  res.status(200).json(result);
+};
 
 module.exports = {
   createPostController,
@@ -64,4 +73,5 @@ module.exports = {
   deletePostController,
   reportPostController,
   editPostController,
+  getPostsByMentorController,
 };

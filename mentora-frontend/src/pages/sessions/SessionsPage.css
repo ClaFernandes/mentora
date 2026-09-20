@@ -69,6 +69,7 @@
 
 .session-card_info {
     flex: 1;
+    min-width: 0;
 }
 
 .session-card_info h4 {
@@ -89,6 +90,7 @@
     align-items: flex-end;
     gap: 8px;
     flex-shrink: 0;
+    max-width: 220px;
 }
 
 .session-status {
@@ -178,6 +180,7 @@
     color: var(--color-text-secondary);
     font-size: 0.78rem;
     margin: 8px 0 0 0;
+    overflow-wrap: break-word;
 }
 
 .session-chat-notice a {
