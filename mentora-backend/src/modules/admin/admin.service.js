@@ -37,7 +37,7 @@ const getAllMentorsAdmin = async (status, page = 1, limit = 10) => {
       mentorId: mentorProfile._id,
     });
     return {
-      id: mentorProfile.userId._id,
+      _id: mentorProfile.userId._id,
       name: mentorProfile.userId.name,
       surname: mentorProfile.userId.surname,
       avatarUrl: mentorProfile.userId.avatarUrl,
@@ -95,7 +95,7 @@ const getAllMenteesAdmin = async (page = 1, limit = 10) => {
         candidateSessions.filter(isSessionCompleted).length;
 
       return {
-        id: profile.userId._id,
+        _id: profile.userId._id,
         name: profile.userId.name,
         surname: profile.userId.surname,
         avatarUrl: profile.userId.avatarUrl,
@@ -243,7 +243,7 @@ const toggleUserStatus = async (userId) => {
     { new: true, runValidators: true },
   );
 
-  return { id: updatedUser._id, status: updatedUser.status };
+  return { _id: updatedUser._id, status: updatedUser.status };
 };
 
 const deleteMentorAccount = async (userId) => {
@@ -267,9 +267,10 @@ const deleteMenteeAccount = async (userId) => {
 };
 
 const getAllAdmins = async () => {
-  const admins = await User.find({ role: "admin" }).select(
-    "name surname email status createdAt",
-  );
+  const admins = await User.find({
+    role: "admin",
+    _id: { $ne: currentAdminId },
+  }).select("name surname email status createdAt");
   return admins;
 };
 
@@ -315,7 +316,7 @@ const createAdmin = async ({ name, surname, birthDate, email }) => {
   });
 
   return {
-    id: newAdmin._id,
+    _id: newAdmin._id,
     name: newAdmin.name,
     surname: newAdmin.surname,
     email: newAdmin.email,
@@ -382,7 +383,7 @@ const getStats = async () => {
     .populate("userId", "name surname avatarUrl");
 
   const topRatedMentors = topMentorProfiles.map((m) => ({
-    id: m.userId._id,
+    _id: m.userId._id,
     name: m.userId.name,
     surname: m.userId.surname,
     avatarUrl: m.userId.avatarUrl,

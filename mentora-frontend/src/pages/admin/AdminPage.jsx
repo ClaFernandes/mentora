@@ -58,6 +58,7 @@ export default function AdminPage() {
   const [admins, setAdmins] = useState([]);
 
   const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
 
   const [newAdminName, setNewAdminName] = useState("");
@@ -72,6 +73,11 @@ export default function AdminPage() {
   function showSuccess(message) {
     setSuccessMessage(message);
     setTimeout(() => setSuccessMessage(null), 4000);
+  }
+
+  function showError(message) {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(null), 5000);
   }
 
   useEffect(() => {
@@ -119,9 +125,13 @@ export default function AdminPage() {
   }, [activeTab, token]);
 
   async function handleApproveMentor(mentorId) {
-    await approveMentor(token, mentorId);
-    setPendingMentors((prev) => prev.filter((m) => m._id !== mentorId));
-    showSuccess("Mentor aprovado e já aparece publicamente.");
+    try {
+      await approveMentor(token, mentorId);
+      setPendingMentors((prev) => prev.filter((m) => m._id !== mentorId));
+      showSuccess("Mentor aprovado e já aparece publicamente.");
+    } catch (error) {
+      showError(error.message || "Não foi possível aprovar o mentor.");
+    }
   }
 
   function handleRequestRejectMentor(id, name) {
@@ -130,27 +140,35 @@ export default function AdminPage() {
 
   function handleDismissReport(type, id) {
     (async () => {
-      if (type === "post") {
-        await dismissPostReport(token, id);
-        setReportedPosts((prev) => prev.filter((p) => p._id !== id));
-      } else {
-        await dismissCommentReport(token, id);
-        setReportedComments((prev) => prev.filter((c) => c._id !== id));
+      try {
+        if (type === "post") {
+          await dismissPostReport(token, id);
+          setReportedPosts((prev) => prev.filter((p) => p._id !== id));
+        } else {
+          await dismissCommentReport(token, id);
+          setReportedComments((prev) => prev.filter((c) => c._id !== id));
+        }
+        showSuccess("Denúncia rejeitada — o conteúdo continua visível.");
+      } catch (error) {
+        showError(error.message || "Não foi possível rejeitar a denúncia.");
       }
-      showSuccess("Denúncia rejeitada — o conteúdo continua visível.");
     })();
   }
 
   function handleRemoveContent(type, id) {
     (async () => {
-      if (type === "post") {
-        await removeReportedPost(token, id);
-        setReportedPosts((prev) => prev.filter((p) => p._id !== id));
-      } else {
-        await removeReportedComment(token, id);
-        setReportedComments((prev) => prev.filter((c) => c._id !== id));
+      try {
+        if (type === "post") {
+          await removeReportedPost(token, id);
+          setReportedPosts((prev) => prev.filter((p) => p._id !== id));
+        } else {
+          await removeReportedComment(token, id);
+          setReportedComments((prev) => prev.filter((c) => c._id !== id));
+        }
+        showSuccess("Conteúdo removido com sucesso.");
+      } catch (error) {
+        showError(error.message || "Não foi possível remover o conteúdo.");
       }
-      showSuccess("Conteúdo removido com sucesso.");
     })();
   }
 
@@ -167,51 +185,59 @@ export default function AdminPage() {
   }
 
   async function handleConfirmAction() {
-    if (confirmAction.kind === "status") {
-      const { accountType, id, name } = confirmAction;
-      const result = await toggleUserStatus(token, id);
+    try {
+      if (confirmAction.kind === "status") {
+        const { accountType, id, name } = confirmAction;
+        const result = await toggleUserStatus(token, id);
 
-      if (accountType === "mentor") {
-        setApprovedMentors((prev) =>
-          prev.map((m) => (m._id === id ? { ...m, status: result.status } : m)),
-        );
-      } else {
-        setMentees((prev) =>
-          prev.map((m) => (m._id === id ? { ...m, status: result.status } : m)),
-        );
+        if (accountType === "mentor") {
+          setApprovedMentors((prev) =>
+            prev.map((m) =>
+              m._id === id ? { ...m, status: result.status } : m,
+            ),
+          );
+        } else {
+          setMentees((prev) =>
+            prev.map((m) =>
+              m._id === id ? { ...m, status: result.status } : m,
+            ),
+          );
+        }
+
+        const actionLabel =
+          result.status === "suspended" ? "suspensa" : "reativada";
+        showSuccess(`A conta de ${name} foi ${actionLabel}.`);
       }
 
-      const actionLabel =
-        result.status === "suspended" ? "suspensa" : "reativada";
-      showSuccess(`A conta de ${name} foi ${actionLabel}.`);
-    }
+      if (confirmAction.kind === "delete-account") {
+        const { accountType, id, name } = confirmAction;
 
-    if (confirmAction.kind === "delete-account") {
-      const { accountType, id, name } = confirmAction;
+        if (accountType === "mentor") {
+          await deleteMentorAccount(token, id);
+          setApprovedMentors((prev) => prev.filter((m) => m._id !== id));
+        } else {
+          await deleteMenteeAccount(token, id);
+          setMentees((prev) => prev.filter((m) => m._id !== id));
+        }
 
-      if (accountType === "mentor") {
-        await deleteMentorAccount(token, id);
-        setApprovedMentors((prev) => prev.filter((m) => m._id !== id));
-      } else {
-        await deleteMenteeAccount(token, id);
-        setMentees((prev) => prev.filter((m) => m._id !== id));
+        showSuccess(`A conta de ${name} foi apagada permanentemente.`);
       }
 
-      showSuccess(`A conta de ${name} foi apagada permanentemente.`);
-    }
+      if (confirmAction.kind === "remove-admin") {
+        const { id, name } = confirmAction;
+        await removeAdmin(token, id);
+        setAdmins((prev) => prev.filter((a) => a._id !== id));
+        showSuccess(`${name} deixou de ser administrador(a).`);
+      }
 
-    if (confirmAction.kind === "remove-admin") {
-      const { id, name } = confirmAction;
-      await removeAdmin(token, id);
-      setAdmins((prev) => prev.filter((a) => a._id !== id));
-      showSuccess(`${name} deixou de ser administrador(a).`);
-    }
-
-    if (confirmAction.kind === "reject-mentor") {
-      const { id, name } = confirmAction;
-      await rejectMentor(token, id);
-      setPendingMentors((prev) => prev.filter((m) => m._id !== id));
-      showSuccess(`A candidatura de ${name} foi rejeitada.`);
+      if (confirmAction.kind === "reject-mentor") {
+        const { id, name } = confirmAction;
+        await rejectMentor(token, id);
+        setPendingMentors((prev) => prev.filter((m) => m._id !== id));
+        showSuccess(`A candidatura de ${name} foi rejeitada.`);
+      }
+    } catch (error) {
+      showError(error.message || "Não foi possível concluir a ação.");
     }
 
     setConfirmAction(null);
@@ -227,21 +253,25 @@ export default function AdminPage() {
       return;
     }
 
-    const newAdmin = await createAdmin(token, {
-      name: newAdminName.trim(),
-      surname: newAdminSurname.trim(),
-      birthDate: newAdminBirthDate,
-      email: newAdminEmail.trim(),
-    });
+    try {
+      const newAdmin = await createAdmin(token, {
+        name: newAdminName.trim(),
+        surname: newAdminSurname.trim(),
+        birthDate: newAdminBirthDate,
+        email: newAdminEmail.trim(),
+      });
 
-    setAdmins((prev) => [...prev, newAdmin]);
-    showSuccess(
-      `${newAdmin.name} foi convidado(a) como administrador(a) — um email foi enviado para definir a password.`,
-    );
-    setNewAdminName("");
-    setNewAdminSurname("");
-    setNewAdminBirthDate("");
-    setNewAdminEmail("");
+      setAdmins((prev) => [...prev, newAdmin]);
+      showSuccess(
+        `${newAdmin.name} foi convidado(a) como administrador(a) — um email foi enviado para definir a password.`,
+      );
+      setNewAdminName("");
+      setNewAdminSurname("");
+      setNewAdminBirthDate("");
+      setNewAdminEmail("");
+    } catch (error) {
+      showError(error.message || "Não foi possível adicionar o administrador.");
+    }
   }
 
   const reportedContentCount = reportedPosts.length + reportedComments.length;
@@ -272,6 +302,8 @@ export default function AdminPage() {
       {successMessage && (
         <div className="admin-success-banner">{successMessage}</div>
       )}
+
+      {errorMessage && <div className="admin-error-banner">{errorMessage}</div>}
 
       {activeTab === "dashboard" && stats && (
         <AdminDashboard

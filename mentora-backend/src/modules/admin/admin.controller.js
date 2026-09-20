@@ -94,7 +94,7 @@ const deleteMenteeAccountController = async (req, res) => {
 };
 
 const getAllAdminsController = async (req, res) => {
-  const result = await getAllAdmins();
+  const result = await getAllAdmins(req.user.id);
   res.status(200).json(result);
 };
 
