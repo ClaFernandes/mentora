@@ -128,7 +128,9 @@ export default function LandingPage() {
                 )}
               </div>
 
-              <h3>{mentor.userId.name}</h3>
+              <h3>
+                {mentor.userId.name} {mentor.userId.surname}
+              </h3>
               <p className="landing_mentor-area">
                 {mentor.offerings[0]?.title}
               </p>

@@ -64,11 +64,14 @@ const registerUser = async ({
   let age = today.getFullYear() - birth.getFullYear();
   const hasHadBirthdayThisYear =
     today.getMonth() > birth.getMonth() ||
-    (today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate());
+    (today.getMonth() === birth.getMonth() &&
+      today.getDate() >= birth.getDate());
   if (!hasHadBirthdayThisYear) age--;
 
   if (age < 18) {
-    const error = new Error("É necessário ter pelo menos 18 anos para te registares");
+    const error = new Error(
+      "É necessário ter pelo menos 18 anos para te registares",
+    );
     error.statusCode = 400;
     throw error;
   }
@@ -115,6 +118,7 @@ const registerUser = async ({
       email: user.email,
       avatarUrl: user.avatarUrl,
       role: user.role,
+      status: user.status,
     },
   };
 };
@@ -151,6 +155,7 @@ const loginUser = async ({ email, password }) => {
       email: user.email,
       avatarUrl: user.avatarUrl,
       role: user.role,
+      status: user.status,
     },
   };
 };

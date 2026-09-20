@@ -218,10 +218,10 @@ export default function MenteeOnboarding() {
                     size={48}
                   />
                   <span className="onboarding-mentor-name">
-                    {mentor.userId.name}
+                    {mentor.userId.name} {mentor.userId.surname}
                   </span>
                   <span className="onboarding-mentor-area">
-                    {mentor.offerings[0]?.title}
+                    {mentor.offerings[0]?.area}
                   </span>
                 </button>
               ))}
