@@ -36,3 +36,9 @@
 .mentee-profile_delete-account-btn:hover {
     background-color: rgba(179, 64, 31, 0.1);
 }
+
+.mentor-profile_danger-zone .mentor-profile_error,
+.mentee-profile_danger-zone .mentee-profile_error {
+    color: var(--color-danger);
+    margin-bottom: 12px;
+}

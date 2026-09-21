@@ -3,7 +3,14 @@ import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import { formatDistanceToNow } from "date-fns";
 import { pt } from "date-fns/locale";
-import { FaPen, FaTrash, FaCheck, FaTimes, FaHeart, FaRegHeart } from "react-icons/fa";
+import {
+  FaPen,
+  FaTrash,
+  FaCheck,
+  FaTimes,
+  FaHeart,
+  FaRegHeart,
+} from "react-icons/fa";
 import { FiFlag } from "react-icons/fi";
 import "./CommentList.css";
 
@@ -53,6 +60,8 @@ export default function CommentList({
           {comments.map((comment) => {
             const author = comment.userId;
 
+            if (!author) return null;
+
             const isOwnComment = comment.userId._id === currentUserId;
             const isEditing = editingId === comment._id;
             const isMentor = author.role === "mentor";
@@ -63,13 +72,20 @@ export default function CommentList({
 
             return (
               <li key={comment._id} className="comment-list_item">
-                <Avatar src={author.avatarUrl} name={author.name} surname={author.surname} size={28} />
+                <Avatar
+                  src={author.avatarUrl}
+                  name={author.name}
+                  surname={author.surname}
+                  size={28}
+                />
 
                 <div className="comment-list_body">
                   <div className="comment-list_meta">
                     <div className="comment-list_meta-info">
                       {isMentor ? (
-                        <Link to={`/mentores/${author._id}`}>{author.name} {author.surname}</Link>
+                        <Link to={`/mentores/${author._id}`}>
+                          {author.name} {author.surname}
+                        </Link>
                       ) : (
                         <Link to={`/mentorados/${author._id}`}>
                           {author.name} {author.surname}
@@ -129,7 +145,8 @@ export default function CommentList({
                           className="comment-list_like-btn"
                           onClick={() => onToggleLike(comment._id)}
                         >
-                          {commentIsLiked ? <FaHeart /> : <FaRegHeart />} {commentLikesCount}
+                          {commentIsLiked ? <FaHeart /> : <FaRegHeart />}{" "}
+                          {commentLikesCount}
                         </button>
 
                         {!isOwnComment && (
@@ -139,7 +156,8 @@ export default function CommentList({
                             onClick={() => onReport(comment._id)}
                             disabled={comment.reported}
                           >
-                            <FiFlag /> {comment.reported ? "Denunciado" : "Denunciar"}
+                            <FiFlag />{" "}
+                            {comment.reported ? "Denunciado" : "Denunciar"}
                           </button>
                         )}
                       </div>

@@ -53,15 +53,24 @@ export default function PostCard({
   const [editedPreviewUrl, setEditedPreviewUrl] = useState(null);
   const [imageRemoved, setImageRemoved] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
+  const [error, setError] = useState(null);
 
   const editFileInputRef = useRef(null);
 
   useEffect(() => {
     if (showComments && !commentsLoaded) {
-      getComments(token, post._id).then((data) => {
-        setComments(data);
-        setCommentsLoaded(true);
-      });
+      setError(null);
+
+      getComments(token, post._id)
+        .then((data) => {
+          setComments(data);
+          setCommentsLoaded(true);
+        })
+        .catch(() =>
+          setError(
+            "Não foi possível carregar os comentários. Tenta novamente.",
+          ),
+        );
     }
   }, [showComments]);
 
@@ -83,23 +92,34 @@ export default function PostCard({
   const isOwnPost = author._id === currentUserId;
 
   async function handleSaveEdit() {
-    const updates = { content: editedContent };
+    setError(null);
 
-    if (editedImage) {
-      const uploadResult = await uploadImage(token, editedImage);
-      updates.imageUrl = uploadResult.url;
-    } else if (imageRemoved) {
-      updates.imageUrl = null;
+    try {
+      const updates = { content: editedContent };
+
+      if (editedImage) {
+        const uploadResult = await uploadImage(token, editedImage);
+        updates.imageUrl = uploadResult.url;
+      } else if (imageRemoved) {
+        updates.imageUrl = null;
+      }
+
+      await onEditPost(post._id, updates);
+
+      setIsEditingPost(false);
+      setEditedImage(null);
+      setImageRemoved(false);
+    } catch (err) {
+      if (err.status) {
+        setError(err.message);
+      } else {
+        setError("Não foi possível guardar a edição. Tenta novamente.");
+      }
     }
-
-    await onEditPost(post._id, updates);
-
-    setIsEditingPost(false);
-    setEditedImage(null);
-    setImageRemoved(false);
   }
 
   function handleCancelEdit() {
+    setError(null);
     setEditedContent(post.content);
     setEditedImage(null);
     setImageRemoved(false);
@@ -112,41 +132,73 @@ export default function PostCard({
   }
 
   async function handleToggleLikeComment(commentId) {
-    await likeComment(token, commentId);
-    setComments((prev) =>
-      prev.map((c) => {
-        if (c._id !== commentId) return c;
-        const wasLiked = c.likedBy.includes(currentUserId);
-        const newLikedBy = wasLiked
-          ? c.likedBy.filter((id) => id !== currentUserId)
-          : [...c.likedBy, currentUserId];
-        return { ...c, likedBy: newLikedBy };
-      }),
-    );
+    setError(null);
+
+    try {
+      await likeComment(token, commentId);
+      setComments((prev) =>
+        prev.map((c) => {
+          if (c._id !== commentId) return c;
+          const wasLiked = c.likedBy.includes(currentUserId);
+          const newLikedBy = wasLiked
+            ? c.likedBy.filter((id) => id !== currentUserId)
+            : [...c.likedBy, currentUserId];
+          return { ...c, likedBy: newLikedBy };
+        }),
+      );
+    } catch {
+      setError("Não foi possível registar o gosto. Tenta novamente.");
+    }
   }
 
   async function handleReportComment(commentId) {
-    await reportComment(token, commentId);
-    setComments((prev) =>
-      prev.map((c) => (c._id === commentId ? { ...c, reported: true } : c)),
-    );
+    setError(null);
+
+    try {
+      await reportComment(token, commentId);
+      setComments((prev) =>
+        prev.map((c) => (c._id === commentId ? { ...c, reported: true } : c)),
+      );
+    } catch {
+      setError("Não foi possível denunciar o comentário. Tenta novamente.");
+    }
   }
 
   async function handleDeleteComment(commentId) {
-    await deleteComment(token, commentId);
-    setComments((prev) => prev.filter((c) => c._id !== commentId));
-    setCommentsCount((prev) => prev - 1);
+    setError(null);
+
+    try {
+      await deleteComment(token, commentId);
+      setComments((prev) => prev.filter((c) => c._id !== commentId));
+      setCommentsCount((prev) => prev - 1);
+    } catch {
+      setError("Não foi possível apagar o comentário. Tenta novamente.");
+    }
   }
 
   async function handleEditComment(commentId, newText) {
-    const updated = await editComment(token, commentId, newText);
-    setComments((prev) => prev.map((c) => (c._id === commentId ? updated : c)));
+    setError(null);
+
+    try {
+      const updated = await editComment(token, commentId, newText);
+      setComments((prev) =>
+        prev.map((c) => (c._id === commentId ? updated : c)),
+      );
+    } catch {
+      setError("Não foi possível guardar o comentário. Tenta novamente.");
+    }
   }
 
   async function handleAddComment(postId, text) {
-    const newComment = await createComment(token, postId, text);
-    setComments((prev) => [...prev, newComment]);
-    setCommentsCount((prev) => prev + 1);
+    setError(null);
+
+    try {
+      const newComment = await createComment(token, postId, text);
+      setComments((prev) => [...prev, newComment]);
+      setCommentsCount((prev) => prev + 1);
+    } catch {
+      setError("Não foi possível publicar o comentário. Tenta novamente.");
+    }
   }
 
   return (
@@ -330,6 +382,8 @@ export default function PostCard({
           <FiFlag /> {post.reported ? "Denunciado" : "Denunciar"}
         </button>
       </div>
+
+      {error && <p className="post-card_error">{error}</p>}
 
       {showComments && (
         <CommentList

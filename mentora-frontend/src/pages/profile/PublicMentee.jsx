@@ -11,6 +11,8 @@ export default function PublicMentee({ mentee }) {
   const [followedMentors, setFollowedMentors] = useState([]);
   const [error, setError] = useState(null);
 
+  const person = mentee.userId || {};
+
   useEffect(() => {
     const followingIds = mentee.followingMentors || [];
 
@@ -28,7 +30,9 @@ export default function PublicMentee({ mentee }) {
         setFollowedMentors(loaded);
 
         if (loaded.length === 0) {
-          setError("Não foi possível carregar os mentores seguidos. Tenta novamente.");
+          setError(
+            "Não foi possível carregar os mentores seguidos. Tenta novamente.",
+          );
         } else {
           setError(null);
         }
@@ -39,9 +43,16 @@ export default function PublicMentee({ mentee }) {
   return (
     <div className="mentee-profile">
       <header className="mentee-profile_header">
-        <Avatar src={mentee.avatarUrl} name={mentee.name} surname={mentee.surname} size={80} />
+        <Avatar
+          src={person.avatarUrl}
+          name={person.name}
+          surname={person.surname}
+          size={80}
+        />
         <div className="mentee-profile_header-info">
-          <h2>{mentee.name} {mentee.surname}</h2>
+          <h2>
+            {person.name} {person.surname}
+          </h2>
         </div>
       </header>
 
@@ -60,30 +71,35 @@ export default function PublicMentee({ mentee }) {
         {error && <p className="mentee-profile_error">{error}</p>}
 
         <div className="mentors-grid">
-          {followedMentors.length === 0 ? (
-            !error && (
-              <p className="mentee-profile_followed-empty">
-                Ainda não segue nenhum mentor.
-              </p>
-            )
-          ) : (
-            followedMentors.map((mentor) => (
-              <Link
-                key={mentor._id}
-                to={`/mentores/${mentor.userId._id}`}
-                className="mentors-card"
-              >
-                <Avatar src={mentor.userId.avatarUrl} name={mentor.userId.name} surname={mentor.userId.surname} size={64} />
-                <h3>{mentor.userId.name} {mentor.userId.surname}</h3>
-                <p className="mentors-card-offering">
-                  {mentor.offerings[0]?.title}
+          {followedMentors.length === 0
+            ? !error && (
+                <p className="mentee-profile_followed-empty">
+                  Ainda não segue nenhum mentor.
                 </p>
-                <p className="mentors-card-rating">
-                  <AiFillStar /> {mentor.avgRating}
-                </p>
-              </Link>
-            ))
-          )}
+              )
+            : followedMentors.map((mentor) => (
+                <Link
+                  key={mentor._id}
+                  to={`/mentores/${mentor.userId._id}`}
+                  className="mentors-card"
+                >
+                  <Avatar
+                    src={mentor.userId.avatarUrl}
+                    name={mentor.userId.name}
+                    surname={mentor.userId.surname}
+                    size={64}
+                  />
+                  <h3>
+                    {mentor.userId.name} {mentor.userId.surname}
+                  </h3>
+                  <p className="mentors-card-offering">
+                    {mentor.offerings[0]?.title}
+                  </p>
+                  <p className="mentors-card-rating">
+                    <AiFillStar /> {mentor.avgRating}
+                  </p>
+                </Link>
+              ))}
         </div>
       </section>
     </div>
