@@ -4,13 +4,11 @@ const Payment = require("./payment.model");
 const { createCheckoutSession } = require("./stripe.service");
 
 const stripeWebhookController = async (req, res) => {
-  // Stripe envia a assinatura do pedido neste header
   const signature = req.headers["stripe-signature"];
 
   let event;
 
   try {
-    // Verifica a assinatura usando o corpo raw do pedido
     event = stripe.webhooks.constructEvent(
       req.body,
       signature,
@@ -25,18 +23,30 @@ const stripeWebhookController = async (req, res) => {
 
     const sessionId = checkoutSession.metadata.sessionId;
 
-    await Session.findByIdAndUpdate(sessionId, {
-      $set: { status: "confirmed" },
-    });
+    try {
+      const existingPayment = await Payment.findOne({ sessionId });
 
-    await Payment.create({
-      sessionId,
-      stripePaymentId: checkoutSession.payment_intent,
-      amount: checkoutSession.amount_total / 100,
-      status: "paid",
-      paidAt: new Date(),
-    });
+      if (existingPayment) {
+        return res.status(200).json({ received: true });
+      }
+
+      await Session.findByIdAndUpdate(sessionId, {
+        $set: { status: "confirmed" },
+      });
+
+      await Payment.create({
+        sessionId,
+        stripePaymentId: checkoutSession.payment_intent,
+        amount: checkoutSession.amount_total / 100,
+        status: "paid",
+        paidAt: new Date(),
+      });
+    } catch (err) {
+      console.error("Erro ao processar webhook do Stripe:", err);
+      return res.status(500).json({ message: "Erro ao processar o pagamento" });
+    }
   }
+
   res.status(200).json({ received: true });
 };
 

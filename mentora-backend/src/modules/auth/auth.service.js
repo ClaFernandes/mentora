@@ -105,7 +105,7 @@ const registerUser = async ({
   const token = jwt.sign(
     { id: user._id, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: "24h" },
+    { expiresIn: "1h" },
   );
 
   return {
@@ -139,10 +139,16 @@ const loginUser = async ({ email, password }) => {
     throw error;
   }
 
+  if (user.status === "suspended") {
+    const error = new Error("A tua conta está suspensa");
+    error.statusCode = 403;
+    throw error;
+  }
+
   const token = jwt.sign(
     { id: user._id, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: "24h" },
+    { expiresIn: "1h" },
   );
 
   return {

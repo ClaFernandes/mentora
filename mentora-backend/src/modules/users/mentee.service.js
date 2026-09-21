@@ -1,5 +1,6 @@
 const MenteeProfile = require("./mentee.model");
 const Follow = require("../follow/follow.model");
+const { Session } = require("../booking/booking.models");
 
 const getMenteeProfile = async (userId) => {
     const menteeProfile = await MenteeProfile.findOne({ userId }).populate("userId", "name surname email avatarUrl");
@@ -13,9 +14,19 @@ const getMenteeProfile = async (userId) => {
     const follows = await Follow.find({ followerId: userId }).populate("mentorId", "userId");
     const followingMentors = follows.map((f) => f.mentorId.userId.toString());
 
+    const candidateSessions = await Session.find({
+        menteeId: userId,
+        status: { $in: ["completed", "confirmed"] },
+    });
+    const completedSessions = candidateSessions.filter((s) => {
+        if (s.status === "completed") return true;
+        return new Date(`${s.date}T${s.time}:00`) < new Date();
+    }).length;
+
     return {
         ...menteeProfile.toObject(),
         followingMentors,
+        completedSessions,
     };
 }
 

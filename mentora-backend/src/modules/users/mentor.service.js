@@ -62,12 +62,12 @@ const searchMentors = async (filters, page, limit) => {
     };
 
     if (filters.q) {
-        offeringMatch.title = { $regex: filters.q, $options: "i" };
+        const escapedQ = String(filters.q).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        offeringMatch.title = { $regex: escapedQ, $options: "i" };
     };
 
     const pipeline = [];
 
-    // antes de qualquer agrupamento — só corre se algum filtro foi definido
     if (Object.keys(offeringMatch).length > 0) {
         pipeline.push({ $match: offeringMatch });
     }
@@ -89,9 +89,21 @@ const searchMentors = async (filters, page, limit) => {
     });
     pipeline.push({ $unwind: "$mentor" });
 
+    pipeline.push({
+        $lookup: {
+            from: "users",
+            localField: "mentor.userId",
+            foreignField: "_id",
+            as: "mentorUser",
+        },
+    });
+    pipeline.push({ $unwind: "$mentorUser" });
+
     const mentorMatch = {
         "mentor.rejected": false,
+        "mentorUser.status": { $ne: "suspended" }, // NOVO
     };
+
     if (filters.minRating) {
         mentorMatch["mentor.avgRating"] = { $gte: Number(filters.minRating) };
     }
@@ -122,7 +134,6 @@ const searchMentors = async (filters, page, limit) => {
         .map((id) => mentors.find((m) => m._id.toString() === id.toString()))
         .filter(Boolean);
 
-    // Para cada mentor desta página, vai buscar suas ofertas 
     const mentorsWithOfferings = await Promise.all(
         orderedMentors.map(async (mentor) => {
             const offerings = await Offering.find({ mentorId: mentor._id });
@@ -138,20 +149,4 @@ const searchMentors = async (filters, page, limit) => {
     };
 };
 
-const verifyMentor = async (mentorUserId) => {
-    const mentorProfile = await MentorProfile.findOneAndUpdate(
-        { userId: mentorUserId },
-        { $set: { isVerified: true } },
-        { new: true }
-    );
-
-    if (!mentorProfile) {
-        const error = new Error("Perfil de mentor não encontrado");
-        error.statusCode = 404;
-        throw error;
-    }
-
-    return mentorProfile;
-};
-
-module.exports = { getMentorProfile, updateMentorProfile, searchMentors, verifyMentor };
+module.exports = { getMentorProfile, updateMentorProfile, searchMentors };

@@ -1,4 +1,5 @@
 const { Session } = require("./booking.models");
+const Offering = require("../offerings/offering.model");
 const MentorProfile = require("../users/mentor.model");
 const { getAvailableSlots } = require("./availability.service");
 const stripe = require("../../config/stripe");
@@ -6,7 +7,15 @@ const Payment = require("../payments/payment.model");
 const Conversation = require("../chat/conversation.model");
 const Message = require("../chat/message.model");
 
-const createSession = async (userId, sessionData) => {
+const createSession = async (userId, userRole, sessionData) => {
+  if (userRole !== "mentee") {
+    const error = new Error("Só mentees podem marcar sessões");
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const { mentorId, offeringId, date, time } = sessionData;
+
   const mentorProfile = await MentorProfile.findOne({
     userId: sessionData.mentorId,
   });
@@ -14,6 +23,14 @@ const createSession = async (userId, sessionData) => {
   if (!mentorProfile) {
     const error = new Error("Mentor não encontrado");
     error.statusCode = 404;
+    throw error;
+  }
+
+  const offering = await Offering.findById(offeringId);
+
+  if (!offering || !offering.mentorId.equals(mentorProfile._id)) {
+    const error = new Error("Oferta inválida para este mentor");
+    error.statusCode = 400;
     throw error;
   }
 
@@ -29,20 +46,23 @@ const createSession = async (userId, sessionData) => {
   }
 
   const newSession = await Session.create({
-    ...sessionData,
     mentorId: mentorProfile._id,
     menteeId: userId,
+    offeringId,
+    date,
+    time,
+    status: "pending",
   });
 
   try {
     let conversation = await Conversation.findOne({
-      offeringId: sessionData.offeringId,
+      offeringId,
       menteeId: userId,
     });
 
     if (!conversation) {
       conversation = await Conversation.create({
-        offeringId: sessionData.offeringId,
+        offeringId,
         menteeId: userId,
       });
     }

@@ -7,8 +7,9 @@ const {
 
 const createSessionController = async (req, res) => {
   const userId = req.user.id;
+  const userRole = req.user.role;
   const sessionData = req.body;
-  const result = await createSession(userId, sessionData);
+  const result = await createSession(userId, userRole, sessionData);
   res.status(201).json(result);
 };
 

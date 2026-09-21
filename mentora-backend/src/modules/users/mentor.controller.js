@@ -1,4 +1,4 @@
-const { getMentorProfile, updateMentorProfile, searchMentors, verifyMentor } = require("./mentor.service");
+const { getMentorProfile, updateMentorProfile, searchMentors } = require("./mentor.service");
 
 const getMentorController = async (req, res) => {
     const { id } = req.params;
@@ -22,10 +22,4 @@ const searchMentorsController = async (req, res) => {
     res.status(200).json(result);
 };
 
-const verifyMentorController = async (req, res) => {
-    const { id } = req.params;
-    const result = await verifyMentor(id);
-    res.status(200).json(result);
-};
-
-module.exports = { getMentorController, updateMentorController, searchMentorsController, verifyMentorController };
+module.exports = { getMentorController, updateMentorController, searchMentorsController };

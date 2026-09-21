@@ -18,6 +18,12 @@ const createCheckoutSession = async (sessionId, userId) => {
     throw error;
   }
 
+  if (session.status !== "pending") {
+    const error = new Error("Esta sessão não está a aguardar pagamento");
+    error.statusCode = 400;
+    throw error;
+  }
+
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],

@@ -17,8 +17,12 @@ const createPost = async (userId, postData) => {
     throw error;
   }
 
+  const { type, content, imageUrl } = postData;
+
   const newPost = await Post.create({
-    ...postData,
+    type,
+    content,
+    imageUrl,
     mentorId: mentorProfile._id,
   });
 
