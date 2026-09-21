@@ -26,6 +26,7 @@ export default function MentorOfferingsSection({ offerings }) {
     const [isAddingOffering, setIsAddingOffering] = useState(false);
     const [newOffering, setNewOffering] = useState(EMPTY_OFFERING);
     const [newOfferingAreaMode, setNewOfferingAreaMode] = useState("select");
+    const [error, setError] = useState(null);
 
     function startEditingOffering(offering) {
         setEditingOfferingId(offering._id);
@@ -42,55 +43,75 @@ export default function MentorOfferingsSection({ offerings }) {
     }
 
     function cancelEditingOffering() {
+        setError(null);
         setEditingOfferingId(null);
     }
 
     async function saveOffering(offeringId) {
-        const updatedOffering = await updateOffering(
-            token,
-            offeringId,
-            editingOfferingData,
-        );
-        setUser((prev) => ({
-            ...prev,
-            mentorProfile: {
-                ...prev.mentorProfile,
-                offerings: prev.mentorProfile.offerings.map((o) =>
-                    o._id === offeringId ? updatedOffering : o,
-                ),
-            },
-        }));
-        setEditingOfferingId(null);
+        setError(null);
+
+        try {
+            const updatedOffering = await updateOffering(
+                token,
+                offeringId,
+                editingOfferingData,
+            );
+            setUser((prev) => ({
+                ...prev,
+                mentorProfile: {
+                    ...prev.mentorProfile,
+                    offerings: prev.mentorProfile.offerings.map((o) =>
+                        o._id === offeringId ? updatedOffering : o,
+                    ),
+                },
+            }));
+            setEditingOfferingId(null);
+        } catch {
+            setError("Não foi possível guardar a oferta. Verifica os dados e tenta novamente.");
+        }
     }
 
     async function removeOffering(offeringId) {
-        await deleteOffering(token, offeringId);
-        setUser((prev) => ({
-            ...prev,
-            mentorProfile: {
-                ...prev.mentorProfile,
-                offerings: prev.mentorProfile.offerings.filter(
-                    (o) => o._id !== offeringId,
-                ),
-            },
-        }));
+        setError(null);
+
+        try {
+            await deleteOffering(token, offeringId);
+            setUser((prev) => ({
+                ...prev,
+                mentorProfile: {
+                    ...prev.mentorProfile,
+                    offerings: prev.mentorProfile.offerings.filter(
+                        (o) => o._id !== offeringId,
+                    ),
+                },
+            }));
+        } catch {
+            setError("Não foi possível apagar a oferta. Tenta novamente.");
+        }
     }
 
     async function addOffering() {
-        const createdOffering = await createOffering(token, newOffering);
-        setUser((prev) => ({
-            ...prev,
-            mentorProfile: {
-                ...prev.mentorProfile,
-                offerings: [...prev.mentorProfile.offerings, createdOffering],
-            },
-        }));
-        setNewOffering(EMPTY_OFFERING);
-        setNewOfferingAreaMode("select");
-        setIsAddingOffering(false);
+        setError(null);
+
+        try {
+            const createdOffering = await createOffering(token, newOffering);
+            setUser((prev) => ({
+                ...prev,
+                mentorProfile: {
+                    ...prev.mentorProfile,
+                    offerings: [...prev.mentorProfile.offerings, createdOffering],
+                },
+            }));
+            setNewOffering(EMPTY_OFFERING);
+            setNewOfferingAreaMode("select");
+            setIsAddingOffering(false);
+        } catch {
+            setError("Não foi possível criar a oferta. Verifica os dados e tenta novamente.");
+        }
     }
 
     function cancelAddingOffering() {
+        setError(null);
         setNewOffering(EMPTY_OFFERING);
         setNewOfferingAreaMode("select");
         setIsAddingOffering(false);
@@ -99,6 +120,8 @@ export default function MentorOfferingsSection({ offerings }) {
     return (
         <section className="mentor-profile_offerings">
             <h3>Ofertas</h3>
+
+            {error && <p className="mentor-profile_error">{error}</p>}
 
             {offerings.map((offering) => (
                 <div key={offering._id} className="mentor-profile_offering">

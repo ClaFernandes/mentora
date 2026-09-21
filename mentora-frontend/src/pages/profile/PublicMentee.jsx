@@ -9,6 +9,7 @@ import "../mentors/MentorsPage.css";
 
 export default function PublicMentee({ mentee }) {
   const [followedMentors, setFollowedMentors] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const followingIds = mentee.followingMentors || [];
@@ -18,8 +19,20 @@ export default function PublicMentee({ mentee }) {
       return;
     }
 
-    Promise.all(followingIds.map((id) => getMentorProfile(id))).then(
-      setFollowedMentors,
+    Promise.allSettled(followingIds.map((id) => getMentorProfile(id))).then(
+      (results) => {
+        const loaded = results
+          .filter((r) => r.status === "fulfilled")
+          .map((r) => r.value);
+
+        setFollowedMentors(loaded);
+
+        if (loaded.length === 0) {
+          setError("Não foi possível carregar os mentores seguidos. Tenta novamente.");
+        } else {
+          setError(null);
+        }
+      },
     );
   }, [mentee.followingMentors]);
 
@@ -44,11 +57,15 @@ export default function PublicMentee({ mentee }) {
 
       <section className="mentee-profile_followed">
         <h3>Mentores seguidos</h3>
+        {error && <p className="mentee-profile_error">{error}</p>}
+
         <div className="mentors-grid">
           {followedMentors.length === 0 ? (
-            <p className="mentee-profile_followed-empty">
-              Ainda não segue nenhum mentor.
-            </p>
+            !error && (
+              <p className="mentee-profile_followed-empty">
+                Ainda não segue nenhum mentor.
+              </p>
+            )
           ) : (
             followedMentors.map((mentor) => (
               <Link

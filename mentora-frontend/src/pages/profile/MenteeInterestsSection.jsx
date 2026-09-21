@@ -11,6 +11,7 @@ export default function MenteeInterestsSection({ interests }) {
     const [selectedInterests, setSelectedInterests] = useState(interests || []);
     const [showCustomInterestInput, setShowCustomInterestInput] = useState(false);
     const [customInterest, setCustomInterest] = useState("");
+    const [error, setError] = useState(null);
 
     function toggleInterest(interest) {
         setSelectedInterests((prev) =>
@@ -30,15 +31,22 @@ export default function MenteeInterestsSection({ interests }) {
     }
 
     async function saveInterests() {
-        const updatedProfile = await updateMenteeProfile(token, { interests: selectedInterests });
-        setUser((prev) => ({
-            ...prev,
-            menteeProfile: { ...prev.menteeProfile, interests: updatedProfile.interests }
-        }));
-        setIsEditingInterests(false);
+        setError(null);
+
+        try {
+            const updatedProfile = await updateMenteeProfile(token, { interests: selectedInterests });
+            setUser((prev) => ({
+                ...prev,
+                menteeProfile: { ...prev.menteeProfile, interests: updatedProfile.interests }
+            }));
+            setIsEditingInterests(false);
+        } catch {
+            setError("Não foi possível guardar os interesses. Tenta novamente.");
+        }
     }
 
     function cancelEditingInterests() {
+        setError(null);
         setSelectedInterests(interests || []);
         setShowCustomInterestInput(false);
         setCustomInterest("");
@@ -103,6 +111,9 @@ export default function MenteeInterestsSection({ interests }) {
                             </button>
                         </div>
                     )}
+
+                    {error && <p className="mentee-profile_error">{error}</p>}
+
                     <div className="mentee-profile_interests-edit-actions">
                         <button onClick={saveInterests} aria-label="Guardar interesses">
                             <FaCheck />

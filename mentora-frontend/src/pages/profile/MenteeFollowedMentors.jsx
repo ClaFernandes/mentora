@@ -11,6 +11,7 @@ import "../mentors/MentorsPage.css";
 export default function MenteeFollowedMentors({ followingMentors }) {
     const { token, setUser } = useAuth();
     const [followedMentors, setFollowedMentors] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const followingIds = followingMentors || [];
@@ -18,31 +19,55 @@ export default function MenteeFollowedMentors({ followingMentors }) {
             setFollowedMentors([]);
             return;
         }
-        Promise.all(followingIds.map((id) => getMentorProfile(id))).then(
-            setFollowedMentors,
+
+        Promise.allSettled(followingIds.map((id) => getMentorProfile(id))).then(
+            (results) => {
+                const loaded = results
+                    .filter((r) => r.status === "fulfilled")
+                    .map((r) => r.value);
+
+                setFollowedMentors(loaded);
+
+                if (loaded.length === 0) {
+                    setError("Não foi possível carregar os mentores que segues. Tenta novamente.");
+                } else {
+                    setError(null);
+                }
+            },
         );
     }, [followingMentors]);
 
     async function unfollow(mentorId) {
-        await unfollowMentor(token, mentorId);
+        setError(null);
 
-        setUser((prev) => ({
-            ...prev,
-            menteeProfile: {
-                ...prev.menteeProfile,
-                followingMentors: prev.menteeProfile.followingMentors.filter((id) => id !== mentorId),
-            },
-        }));
+        try {
+            await unfollowMentor(token, mentorId);
+
+            setUser((prev) => ({
+                ...prev,
+                menteeProfile: {
+                    ...prev.menteeProfile,
+                    followingMentors: prev.menteeProfile.followingMentors.filter((id) => id !== mentorId),
+                },
+            }));
+        } catch {
+            setError("Não foi possível deixar de seguir. Tenta novamente.");
+        }
     }
 
     return (
         <section className="mentee-profile_followed">
             <h3>Mentores seguidos</h3>
+
+            {error && <p className="mentee-profile_error">{error}</p>}
+
             <div className="mentors-grid">
                 {followedMentors.length === 0 ? (
-                    <p className="mentee-profile_followed-empty">
-                        Ainda não segues nenhum mentor.
-                    </p>
+                    !error && (
+                        <p className="mentee-profile_followed-empty">
+                            Ainda não segues nenhum mentor.
+                        </p>
+                    )
                 ) : (
                     followedMentors.map((mentor) => (
                         <Link

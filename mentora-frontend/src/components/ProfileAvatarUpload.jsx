@@ -10,6 +10,7 @@ export default function ProfileAvatarUpload({ name, surname, avatarUrl, variant 
     const { token, setUser } = useAuth();
     const [uploadingAvatar, setUploadingAvatar] = useState(false);
     const [showAvatarMenu, setShowAvatarMenu] = useState(false);
+    const [error, setError] = useState(null);
 
     const avatarInputRef = useRef(null);
     const avatarMenuRef = useRef(null);
@@ -28,26 +29,43 @@ export default function ProfileAvatarUpload({ name, surname, avatarUrl, variant 
         const file = e.target.files[0];
         if (!file) return;
 
+        setError(null);
         setUploadingAvatar(true);
+
         try {
             const uploadResult = await uploadImage(token, file);
             await updateAvatar(token, uploadResult.url);
             setUser((prev) => ({ ...prev, avatarUrl: uploadResult.url }));
+            setShowAvatarMenu(false);
+        } catch (err) {
+            if (err.status) {
+                setError(err.message);
+            } else {
+                setError("Não foi possível guardar a foto. Tenta novamente.");
+            }
         } finally {
             setUploadingAvatar(false);
-            setShowAvatarMenu(false);
         }
     }
 
     async function handleRemoveAvatar() {
+        setError(null);
         setUploadingAvatar(true);
+
         try {
             await updateAvatar(token, "");
             setUser((prev) => ({ ...prev, avatarUrl: "" }));
+            setShowAvatarMenu(false);
+        } catch {
+            setError("Não foi possível remover a foto. Tenta novamente.");
         } finally {
             setUploadingAvatar(false);
-            setShowAvatarMenu(false);
         }
+    }
+
+    function toggleAvatarMenu() {
+        setError(null);
+        setShowAvatarMenu((prev) => !prev);
     }
 
     const wrapperClass = `${variant}-profile_avatar-wrapper`;
@@ -61,7 +79,7 @@ export default function ProfileAvatarUpload({ name, surname, avatarUrl, variant 
             <button
                 type="button"
                 className={badgeClass}
-                onClick={() => setShowAvatarMenu((prev) => !prev)}
+                onClick={toggleAvatarMenu}
                 disabled={uploadingAvatar}
                 aria-label="Opções de foto de perfil"
             >
@@ -78,6 +96,8 @@ export default function ProfileAvatarUpload({ name, surname, avatarUrl, variant 
                             <FiTrash2 /> Remover foto
                         </button>
                     )}
+
+                    {error && <p className="profile-avatar_error">{error}</p>}
                 </div>
             )}
 

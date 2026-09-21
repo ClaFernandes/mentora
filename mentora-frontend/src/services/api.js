@@ -20,6 +20,10 @@ export async function apiRequest(endpoint, { method = "GET", body, token } = {})
     const data = await response.json();
 
     if (!response.ok) {
+        if (response.status === 401 && token) {
+            window.dispatchEvent(new Event("auth:unauthorized"));
+        }
+
         const error = new Error(data.message || "Erro na comunicação com o servidor");
         error.status = response.status;
         throw error;

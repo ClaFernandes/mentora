@@ -32,9 +32,11 @@ export default function MentorsPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     async function loadMentors(pageToLoad) {
         setLoading(true);
+        setError(null);
 
         const filters = {
             area: selectedArea,
@@ -45,17 +47,22 @@ export default function MentorsPage() {
             sortBy,
         };
 
-        const result = await searchMentors(filters, pageToLoad, PAGE_SIZE);
+        try {
+            const result = await searchMentors(filters, pageToLoad, PAGE_SIZE);
 
-        if (pageToLoad === 1) {
-            setMentors(result.mentors);
-        } else {
-            setMentors((prev) => [...prev, ...result.mentors]);
+            if (pageToLoad === 1) {
+                setMentors(result.mentors);
+            } else {
+                setMentors((prev) => [...prev, ...result.mentors]);
+            }
+
+            setPage(result.page);
+            setTotalPages(result.totalPages);
+        } catch {
+            setError("Não foi possível carregar os mentores. Tenta novamente.");
+        } finally {
+            setLoading(false);
         }
-
-        setPage(result.page);
-        setTotalPages(result.totalPages);
-        setLoading(false);
     }
 
     useEffect(() => {
@@ -80,19 +87,25 @@ export default function MentorsPage() {
         const following = user.menteeProfile?.followingMentors || [];
         const isFollowing = following.includes(mentorId);
 
-        if (isFollowing) {
-            await unfollowMentor(token, mentorId);
-        } else {
-            await followMentor(token, mentorId);
+        setError(null);
+
+        try {
+            if (isFollowing) {
+                await unfollowMentor(token, mentorId);
+            } else {
+                await followMentor(token, mentorId);
+            }
+
+            const updated = isFollowing
+                ? following.filter((id) => id !== mentorId)
+                : [...following, mentorId];
+
+            updateUser({
+                menteeProfile: { ...user.menteeProfile, followingMentors: updated },
+            });
+        } catch {
+            setError("Não foi possível atualizar o seguimento. Tenta novamente.");
         }
-
-        const updated = isFollowing
-            ? following.filter((id) => id !== mentorId)
-            : [...following, mentorId];
-
-        updateUser({
-            menteeProfile: { ...user.menteeProfile, followingMentors: updated },
-        });
     }
 
     return (
@@ -171,9 +184,11 @@ export default function MentorsPage() {
                 </div>
             </div>
 
+            {error && <p className="mentors-empty">{error}</p>}
+
             <div className="mentors-grid">
                 {mentors.length === 0 && !loading ? (
-                    <p className="mentors-empty">Nenhum mentor encontrado com esses filtros.</p>
+                    !error && <p className="mentors-empty">Nenhum mentor encontrado com esses filtros.</p>
                 ) : (
                     mentors.map((mentor) => (
                         <Link key={mentor._id} to={`/mentores/${mentor.userId._id}`} className="mentors-card">

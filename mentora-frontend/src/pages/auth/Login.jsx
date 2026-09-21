@@ -30,13 +30,16 @@ export default function Login() {
 
         try {
             await login(email, password);
-        } catch {
-            setError("Email ou password incorretos.");
+        } catch (err) {
+            if (err.status === 403) {
+                setError(err.message);
+            } else {
+                setError("Email ou password incorretos.");
+            }
         } finally {
             setLoading(false);
         }
     }
-
     async function handleRecover(e) {
         e.preventDefault();
         setError(null);

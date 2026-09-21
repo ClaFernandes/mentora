@@ -40,7 +40,7 @@ const createCheckoutSession = async (sessionId, userId) => {
       },
     ],
     success_url: `${process.env.FRONTEND_URL}/mentora/booking/success`,
-    cancel_url: `${process.env.FRONTEND_URL}/mentora/booking/${session.mentorId.userId}`,
+    cancel_url: `${process.env.FRONTEND_URL}/mentora/agendar/${session.mentorId.userId}?offeringId=${session.offeringId._id}`,
     metadata: {
       sessionId: session._id.toString(),
     },

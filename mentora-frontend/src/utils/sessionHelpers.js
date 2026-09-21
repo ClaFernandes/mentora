@@ -7,6 +7,10 @@ export function resolveDisplayStatus(session) {
         return "cancelled";
     }
 
+    if (session.status === "pending") {
+        return "pending";
+    }
+
     if (session.status === "completed") {
         return "completed";
     }

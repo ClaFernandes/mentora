@@ -24,6 +24,7 @@ export default function ProfilePage() {
     previousIdRef.current = id;
     if (!loading) setLoading(true);
     if (profileData !== null) setProfileData(null);
+    if (notFound) setNotFound(false);
   }
 
   const isOwnProfile = !id || id === user?.id;

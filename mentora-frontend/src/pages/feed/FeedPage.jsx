@@ -16,18 +16,25 @@ export default function FeedPage() {
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [reportNotice, setReportNotice] = useState(null);
+    const [error, setError] = useState(null);
 
     const hasLoadedRef = useRef(false);
 
     async function loadFeed() {
         setLoading(true);
+        setError(null);
 
-        const result = await getFeed(token, cursor, PAGE_SIZE);
+        try {
+            const result = await getFeed(token, cursor, PAGE_SIZE);
 
-        setPosts((prev) => [...prev, ...result.posts]);
-        setCursor(result.nextCursor);
-        setHasMore(result.posts.length === PAGE_SIZE);
-        setLoading(false);
+            setPosts((prev) => [...prev, ...result.posts]);
+            setCursor(result.nextCursor);
+            setHasMore(result.posts.length === PAGE_SIZE);
+        } catch {
+            setError("Não foi possível carregar o feed. Tenta novamente.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -49,44 +56,68 @@ export default function FeedPage() {
         const post = posts.find((p) => p._id === postId);
         const wasLiked = post.likedBy.includes(user.id);
 
-        await likePost(token, postId);
+        setError(null);
 
-        setPosts((prev) =>
-            prev.map((p) => {
-                if (p._id !== postId) return p;
+        try {
+            await likePost(token, postId);
 
-                const newLikedBy = wasLiked
-                    ? p.likedBy.filter((id) => id !== user.id)
-                    : [...p.likedBy, user.id];
+            setPosts((prev) =>
+                prev.map((p) => {
+                    if (p._id !== postId) return p;
 
-                return { ...p, likedBy: newLikedBy };
-            })
-        );
+                    const newLikedBy = wasLiked
+                        ? p.likedBy.filter((id) => id !== user.id)
+                        : [...p.likedBy, user.id];
+
+                    return { ...p, likedBy: newLikedBy };
+                })
+            );
+        } catch {
+            setError("Não foi possível registar o gosto. Tenta novamente.");
+        }
     }
 
     async function handleReportPost(postId) {
-        await reportPost(token, postId);
+        setError(null);
 
-        setPosts((prev) =>
-            prev.map((post) =>
-                post._id === postId ? { ...post, reported: true } : post
-            )
-        );
-        showReportNotice("Post denunciado. A nossa equipa vai rever.");
+        try {
+            await reportPost(token, postId);
+
+            setPosts((prev) =>
+                prev.map((post) =>
+                    post._id === postId ? { ...post, reported: true } : post
+                )
+            );
+            showReportNotice("Post denunciado. A nossa equipa vai rever.");
+        } catch {
+            setError("Não foi possível denunciar o post. Tenta novamente.");
+        }
     }
 
     async function handleEditPost(postId, updates) {
-        const updated = await editPost(token, postId, updates);
+        setError(null);
 
-        setPosts((prev) =>
-            prev.map((post) => (post._id === postId ? updated : post))
-        );
+        try {
+            const updated = await editPost(token, postId, updates);
+
+            setPosts((prev) =>
+                prev.map((post) => (post._id === postId ? updated : post))
+            );
+        } catch {
+            setError("Não foi possível guardar a edição. Tenta novamente.");
+        }
     }
 
     async function handleDeletePost(postId) {
-        await deletePost(token, postId);
+        setError(null);
 
-        setPosts((prev) => prev.filter((post) => post._id !== postId));
+        try {
+            await deletePost(token, postId);
+
+            setPosts((prev) => prev.filter((post) => post._id !== postId));
+        } catch {
+            setError("Não foi possível apagar o post. Tenta novamente.");
+        }
     }
 
     return (
@@ -98,8 +129,10 @@ export default function FeedPage() {
 
                 {reportNotice && <div className="feed_notice">{reportNotice}</div>}
 
+                {error && <div className="feed_notice">{error}</div>}
+
                 {posts.length === 0 ? (
-                    <EmptyState message="Ainda não há publicações." />
+                    !error && <EmptyState message="Ainda não há publicações." />
                 ) : (
                     posts.map((post) => (
                         <PostCard

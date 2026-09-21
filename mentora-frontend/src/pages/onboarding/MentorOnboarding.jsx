@@ -55,13 +55,19 @@ export default function MentorOnboarding() {
             return;
         }
         setLoading(true);
-        const updatedProfile = await updateMentorProfile(token, { bio, areas });
-        setUser((prev) => ({
-            ...prev,
-            bio: updatedProfile.bio,
-            mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
-        }));
-        navigate("/perfil");
+
+        try {
+            const updatedProfile = await updateMentorProfile(token, { bio, areas });
+            setUser((prev) => ({
+                ...prev,
+                bio: updatedProfile.bio,
+                mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
+            }));
+            navigate("/perfil");
+        } catch {
+            setError("Não foi possível guardar o perfil. Tenta novamente.");
+            setLoading(false);
+        }
     }
 
     return (

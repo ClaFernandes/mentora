@@ -16,7 +16,11 @@ export default function ChatBell() {
     useEffect(() => {
         if (!user || !token) return;
 
-        getConversations(token).then(setConversations);
+        getConversations(token)
+            .then(setConversations)
+            .catch(() => {
+                // sino fica vazio se falhar
+            });
     }, [user, token]);
 
     useEffect(() => {
@@ -39,11 +43,15 @@ export default function ChatBell() {
     async function handleConversationClick(conv) {
         setIsOpen(false);
 
-        await markConversationAsRead(token, conv.id);
+        try {
+            await markConversationAsRead(token, conv.id);
 
-        setConversations((prev) =>
-            prev.map((c) => (c.id === conv.id ? { ...c, hasUnread: false } : c))
-        );
+            setConversations((prev) =>
+                prev.map((c) => (c.id === conv.id ? { ...c, hasUnread: false } : c))
+            );
+        } catch {
+            // se falhar, abre o chat na mesma
+        }
 
         navigate("/chat", { state: { offeringId: conv.offering.id } });
     }

@@ -10,6 +10,7 @@ export default function MentorAreasSection({ areas }) {
     const [selectedAreas, setSelectedAreas] = useState(areas);
     const [showCustomAreaInput, setShowCustomAreaInput] = useState(false);
     const [customArea, setCustomArea] = useState("");
+    const [error, setError] = useState(null);
 
     function toggleArea(area) {
         setSelectedAreas((prev) =>
@@ -27,17 +28,24 @@ export default function MentorAreasSection({ areas }) {
     }
 
     async function saveAreas() {
-        const updatedProfile = await updateMentorProfile(token, {
-            areas: selectedAreas,
-        });
-        setUser((prev) => ({
-            ...prev,
-            mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
-        }));
-        setIsEditingAreas(false);
+        setError(null);
+
+        try {
+            const updatedProfile = await updateMentorProfile(token, {
+                areas: selectedAreas,
+            });
+            setUser((prev) => ({
+                ...prev,
+                mentorProfile: { ...prev.mentorProfile, areas: updatedProfile.areas },
+            }));
+            setIsEditingAreas(false);
+        } catch {
+            setError("Não foi possível guardar as áreas. Tenta novamente.");
+        }
     }
 
     function cancelEditingAreas() {
+        setError(null);
         setSelectedAreas(areas);
         setShowCustomAreaInput(false);
         setCustomArea("");
@@ -96,6 +104,8 @@ export default function MentorAreasSection({ areas }) {
                             </button>
                         </div>
                     )}
+
+                    {error && <p className="mentor-profile_error">{error}</p>}
 
                     <div className="mentor-profile_areas-edit-actions">
                         <button onClick={saveAreas} aria-label="Guardar áreas">

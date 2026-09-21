@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import Avatar from "../../components/Avatar.jsx";
@@ -11,6 +12,7 @@ import "./MentorProfile.css";
 export default function PublicMentor({ mentor }) {
   const navigate = useNavigate();
   const { user, updateUser, token } = useAuth();
+  const [error, setError] = useState(null);
 
   const isFollowing = user.menteeProfile?.followingMentors?.includes(
     mentor.userId._id,
@@ -19,19 +21,25 @@ export default function PublicMentor({ mentor }) {
   async function toggleFollow() {
     const following = user.menteeProfile?.followingMentors || [];
 
-    if (isFollowing) {
-      await unfollowMentor(token, mentor.userId._id);
-    } else {
-      await followMentor(token, mentor.userId._id);
+    setError(null);
+
+    try {
+      if (isFollowing) {
+        await unfollowMentor(token, mentor.userId._id);
+      } else {
+        await followMentor(token, mentor.userId._id);
+      }
+
+      const updated = isFollowing
+        ? following.filter((id) => id !== mentor.userId._id)
+        : [...following, mentor.userId._id];
+
+      updateUser({
+        menteeProfile: { ...user.menteeProfile, followingMentors: updated },
+      });
+    } catch {
+      setError("Não foi possível atualizar o seguimento. Tenta novamente.");
     }
-
-    const updated = isFollowing
-      ? following.filter((id) => id !== mentor.userId._id)
-      : [...following, mentor.userId._id];
-
-    updateUser({
-      menteeProfile: { ...user.menteeProfile, followingMentors: updated },
-    });
   }
 
   function handleSendMessage(offering) {
@@ -45,7 +53,7 @@ export default function PublicMentor({ mentor }) {
   }
 
   function handleSchedule(offeringId) {
-    navigate(`/agendar/${mentor.userId._id}`, { state: { offeringId } });
+    navigate(`/agendar/${mentor.userId._id}?offeringId=${offeringId}`);
   }
 
   return (
@@ -107,6 +115,8 @@ export default function PublicMentor({ mentor }) {
           )}
         </div>
       </section>
+
+      {error && <p className="mentor-profile_error">{error}</p>}
 
       <section className="mentor-profile_offerings">
         <h3>Ofertas</h3>

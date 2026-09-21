@@ -100,7 +100,7 @@ const getSessions = async (userId, userRole) => {
       .sort({ date: 1, time: 1 });
   } else if (userRole === "mentor") {
     const mentorProfile = await MentorProfile.findOne({ userId });
-    sessions = await Session.find({ mentorId: mentorProfile._id })
+    sessions = await Session.find({ mentorId: mentorProfile._id, status: { $ne: "pending" } })
       .populate("menteeId", "name surname email avatarUrl")
       .populate("offeringId")
       .sort({ date: 1, time: 1 });;

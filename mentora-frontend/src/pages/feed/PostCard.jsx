@@ -56,13 +56,6 @@ export default function PostCard({
 
   const editFileInputRef = useRef(null);
 
-  if (!post.mentorId || !post.mentorId.userId) {
-    return null;
-  }
-
-  const author = post.mentorId.userId;
-  const isOwnPost = author._id === currentUserId;
-
   useEffect(() => {
     if (showComments && !commentsLoaded) {
       getComments(token, post._id).then((data) => {
@@ -81,6 +74,13 @@ export default function PostCard({
     setEditedPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [editedImage]);
+
+  if (!post.mentorId || !post.mentorId.userId) {
+    return null;
+  }
+
+  const author = post.mentorId.userId;
+  const isOwnPost = author._id === currentUserId;
 
   async function handleSaveEdit() {
     const updates = { content: editedContent };

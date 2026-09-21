@@ -6,18 +6,26 @@ import { getFavorites } from "../../services/favoriteService.js";
 export default function MenteeFavoriteOfferings() {
     const { token } = useAuth();
     const [favorites, setFavorites] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        getFavorites(token).then(setFavorites);
+        getFavorites(token)
+            .then(setFavorites)
+            .catch(() => setError("Não foi possível carregar os favoritos. Tenta novamente."));
     }, [token]);
 
     return (
         <section className="mentee-profile_favorites">
             <h3>Ofertas favoritas</h3>
+
+            {error && <p className="mentee-profile_error">{error}</p>}
+
             {favorites.length === 0 ? (
-                <p className="mentee-profile_favorites-empty">
-                    Ainda não tens nenhuma oferta favorita.
-                </p>
+                !error && (
+                    <p className="mentee-profile_favorites-empty">
+                        Ainda não tens nenhuma oferta favorita.
+                    </p>
+                )
             ) : (
                 <div className="mentee-profile_favorites-list">
                     {favorites.map((fav) =>

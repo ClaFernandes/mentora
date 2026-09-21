@@ -19,21 +19,38 @@ import "./MentorProfile.css";
 export default function OwnProfileMentor({ mentor }) {
   const { token } = useAuth();
   const [availability, setAvailability] = useState([]);
+  const [availabilityError, setAvailabilityError] = useState(null);
 
   useEffect(() => {
-    getAvailability(mentor.id).then(setAvailability);
+    getAvailability(mentor.id)
+      .then(setAvailability)
+      .catch(() =>
+        setAvailabilityError("Não foi possível carregar a disponibilidade. Tenta novamente."),
+      );
   }, [mentor.id]);
 
   async function handleAddAvailabilityBlock(blockData) {
-    const createdBlock = await createAvailability(token, blockData);
-    setAvailability((prev) => [...prev, createdBlock]);
+    setAvailabilityError(null);
+
+    try {
+      const createdBlock = await createAvailability(token, blockData);
+      setAvailability((prev) => [...prev, createdBlock]);
+    } catch {
+      setAvailabilityError("Não foi possível adicionar o horário. Tenta novamente.");
+    }
   }
 
   async function handleRemoveAvailabilityBlock(availabilityId) {
-    await deleteAvailability(token, availabilityId);
-    setAvailability((prev) =>
-      prev.filter((block) => block._id !== availabilityId),
-    );
+    setAvailabilityError(null);
+
+    try {
+      await deleteAvailability(token, availabilityId);
+      setAvailability((prev) =>
+        prev.filter((block) => block._id !== availabilityId),
+      );
+    } catch {
+      setAvailabilityError("Não foi possível remover o horário. Tenta novamente.");
+    }
   }
 
   return (
@@ -78,6 +95,11 @@ export default function OwnProfileMentor({ mentor }) {
 
       <section className="mentor-profile_availability">
         <h3>Disponibilidade</h3>
+
+        {availabilityError && (
+          <p className="mentor-profile_error">{availabilityError}</p>
+        )}
+
         <AvailabilityCalendar
           availability={availability}
           onAddBlock={handleAddAvailabilityBlock}

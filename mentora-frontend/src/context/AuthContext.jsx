@@ -79,8 +79,14 @@ export function AuthProvider({ children }) {
     restoreSession();
   }, []);
 
+  useEffect(() => {
+    function handleUnauthorized() {
+      logout();
+    }
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+    return () => window.removeEventListener("auth:unauthorized", handleUnauthorized);
+  }, []);
 
-  // Falta corrigir
   function updateUser(updates) {
     setUser((prev) => ({ ...prev, ...updates }));
     return Promise.resolve();

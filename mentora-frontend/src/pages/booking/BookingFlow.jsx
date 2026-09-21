@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useBooking } from "../../hooks/useBooking.js";
 import Avatar from "../../components/Avatar.jsx";
@@ -11,7 +11,8 @@ import "./BookingFlow.css";
 
 export default function BookingFlow() {
     const { mentorId } = useParams();
-    const location = useLocation();
+    const [searchParams] = useSearchParams();
+    const offeringId = searchParams.get("offeringId");
     const { token } = useAuth();
 
     const {
@@ -38,8 +39,6 @@ export default function BookingFlow() {
     const maxMonthDate = new Date(today.getFullYear(), today.getMonth() + 2, 1);
 
     useEffect(() => {
-        const offeringId = location.state?.offeringId;
-
         getMentorProfile(mentorId).then((foundMentor) => {
             const foundOffering = foundMentor.offerings.find(
                 (o) => o._id === offeringId,);
@@ -48,7 +47,7 @@ export default function BookingFlow() {
                 startBooking(foundMentor, foundOffering);
             }
         })
-    }, [mentorId]);
+    }, [mentorId, offeringId]);
 
     useEffect(() => {
         getAvailability(mentorId).then(setMentorAvailability);

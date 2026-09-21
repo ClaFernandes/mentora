@@ -27,9 +27,13 @@ export default function MenteeOnboarding() {
   const [suggestedMentors, setSuggestedMentors] = useState([]);
 
   useEffect(() => {
-    searchMentors({ sortBy: "rating" }, 1, 6).then((result) => {
-      setSuggestedMentors(result.mentors);
-    });
+    searchMentors({ sortBy: "rating" }, 1, 6)
+      .then((result) => {
+        setSuggestedMentors(result.mentors);
+      })
+      .catch(() => {
+        // se falhar a lista fica vazia
+      });
   }, []);
 
   function toggleInterest(area) {
@@ -72,21 +76,26 @@ export default function MenteeOnboarding() {
     }
     setLoading(true);
 
-    const updatedProfile = await updateMenteeProfile(token, { interests });
+    try {
+      const updatedProfile = await updateMenteeProfile(token, { interests });
 
-    await Promise.all(
-      followingMentors.map((mentorUserId) => followMentor(token, mentorUserId)),
-    );
+      await Promise.all(
+        followingMentors.map((mentorUserId) => followMentor(token, mentorUserId)),
+      );
 
-    setUser((prev) => ({
-      ...prev,
-      menteeProfile: {
-        ...prev.menteeProfile,
-        interests: updatedProfile.interests,
-        followingMentors: followingMentors,
-      },
-    }));
-    navigate("/feed");
+      setUser((prev) => ({
+        ...prev,
+        menteeProfile: {
+          ...prev.menteeProfile,
+          interests: updatedProfile.interests,
+          followingMentors: followingMentors,
+        },
+      }));
+      navigate("/feed");
+    } catch {
+      setError("Não foi possível guardar as tuas escolhas. Tenta novamente.");
+      setLoading(false);
+    }
   }
 
   return (

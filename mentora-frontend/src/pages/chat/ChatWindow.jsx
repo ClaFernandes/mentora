@@ -17,6 +17,7 @@ export default function ChatWindow() {
     const [selectedConv, setSelectedConv] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessageText, setNewMessageText] = useState("");
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         getConversations(token).then((data) => {
@@ -53,11 +54,13 @@ export default function ChatWindow() {
                     incomingOfferingId,
                 );
             }
-        });
+        })
+            .catch(() => setError("Não foi possível carregar as conversas. Tenta novamente."));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.state]);
 
     async function openConversation(conv) {
+        setError(null);
         setSelectedConv(conv);
 
         if (!conv.id) {
@@ -65,9 +68,14 @@ export default function ChatWindow() {
             return;
         }
 
-        const senderId = user.role === "mentee" ? user.id : conv.otherUser.id;
-        const found = await getMessagesBySender(token, conv.offering.id, senderId);
-        setMessages(found);
+        try {
+            const senderId = user.role === "mentee" ? user.id : conv.otherUser.id;
+            const found = await getMessagesBySender(token, conv.offering.id, senderId);
+            setMessages(found);
+        } catch {
+            setMessages([]);
+            setError("Não foi possível carregar as mensagens. Tenta novamente.");
+        }
     }
 
     async function handleSendMessage() {
@@ -76,25 +84,35 @@ export default function ChatWindow() {
         const menteeId =
             user.role === "mentor" ? selectedConv.otherUser.id : undefined;
 
-        const newMsg = await sendMessage(
-            token,
-            selectedConv.offering.id,
-            newMessageText.trim(),
-            menteeId,
-        );
+        setError(null);
 
-        setMessages((prev) => [...prev, newMsg]);
-        setNewMessageText("");
-
-        if (!selectedConv.id) {
-            const updated = await getConversations(token);
-            setConversations(updated);
-            const created = updated.find(
-                (c) =>
-                    c.offering.id === selectedConv.offering.id &&
-                    c.otherUser.id === selectedConv.otherUser.id,
+        try {
+            const newMsg = await sendMessage(
+                token,
+                selectedConv.offering.id,
+                newMessageText.trim(),
+                menteeId,
             );
-            if (created) setSelectedConv(created);
+
+            setMessages((prev) => [...prev, newMsg]);
+            setNewMessageText("");
+
+            if (!selectedConv.id) {
+                try {
+                    const updated = await getConversations(token);
+                    setConversations(updated);
+                    const created = updated.find(
+                        (c) =>
+                            c.offering.id === selectedConv.offering.id &&
+                            c.otherUser.id === selectedConv.otherUser.id,
+                    );
+                    if (created) setSelectedConv(created);
+                } catch {
+                    // a lista atualiza-se na próxima vez que abrires o chat
+                }
+            }
+        } catch {
+            setError("Não foi possível enviar a mensagem. Tenta novamente.");
         }
     }
 
@@ -136,6 +154,8 @@ export default function ChatWindow() {
             </div>
 
             <div className="chat-conversation-detail">
+                {error && <p className="chat-error">{error}</p>}
+
                 {!selectedConv ? (
                     <p className="chat-empty">Seleciona uma conversa para começar.</p>
                 ) : (
