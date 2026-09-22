@@ -28,9 +28,17 @@ const adminRoutes = require("./modules/admin/admin.routes");
 
 const app = express();
 
-connectDB();
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ message: "Erro ao ligar à base de dados" });
+  }
+});
 
-app.use(cors());
+const allowedOrigins = [process.env.FRONTEND_URL];
+app.use(cors({ origin: allowedOrigins }));
 
 app.use(
   "/webhooks/stripe",
@@ -64,6 +72,10 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Servidor a correr na porta ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor a correr na porta ${PORT}`);
+  });
+}
+
+module.exports = app;
