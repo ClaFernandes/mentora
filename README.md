@@ -4,7 +4,7 @@ Comunidade de mentoria paga que funciona também como rede social: profissionais
 
 > Projeto final do curso Full-Stack Developer (TechOf).
 
-**Aplicação online:** _(link a acrescentar após a publicação)_
+**Aplicação online:** [https://mentora-frontend-zeta.vercel.app](https://mentora-frontend-zeta.vercel.app)
 
 ## Funcionalidades
 
@@ -22,14 +22,12 @@ Comunidade de mentoria paga que funciona também como rede social: profissionais
 ## Tecnologias
 
 **Frontend**
-
 - React + Vite
 - React Router
 - Context API (autenticação, tema, fluxo de agendamento)
 - CSS, por página/componente
 
 **Backend**
-
 - Node.js + Express
 - MongoDB (Atlas) + Mongoose
 - Autenticação: bcryptjs + JWT
@@ -37,14 +35,18 @@ Comunidade de mentoria paga que funciona também como rede social: profissionais
 - Cloudinary (upload de imagens)
 - Nodemailer + Mailtrap SMTP (e-mails transacionais)
 
+## Estrutura do repositório
+
+Este é um monorepo: as pastas `mentora-backend` e `mentora-frontend` estão neste mesmo repositório, mas são publicadas como dois projetos separados no Vercel (cada um com a sua "Root Directory"), permitindo deploy e configuração independentes de cada parte.
+
 ## Identidade visual
 
-| Cor          | Hex       |
-| ------------ | --------- |
-| Grafite      | `#2B2D33` |
-| Mostarda     | `#D2A02A` |
+| Cor | Hex |
+|---|---|
+| Grafite | `#2B2D33` |
+| Mostarda | `#D2A02A` |
 | Verde-sálvia | `#7A9E93` |
-| Creme        | `#F6F1EA` |
+| Creme | `#F6F1EA` |
 
 Tipografia: **Manrope** (títulos) + **Inter** (texto corrido). Suporte a tema claro e escuro, persistido via `localStorage`.
 
@@ -128,21 +130,19 @@ O comando mostra um segredo que começa por `whsec_`. Copia-o para `STRIPE_WEBHO
 
 No pagamento, usa o cartão de teste do Stripe:
 
-| Campo    | Valor                 |
-| -------- | --------------------- |
-| Número   | `4242 4242 4242 4242` |
-| Validade | qualquer data futura  |
-| CVC      | qualquer 3 dígitos    |
+| Campo | Valor |
+|---|---|
+| Número | `4242 4242 4242 4242` |
+| Validade | qualquer data futura |
+| CVC | qualquer 3 dígitos |
 
 ## Contas de demonstração
 
-Para experimentar a aplicação, podes criar uma conta nova no registo, como mentor ou como mentorado.
-
-As credenciais de demonstração (incluindo o acesso de administrador) são fornecidas na documentação da entrega.
+Para experimentar a aplicação, podes criar uma conta nova no registo, como mentor ou como mentorado. As contas de mentor ficam a aguardar aprovação de um administrador antes de aparecerem na plataforma.
 
 ## Estado atual
 
-Frontend e backend concluídos e integrados (MongoDB Atlas, Stripe em modo de teste, Cloudinary e Mailtrap). Em fase final de testes e publicação.
+Frontend e backend concluídos, integrados e publicados em produção no Vercel (MongoDB Atlas, Stripe em modo de teste, Cloudinary e Mailtrap).
 
 ## Autora
 

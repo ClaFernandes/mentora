@@ -1,4 +1,2 @@
 node_modules/
-stripe.exe
 .env
-src/seed.js
