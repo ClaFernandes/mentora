@@ -418,19 +418,25 @@ const getStats = async () => {
 
   const monthlyData = {};
   for (const session of completedSessionsList) {
-    const sessionDate = new Date(`${session.date}T00:00:00`);
-    const monthLabel = MONTH_NAMES[sessionDate.getMonth()];
+    const monthKey = session.date.slice(0, 7);
+    const monthIndex = Number(monthKey.slice(5, 7)) - 1;
 
-    if (!monthlyData[monthLabel]) {
-      monthlyData[monthLabel] = { mes: monthLabel, sessoes: 0, receita: 0 };
+    if (!monthlyData[monthKey]) {
+      monthlyData[monthKey] = {
+        mes: MONTH_NAMES[monthIndex],
+        sessoes: 0,
+        receita: 0,
+      };
     }
 
-    monthlyData[monthLabel].sessoes += 1;
-    monthlyData[monthLabel].receita +=
+    monthlyData[monthKey].sessoes += 1;
+    monthlyData[monthKey].receita +=
       paymentsBySession[session._id.toString()] || 0;
   }
 
-  const chartData = Object.values(monthlyData);
+  const chartData = Object.keys(monthlyData)
+    .sort()
+    .map((key) => monthlyData[key]);
 
   return {
     totalMentors,
