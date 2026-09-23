@@ -5,6 +5,7 @@ import {
   getSessions,
   cancelSession,
   rateSession,
+  paySession,
 } from "../../services/sessionService.js";
 import {
   addFavorite,
@@ -140,6 +141,17 @@ export default function SessionsPage() {
     }
   }
 
+  async function handlePaySession(sessionId) {
+    setError(null);
+
+    try {
+      const { checkoutUrl } = await paySession(token, sessionId);
+      window.location.href = checkoutUrl;
+    } catch {
+      setError("Não foi possível iniciar o pagamento. Tenta novamente.");
+    }
+  }
+
   return (
     <div className="sessions-page">
       <h2>Sessões</h2>
@@ -222,6 +234,16 @@ export default function SessionsPage() {
                       ? "A aguardar pagamento"
                       : FILTERS.find((f) => f.key === displayStatus)?.label}
                   </span>
+
+                  {user.role === "mentee" && displayStatus === "pending" && (
+                    <button
+                      type="button"
+                      className="session-pay-btn"
+                      onClick={() => handlePaySession(session._id)}
+                    >
+                      Pagar agora
+                    </button>
+                  )}
 
                   {canCancel && (
                     <button

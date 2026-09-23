@@ -34,3 +34,11 @@ export async function resetPassword({ token, newPassword, confirmNewPassword }) 
         body: { token, newPassword, confirmNewPassword },
     });
 }
+
+export async function changePassword({ token, currentPassword, newPassword, confirmNewPassword }) {
+    return apiRequest("/auth/change-password", {
+        method: "PUT",
+        body: { currentPassword, newPassword, confirmNewPassword },
+        token,
+    });
+}

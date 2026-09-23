@@ -250,10 +250,58 @@ const resetPassword = async ({ token, newPassword, confirmNewPassword }) => {
   return { message: "Palavra-passe redefinida com sucesso" };
 };
 
+const changePassword = async (userId, { currentPassword, newPassword, confirmNewPassword }) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = new Error("Utilizador não encontrado");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const passwordMatches = await bcrypt.compare(currentPassword, user.passwordHash);
+  if (!passwordMatches) {
+    const error = new Error("Palavra-passe atual incorreta");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (newPassword !== confirmNewPassword) {
+    const error = new Error("As novas palavras-passe não coincidem");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (newPassword === currentPassword) {
+    const error = new Error("A nova palavra-passe deve ser diferente da atual");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const MIN_PASSWORD_LENGTH = 8;
+  if (newPassword.length < MIN_PASSWORD_LENGTH) {
+    const error = new Error(`A palavra-passe deve ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres`);
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/;
+  if (!strongPasswordRegex.test(newPassword)) {
+    const error = new Error("A palavra-passe deve conter maiúscula, minúscula, número e carácter especial");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  user.passwordHash = await bcrypt.hash(newPassword, 12);
+  await user.save();
+
+  return { message: "Palavra-passe alterada com sucesso" };
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getMe,
   forgotPassword,
   resetPassword,
+  changePassword,
 };

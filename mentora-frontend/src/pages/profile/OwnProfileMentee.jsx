@@ -1,4 +1,5 @@
 import ProfileAvatarUpload from "../../components/ProfileAvatarUpload.jsx";
+import ChangePasswordSection from "../../components/ChangePasswordSection.jsx";
 import DangerZoneSection from "../../components/DangerZoneSection.jsx";
 import MenteeBioSection from "./MenteeBioSection.jsx";
 import MenteeInterestsSection from "./MenteeInterestsSection.jsx";
@@ -30,6 +31,8 @@ export default function OwnProfileMentee({ mentee }) {
       <MenteeFollowedMentors followingMentors={mentee.menteeProfile.followingMentors} />
 
       <MenteeFavoriteOfferings />
+
+      <ChangePasswordSection variant="mentee" />
 
       <DangerZoneSection variant="mentee" />
     </div>

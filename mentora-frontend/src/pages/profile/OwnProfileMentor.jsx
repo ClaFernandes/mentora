@@ -7,13 +7,14 @@ import {
 } from "../../services/availabilityService.js";
 import { getMyFollowers } from "../../services/mentorService.js";
 import ProfileAvatarUpload from "../../components/ProfileAvatarUpload.jsx";
+import ChangePasswordSection from "../../components/ChangePasswordSection.jsx";
 import DangerZoneSection from "../../components/DangerZoneSection.jsx";
 import AvailabilityCalendar from "../../components/AvailabilityCalendar.jsx";
 import MentorBioSection from "./MentorBioSection.jsx";
 import MentorAreasSection from "./MentorAreasSection.jsx";
 import MentorOfferingsSection from "./MentorOfferingsSection.jsx";
 import MentorPostsSection from "./MentorPostsSection.jsx";
-import FollowersModal from "./FollowersModal.jsx";
+import FollowersModal from "../../components/FollowersModal.jsx";
 import { FaCheckCircle } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
@@ -127,6 +128,8 @@ export default function OwnProfileMentor({ mentor }) {
       </section>
 
       <MentorPostsSection mentorId={mentor.id} />
+
+      <ChangePasswordSection variant="mentor" />
 
       <DangerZoneSection variant="mentor" />
     </div>

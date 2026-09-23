@@ -214,3 +214,19 @@
     color: var(--color-danger);
     background: var(--color-bg-elevated);
 }
+
+.session-pay-btn {
+    background-color: var(--color-accent-secondary);
+    color: var(--color-cream);
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 5px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.session-pay-btn:hover {
+    opacity: 0.85;
+}

@@ -1,5 +1,5 @@
-import Avatar from "../../components/Avatar.jsx";
-import EmptyState from "../../components/EmptyState.jsx";
+import Avatar from "./Avatar.jsx";
+import EmptyState from "./EmptyState.jsx";
 import { FaTimes } from "react-icons/fa";
 import "./FollowersModal.css";
 
