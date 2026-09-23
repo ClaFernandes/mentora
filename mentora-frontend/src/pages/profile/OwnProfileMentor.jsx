@@ -5,6 +5,7 @@ import {
   createAvailability,
   deleteAvailability,
 } from "../../services/availabilityService.js";
+import { getMyFollowers } from "../../services/mentorService.js";
 import ProfileAvatarUpload from "../../components/ProfileAvatarUpload.jsx";
 import DangerZoneSection from "../../components/DangerZoneSection.jsx";
 import AvailabilityCalendar from "../../components/AvailabilityCalendar.jsx";
@@ -12,6 +13,7 @@ import MentorBioSection from "./MentorBioSection.jsx";
 import MentorAreasSection from "./MentorAreasSection.jsx";
 import MentorOfferingsSection from "./MentorOfferingsSection.jsx";
 import MentorPostsSection from "./MentorPostsSection.jsx";
+import FollowersModal from "./FollowersModal.jsx";
 import { FaCheckCircle } from "react-icons/fa";
 import { AiFillStar } from "react-icons/ai";
 import "./MentorProfile.css";
@@ -20,6 +22,8 @@ export default function OwnProfileMentor({ mentor }) {
   const { token } = useAuth();
   const [availability, setAvailability] = useState([]);
   const [availabilityError, setAvailabilityError] = useState(null);
+  const [followers, setFollowers] = useState(null);
+  const [showFollowersModal, setShowFollowersModal] = useState(false);
 
   useEffect(() => {
     getAvailability(mentor.id)
@@ -28,6 +32,12 @@ export default function OwnProfileMentor({ mentor }) {
         setAvailabilityError("Não foi possível carregar a disponibilidade. Tenta novamente."),
       );
   }, [mentor.id]);
+
+  useEffect(() => {
+    getMyFollowers(token)
+      .then(setFollowers)
+      .catch(() => { });
+  }, [token, mentor.id]);
 
   async function handleAddAvailabilityBlock(blockData) {
     setAvailabilityError(null);
@@ -76,16 +86,25 @@ export default function OwnProfileMentor({ mentor }) {
         </div>
       </header>
 
-      <section className="mentor-profile_meta mentor-profile_meta-readonly">
-        <div className="mentor-profile_stats">
-          <p className="mentor-profile_rating">
-            <AiFillStar /> {mentor.mentorProfile.avgRating}
-          </p>
-          <p className="mentor-profile_followers">
-            {mentor.mentorProfile.followersCount} seguidores
-          </p>
-        </div>
+      <section className="mentor-profile_meta">
+        <p className="mentor-profile_rating">
+          <AiFillStar /> {mentor.mentorProfile.avgRating}
+        </p>
+        <button
+          type="button"
+          className="mentor-profile_followers-btn"
+          onClick={() => setShowFollowersModal(true)}
+        >
+          {followers ? followers.length : mentor.mentorProfile.followersCount} seguidores
+        </button>
       </section>
+
+      {showFollowersModal && (
+        <FollowersModal
+          followers={followers || []}
+          onClose={() => setShowFollowersModal(false)}
+        />
+      )}
 
       <MentorBioSection bio={mentor.bio} />
 

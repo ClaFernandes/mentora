@@ -19,7 +19,6 @@ export default function ChatBell() {
         getConversations(token)
             .then(setConversations)
             .catch(() => {
-                // sino fica vazio se falhar
             });
     }, [user, token]);
 

@@ -20,7 +20,7 @@ export default function MentorPostsSection({ mentorId }) {
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null); // NOVO
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let cancelled = false;

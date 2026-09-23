@@ -28,3 +28,10 @@ export async function searchMentors(filters, page, limit) {
         method: "GET",
     });
 }
+
+export async function getMyFollowers(token) {
+    return apiRequest("/mentors/me/followers", {
+        method: "GET",
+        token,
+    });
+}

@@ -5,12 +5,12 @@ export default function AdminAdmins({
   admins,
   currentAdmin,
   newAdminName,
-  newAdminSurname, // NOVO
-  newAdminBirthDate, // NOVO
+  newAdminSurname,
+  newAdminBirthDate,
   newAdminEmail,
   setNewAdminName,
-  setNewAdminSurname, // NOVO
-  setNewAdminBirthDate, // NOVO
+  setNewAdminSurname,
+  setNewAdminBirthDate,
   setNewAdminEmail,
   handleAddAdmin,
   handleRequestRemoveAdmin,

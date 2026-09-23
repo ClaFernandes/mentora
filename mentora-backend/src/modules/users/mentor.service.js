@@ -72,10 +72,20 @@ const searchMentors = async (filters, page, limit) => {
         pipeline.push({ $match: offeringMatch });
     }
 
+    pipeline.push({ $sort: { sessionPrice: 1 } });
+
     pipeline.push({
         $group: {
             _id: "$mentorId",
             minPrice: { $min: "$sessionPrice" },
+            matchedOfferings: {
+                $push: {
+                    _id: "$_id",
+                    title: "$title",
+                    area: "$area",
+                    sessionPrice: "$sessionPrice",
+                },
+            },
         },
     });
 
@@ -101,7 +111,7 @@ const searchMentors = async (filters, page, limit) => {
 
     const mentorMatch = {
         "mentor.rejected": false,
-        "mentorUser.status": { $ne: "suspended" }, // NOVO
+        "mentorUser.status": { $ne: "suspended" },
     };
 
     if (filters.minRating) {
@@ -127,6 +137,10 @@ const searchMentors = async (filters, page, limit) => {
     const total = aggResult.totalCount[0]?.count || 0;
     const mentorIds = aggResult.results.map((r) => r._id);
 
+    const matchedOfferingsByMentor = new Map(
+        aggResult.results.map((r) => [r._id.toString(), r.matchedOfferings])
+    );
+
     const mentors = await MentorProfile.find({ _id: { $in: mentorIds } })
         .populate("userId", "name surname email avatarUrl");
 
@@ -134,12 +148,10 @@ const searchMentors = async (filters, page, limit) => {
         .map((id) => mentors.find((m) => m._id.toString() === id.toString()))
         .filter(Boolean);
 
-    const mentorsWithOfferings = await Promise.all(
-        orderedMentors.map(async (mentor) => {
-            const offerings = await Offering.find({ mentorId: mentor._id });
-            return { ...mentor.toObject(), offerings };
-        })
-    );
+    const mentorsWithOfferings = orderedMentors.map((mentor) => ({
+        ...mentor.toObject(),
+        offerings: matchedOfferingsByMentor.get(mentor._id.toString()) || [],
+    }));
 
     return {
         mentors: mentorsWithOfferings,
@@ -149,4 +161,20 @@ const searchMentors = async (filters, page, limit) => {
     };
 };
 
-module.exports = { getMentorProfile, updateMentorProfile, searchMentors };
+const getMyFollowers = async (userId) => {
+    const mentorProfile = await MentorProfile.findOne({ userId });
+
+    if (!mentorProfile) {
+        const error = new Error("Perfil de mentor não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    const follows = await Follow.find({ mentorId: mentorProfile._id })
+        .populate("followerId", "name surname avatarUrl")
+        .sort({ createdAt: -1 });
+
+    return follows.map((f) => f.followerId).filter(Boolean);
+};
+
+module.exports = { getMentorProfile, updateMentorProfile, searchMentors, getMyFollowers };

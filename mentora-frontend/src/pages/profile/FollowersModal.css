@@ -1,0 +1,70 @@
+.followers-modal_overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.followers-modal {
+    background-color: var(--color-bg-elevated);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.followers-modal_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.followers-modal_header h3 {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin: 0;
+}
+
+.followers-modal_close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    padding: 4px;
+    transition: color 0.15s ease;
+}
+
+.followers-modal_close:hover {
+    color: var(--color-mustard);
+}
+
+.followers-modal_body {
+    padding: 16px 24px 24px;
+    overflow-y: auto;
+}
+
+.followers-modal_list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0;
+    margin: 0;
+}
+
+.followers-modal_item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--color-text);
+    font-size: 0.9rem;
+}

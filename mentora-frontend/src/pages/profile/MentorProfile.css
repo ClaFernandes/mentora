@@ -237,6 +237,21 @@
     margin: 0;
 }
 
+.mentor-profile_followers-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.mentor-profile_followers-btn:hover {
+    color: var(--color-mustard);
+    text-decoration: underline;
+}
+
 .mentor-profile_actions {
     display: flex;
     gap: 10px;
