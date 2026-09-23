@@ -29,6 +29,13 @@ const FILTERS = [
   { key: "cancelled", label: "Cancelados" },
 ];
 
+const STATUS_LABELS = {
+  pending: "A aguardar pagamento",
+  confirmed: "Confirmada",
+  completed: "Concluída",
+  cancelled: "Cancelada",
+};
+
 export default function SessionsPage() {
   const { user, token } = useAuth();
   const [activeFilter, setActiveFilter] = useState("all");
@@ -230,9 +237,7 @@ export default function SessionsPage() {
                   <span
                     className={`session-status session-status--${displayStatus}`}
                   >
-                    {displayStatus === "pending"
-                      ? "A aguardar pagamento"
-                      : FILTERS.find((f) => f.key === displayStatus)?.label}
+                    {STATUS_LABELS[displayStatus]}
                   </span>
 
                   {user.role === "mentee" && displayStatus === "pending" && (
