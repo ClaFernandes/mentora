@@ -75,17 +75,31 @@ export default function AdminDashboard({
       <div className="admin-chart-card">
         <h3>Sessões e receita por mês</h3>
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={chartData}>
+          <BarChart
+            data={chartData}
+            margin={{ top: 8, right: 0, left: -12, bottom: 0 }} // NOVO: menos margem à volta
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-            <XAxis dataKey="mes" stroke="var(--color-text-secondary)" />
-            <YAxis yAxisId="left" stroke="var(--color-text-secondary)" />
+            <XAxis
+              dataKey="mes"
+              stroke="var(--color-text-secondary)"
+              tick={{ fontSize: 12 }} // NOVO: letra mais pequena
+            />
+            <YAxis
+              yAxisId="left"
+              stroke="var(--color-text-secondary)"
+              width={36} // NOVO: eixo mais estreito (era 60 por defeito)
+              tick={{ fontSize: 12 }}
+            />
             <YAxis
               yAxisId="right"
               orientation="right"
               stroke="var(--color-text-secondary)"
+              width={40} // NOVO: um pouco mais largo, por causa dos valores até 600
+              tick={{ fontSize: 12 }}
             />
             <Tooltip />
-            <Legend />
+            <Legend wrapperStyle={{ fontSize: 13 }} /> {/* NOVO: legenda mais pequena */}
             <Bar
               yAxisId="left"
               dataKey="sessoes"

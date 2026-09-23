@@ -266,3 +266,52 @@
     font-size: 0.85rem;
     margin-bottom: 1rem;
 }
+
+@media (max-width: 480px) {
+    .booking-flow {
+        padding: 20px 16px;
+        margin: 8px auto;
+    }
+
+    .custom-calendar-card {
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .calendar-days-grid {
+        gap: 4px;
+    }
+
+    .calendar-cell {
+        font-size: 0.85rem;
+    }
+
+    .time-section h2,
+    .page-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .time-grid {
+        grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    }
+
+    .summary-btns {
+        flex-direction: column-reverse;
+    }
+
+    .summary-btns button {
+        width: 100%;
+    }
+
+    .summary-card {
+        padding: 16px;
+    }
+
+    .summary-card h3 {
+        font-size: 1.05rem;
+    }
+
+    .summary-card p {
+        font-size: 0.9rem;
+    }
+}

@@ -230,3 +230,40 @@
 .session-pay-btn:hover {
     opacity: 0.85;
 }
+
+@media (max-width: 480px) {
+    .sessions-page {
+        padding: 20px 16px;
+        margin: 8px auto;
+    }
+
+    .session-card {
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .session-card_side {
+        flex-basis: 100%;
+        max-width: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .session-card_side .rating-stars {
+        flex-basis: 100%;
+    }
+
+    .session-card_side .rating-review-text {
+        max-width: none;
+        text-align: left;
+    }
+
+    .session-rating-panel {
+        flex-basis: 100%;
+        width: auto;
+    }
+}

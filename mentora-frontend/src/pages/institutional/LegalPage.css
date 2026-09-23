@@ -95,3 +95,27 @@
 .legal_back:hover {
     opacity: 0.9;
 }
+
+.legal .legal_updated {
+    margin-bottom: 20px;
+}
+
+@media (max-width: 480px) {
+    .legal {
+        padding: 32px 16px 56px;
+    }
+
+    .legal h1 {
+        font-size: 1.6rem;
+    }
+
+    .legal h2 {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .legal_item {
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+}

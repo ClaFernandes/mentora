@@ -7,6 +7,7 @@ import {
     sendMessage,
     getMessagesBySender,
 } from "../../services/chatService.js";
+import { FiArrowLeft } from "react-icons/fi";
 import "./ChatWindow.css";
 
 export default function ChatWindow() {
@@ -117,7 +118,7 @@ export default function ChatWindow() {
     }
 
     return (
-        <div className="chat-window">
+        <div className={selectedConv ? "chat-window chat-window--has-selection" : "chat-window"}>
             <div className="chat-conversations-list">
                 {conversations.length === 0 ? (
                     <p className="chat-empty">Ainda não tens conversas.</p>
@@ -161,6 +162,14 @@ export default function ChatWindow() {
                 ) : (
                     <>
                         <div className="chat-conversation-detail_header">
+                            <button
+                                type="button"
+                                className="chat-back-btn"
+                                onClick={() => setSelectedConv(null)}
+                                aria-label="Voltar às conversas"
+                            >
+                                <FiArrowLeft />
+                            </button>
                             <Avatar
                                 src={selectedConv.otherUser.avatarUrl}
                                 name={selectedConv.otherUser.name}
