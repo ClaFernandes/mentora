@@ -401,3 +401,23 @@
 .auth-match-error {
     color: var(--color-danger);
 }
+
+@media (max-width: 480px) {
+    .auth-form-side {
+        align-items: flex-start;
+        padding: 24px 12px;
+    }
+
+    .auth-card {
+        padding: 28px 20px;
+        border-radius: 16px;
+    }
+
+    .auth-card>.auth-brand {
+        margin-bottom: 20px;
+    }
+
+    .auth-role-select {
+        flex-direction: column;
+    }
+}

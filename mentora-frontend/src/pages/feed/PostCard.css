@@ -331,3 +331,33 @@
     background: var(--color-bg);
     font-size: 0.85rem;
 }
+
+@media (max-width: 480px) {
+    .post-card {
+        padding: 16px;
+    }
+
+    .post-card_header {
+        flex-wrap: wrap;
+    }
+
+    .post-card_header time {
+        order: 3;
+        flex-basis: 100%;
+        margin: 2px 0 0 46px;
+        font-size: 0.75rem;
+    }
+
+    .post-card_author span {
+        font-size: 0.9rem;
+    }
+
+    .post-card_content p {
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .post-card_actions button {
+        font-size: 0.85rem;
+    }
+}

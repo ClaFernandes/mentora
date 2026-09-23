@@ -230,3 +230,15 @@
 .comment-list_new button:hover {
     opacity: 0.9;
 }
+
+@media (max-width: 480px) {
+    .comment-list_body p {
+        text-align: left;
+    }
+
+    .comment-list_meta-info {
+        flex-wrap: wrap;
+        column-gap: 8px;
+        row-gap: 0;
+    }
+}

@@ -412,3 +412,25 @@
 .onboarding-terms a:hover {
     text-decoration: underline;
 }
+
+@media (max-width: 480px) {
+    .onboarding-container {
+        align-items: flex-start;
+        padding: 24px 12px;
+    }
+
+    .onboarding-card {
+        padding: 28px 20px;
+        border-radius: 16px;
+    }
+
+    .onboarding-logo {
+        width: 96px;
+        height: 96px;
+    }
+
+    .onboarding-theme-toggle {
+        top: 12px;
+        right: 12px;
+    }
+}

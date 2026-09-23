@@ -521,3 +521,51 @@
     background: var(--color-bg);
     font-size: 0.85rem;
 }
+
+.mentor-profile_availability {
+    margin-top: 24px;
+}
+
+.mentor-profile_availability {
+    margin-top: 24px;
+}
+
+.mentor-profile_availability h3 {
+    color: var(--color-text);
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+}
+
+.mentor-profile_areas+.mentor-profile_meta {
+    border-top: none;
+    padding-top: 0;
+}
+
+@media (max-width: 480px) {
+    .mentor-profile {
+        padding: 20px 16px;
+    }
+
+    .mentor-profile_offering {
+        padding: 14px;
+    }
+
+    .mentor-profile_offering-view {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .mentor-profile_offering-info {
+        min-width: 0;
+        overflow-wrap: break-word;
+    }
+
+    .mentor-profile_offering-info p {
+        margin-bottom: 0;
+    }
+
+    .mentor-profile_offering-actions,
+    .mentor-profile_offering-actions-mentee {
+        align-self: flex-end;
+    }
+}

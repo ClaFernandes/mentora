@@ -172,14 +172,117 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Responsivo — esconde a busca em telas pequenas */
+.header_menu {
+    display: contents;
+}
+
+.header_menu-toggle {
+    display: none;
+}
+
 @media (max-width: 768px) {
-    .header_search {
+    .header {
+        position: relative;
+        gap: 8px;
+        padding: 0 12px;
+        height: 64px;
+    }
+
+    .header_logo img {
+        width: 44px;
+        height: 44px;
+        margin-top: 0;
+    }
+
+    .header_logo h1 {
+        font-size: 1.15rem;
+    }
+
+    .header_menu,
+    .header_divider,
+    .header_user span,
+    .header_logout-label {
         display: none;
     }
 
-    .header {
+    .header_actions {
+        gap: 4px;
+    }
+
+    .header_user {
+        padding: 2px;
+    }
+
+    .header_logout {
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.05rem;
+    }
+
+    .header_menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        color: var(--color-cream);
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .header_menu-toggle:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .header_menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 200;
+        flex-direction: column;
         gap: 12px;
-        padding: 0 16px;
+        padding: 16px;
+        background-color: var(--color-bg-header);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .header--menu-open .header_menu {
+        display: flex;
+    }
+
+    .header_search {
+        max-width: none;
+    }
+
+    .header_nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+
+    .header_nav-link {
+        padding: 12px 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .header_nav-link-active {
+        color: var(--color-accent);
+        border-bottom-color: rgba(255, 255, 255, 0.08);
+    }
+}
+
+@media (max-width: 480px) {
+    .header_logo h1 {
+        display: none;
     }
 }

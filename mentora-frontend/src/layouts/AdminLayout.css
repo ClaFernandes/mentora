@@ -98,3 +98,31 @@
     flex: 1;
     padding: 24px;
 }
+
+@media (max-width: 600px) {
+    .admin-header {
+        padding: 0 12px;
+    }
+
+    .admin-header_actions {
+        gap: 8px;
+    }
+
+    .admin-header_user {
+        padding: 4px;
+    }
+
+    .admin-header_user span {
+        display: none;
+    }
+
+    .admin-layout_main {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 380px) {
+    .admin-header_logo span {
+        display: none;
+    }
+}

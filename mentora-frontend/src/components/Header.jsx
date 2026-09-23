@@ -6,7 +6,7 @@ import Avatar from "./Avatar.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 import ChatBell from "./ChatBell.jsx";
 import logo from "../assets/logo-transparente-mostarda.png";
-import { FiMoon, FiSun, FiLogOut, FiSearch } from "react-icons/fi";
+import { FiMoon, FiSun, FiLogOut, FiSearch, FiMenu, FiX } from "react-icons/fi";
 import "./Header.css";
 
 const NAV_ITEMS = [
@@ -19,6 +19,7 @@ export default function Header() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState("");
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();
 
     if (!user) return null;
@@ -27,6 +28,7 @@ export default function Header() {
         e.preventDefault();
         if (searchQuery.trim() !== "") {
             navigate(`/mentores?q=${encodeURIComponent(searchQuery.trim())}`);
+            setIsMenuOpen(false);
         }
     }
 
@@ -38,37 +40,40 @@ export default function Header() {
     const visibleNavItems = NAV_ITEMS.filter((item) => item.roles.includes(user.role));
 
     return (
-        <header className="header">
+        <header className={isMenuOpen ? "header header--menu-open" : "header"}>
             <NavLink to="/feed" className="header_logo">
                 <img src={logo} alt="Logo" />
                 <h1>Mentora</h1>
             </NavLink>
 
-            <form className="header_search" onSubmit={search}>
-                <div className="header_search-wrapper">
-                    <FiSearch className="header_search-icon" />
-                    <input
-                        type="text"
-                        placeholder="Buscar por área ou mentores..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-            </form>
+            <div className="header_menu">
+                <form className="header_search" onSubmit={search}>
+                    <div className="header_search-wrapper">
+                        <FiSearch className="header_search-icon" />
+                        <input
+                            type="text"
+                            placeholder="Buscar por área ou mentores..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </form>
 
-            <nav className="header_nav">
-                {visibleNavItems.map((item) => (
-                    <NavLink
-                        key={item.to}
-                        to={item.to}
-                        className={({ isActive }) =>
-                            isActive ? "header_nav-link header_nav-link-active" : "header_nav-link"
-                        }
-                    >
-                        {item.label}
-                    </NavLink>
-                ))}
-            </nav>
+                <nav className="header_nav">
+                    {visibleNavItems.map((item) => (
+                        <NavLink
+                            key={item.to}
+                            to={item.to}
+                            onClick={() => setIsMenuOpen(false)}
+                            className={({ isActive }) =>
+                                isActive ? "header_nav-link header_nav-link-active" : "header_nav-link"
+                            }
+                        >
+                            {item.label}
+                        </NavLink>
+                    ))}
+                </nav>
+            </div>
 
             <span className="header_divider" />
 
@@ -90,10 +95,18 @@ export default function Header() {
                 </NavLink>
 
                 <button type="button" onClick={handleLogout} className="header_logout">
-                    <FiLogOut /> Sair
+                    <FiLogOut /> <span className="header_logout-label">Sair</span>
+                </button>
+
+                <button
+                    type="button"
+                    className="header_menu-toggle"
+                    onClick={() => setIsMenuOpen((prev) => !prev)}
+                    aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
+                >
+                    {isMenuOpen ? <FiX /> : <FiMenu />}
                 </button>
             </div>
         </header>
     );
 }
-

@@ -119,3 +119,14 @@
     font-size: 0.78rem;
     color: var(--color-text-secondary);
 }
+
+@media (max-width: 768px) {
+    .chat-bell_dropdown {
+        position: fixed;
+        top: 72px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-height: 70vh;
+    }
+}

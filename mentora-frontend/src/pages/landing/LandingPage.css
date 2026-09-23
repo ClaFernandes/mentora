@@ -342,3 +342,56 @@
         text-align: center;
     }
 }
+
+@media (max-width: 768px) {
+    .landing_hero {
+        flex-direction: column-reverse;
+        gap: 32px;
+        padding: 40px 16px 48px;
+    }
+
+    .landing_hero-text {
+        align-items: center;
+        text-align: center;
+    }
+
+    .landing_hero-checks {
+        justify-content: center;
+        gap: 12px 20px;
+    }
+
+    .landing_hero-actions a {
+        text-align: center;
+    }
+}
+
+.landing_steps,
+.landing_mentors {
+    padding: 48px 16px;
+}
+
+.landing_steps h2,
+.landing_mentors h2 {
+    margin-bottom: 32px;
+}
+
+.landing_steps-grid {
+    gap: 24px;
+}
+
+.landing_mentor-card {
+    padding: 24px 16px;
+}
+
+.landing_footer-inner {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+}
+
+.landing_footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 24px;
+}

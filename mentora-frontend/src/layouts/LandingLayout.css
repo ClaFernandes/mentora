@@ -81,3 +81,44 @@
 .landing-layout_main {
     flex: 1;
 }
+
+@media (max-width: 480px) {
+    .landing-header {
+        padding: 0 12px;
+        height: 64px;
+    }
+
+    .landing-header_logo {
+        gap: 6px;
+    }
+
+    .landing-header_logo img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .landing-header_logo h1 {
+        font-size: 1.1rem;
+    }
+
+    .landing-header_actions {
+        gap: 4px;
+    }
+
+    .landing-header_login {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+
+    .landing-header_register {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 380px) {
+    .landing-header_logo h1 {
+        display: none;
+    }
+}

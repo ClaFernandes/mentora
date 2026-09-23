@@ -35,3 +35,9 @@
     margin-bottom: 16px;
     text-align: center;
 }
+
+@media (max-width: 480px) {
+    .feed {
+        padding: 0 0 24px;
+    }
+}
