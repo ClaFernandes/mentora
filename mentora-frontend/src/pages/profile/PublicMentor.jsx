@@ -134,15 +134,22 @@ export default function PublicMentor({ mentor }) {
                 </span>
                 <p>{offering.description}</p>
               </div>
-
               <div className="mentor-profile_offering-actions-mentee">
-                <button
-                  type="button"
-                  className="mentor-profile_offering-message-btn"
-                  onClick={() => handleSendMessage(offering)}
-                >
-                  <FiMessageCircle /> Mensagem
-                </button>
+                <div className="mentor-profile_offering-message-wrapper">
+                  <button
+                    type="button"
+                    className="mentor-profile_offering-message-btn"
+                    onClick={() => handleSendMessage(offering)}
+                    disabled={user.role !== "mentee"}
+                  >
+                    <FiMessageCircle /> Mensagem
+                  </button>
+                  {user.role !== "mentee" && (
+                    <small className="mentor-profile_offering-message-hint">
+                      Disponível apenas para mentorados
+                    </small>
+                  )}
+                </div>
 
                 {user.role === "mentee" && (
                   <button
@@ -160,6 +167,6 @@ export default function PublicMentor({ mentor }) {
       </section>
 
       <MentorPostsSection mentorId={mentor.userId._id} />
-    </div>
+    </div >
   );
 }

@@ -179,10 +179,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .onboarding-day-icon {

@@ -143,12 +143,16 @@ const cancelSession = async (sessionId, userId) => {
   const payment = await Payment.findOne({ sessionId, status: "paid" });
 
   if (payment) {
-    await stripe.refunds.create({
-      payment_intent: payment.stripePaymentId,
-    });
+    try {
+      await stripe.refunds.create({
+        payment_intent: payment.stripePaymentId,
+      });
 
-    payment.status = "refunded";
-    await payment.save();
+      payment.status = "refunded";
+      await payment.save();
+    } catch (refundError) {
+      console.error("Falha ao processar reembolso no Stripe:", refundError.message);
+    }
   }
 
   const updatedSession = await Session.findByIdAndUpdate(

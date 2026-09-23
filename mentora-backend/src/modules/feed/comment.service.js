@@ -59,6 +59,8 @@ const createComment = async (postId, userId, text) => {
     text,
   });
 
+  await newComment.populate("userId", "name surname email avatarUrl role");
+
   const mentor = await MentorProfile.findById(post.mentorId);
   const recipientId = mentor.userId;
 
@@ -93,7 +95,7 @@ const updateComment = async (commentId, userId, text) => {
     commentId,
     { $set: { text } },
     { new: true },
-  );
+  ).populate("userId", "name surname email avatarUrl role");;
 
   return updated;
 };

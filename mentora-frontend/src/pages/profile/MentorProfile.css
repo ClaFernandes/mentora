@@ -378,6 +378,32 @@
     color: var(--color-accent-text);
 }
 
+.mentor-profile_offering-message-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.mentor-profile_offering-message-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+}
+
+.mentor-profile_offering-message-btn:disabled:hover {
+    background-color: transparent;
+}
+
+.mentor-profile_offering-message-hint {
+    color: var(--color-mustard);
+    font-size: 0.72rem;
+    text-align: center;
+    font-style: italic;
+    max-width: 120px;
+}
+
 .mentor-profile_offering-actions {
     display: flex;
     gap: 8px;

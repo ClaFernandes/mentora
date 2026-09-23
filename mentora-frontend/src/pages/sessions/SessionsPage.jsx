@@ -35,6 +35,7 @@ export default function SessionsPage() {
   const [cancelTarget, setCancelTarget] = useState(null);
   const [favoritedOfferingIds, setFavoritedOfferingIds] = useState([]);
   const [ratingSessionId, setRatingSessionId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -88,6 +89,8 @@ export default function SessionsPage() {
       setSessions((prev) =>
         prev.map((s) => (s._id === updatedSession._id ? updatedSession : s)),
       );
+      setSuccessMessage("Sessão cancelada. O valor pago foi reembolsado.");
+      setTimeout(() => setSuccessMessage(null), 4000);
     } catch (err) {
       if (err.status) {
         setError(err.message);
@@ -163,6 +166,8 @@ export default function SessionsPage() {
           );
         })}
       </div>
+
+      {successMessage && <p className="sessions-success">{successMessage}</p>}
 
       {error && <p className="sessions-error">{error}</p>}
 
