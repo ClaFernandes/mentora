@@ -54,6 +54,7 @@ export default function PostCard({
   const [editedPreviewUrl, setEditedPreviewUrl] = useState(null);
   const [imageRemoved, setImageRemoved] = useState(false);
   const [isImageOpen, setIsImageOpen] = useState(false);
+  const [isContentExpanded, setIsContentExpanded] = useState(false);
   const [error, setError] = useState(null);
 
   const editFileInputRef = useRef(null);
@@ -91,6 +92,13 @@ export default function PostCard({
 
   const author = post.mentorId.userId;
   const isOwnPost = author._id === currentUserId;
+
+  const CONTENT_PREVIEW_LENGTH = 300;
+  const isLongContent = post.content.length > CONTENT_PREVIEW_LENGTH;
+  const displayedContent =
+    isLongContent && !isContentExpanded
+      ? post.content.slice(0, CONTENT_PREVIEW_LENGTH).trimEnd() + "..."
+      : post.content;
 
   async function handleSaveEdit() {
     setError(null);
@@ -332,7 +340,18 @@ export default function PostCard({
         </div>
       ) : (
         <div className="post-card_content">
-          <p>{post.content}</p>
+          <p>
+            {displayedContent}
+            {isLongContent && (
+              <button
+                type="button"
+                className="post-card_toggle-content"
+                onClick={() => setIsContentExpanded((prev) => !prev)}
+              >
+                {isContentExpanded ? " ver menos" : " ver mais"}
+              </button>
+            )}
+          </p>
           {post.imageUrl && (
             <img
               src={post.imageUrl}
