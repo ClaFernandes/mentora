@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Avatar from "../../components/Avatar.jsx";
-import { FiPlus, FiTrash2, FiEye, FiEyeOff } from "react-icons/fi"; novos
+import { FiPlus, FiTrash2, FiEye, FiEyeOff } from "react-icons/fi";
 
 export default function AdminAdmins({
   admins,
