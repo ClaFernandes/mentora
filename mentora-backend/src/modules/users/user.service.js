@@ -80,6 +80,9 @@ const deleteUser = async (userId) => {
         await MenteeProfile.deleteOne({ userId: user._id });
     }
 
+    await Post.updateMany({ likedBy: user._id }, { $pull: { likedBy: user._id } });
+    await Comment.updateMany({ likedBy: user._id }, { $pull: { likedBy: user._id } });
+
     await User.deleteOne({ _id: user._id });
 
     return { message: "Conta apagada com sucesso" };
