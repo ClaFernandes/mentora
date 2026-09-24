@@ -96,7 +96,10 @@ export default function OwnProfileMentor({ mentor }) {
           className="mentor-profile_followers-btn"
           onClick={() => setShowFollowersModal(true)}
         >
-          {followers ? followers.length : mentor.mentorProfile.followersCount} seguidores
+          {(() => {
+            const count = followers ? followers.length : mentor.mentorProfile.followersCount;
+            return `${count} ${count === 1 ? "seguidor" : "seguidores"}`;
+          })()}
         </button>
       </section>
 

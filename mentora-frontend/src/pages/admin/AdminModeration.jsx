@@ -6,7 +6,7 @@ export default function AdminModeration({
   reportedComments,
   reportedContentCount,
   handleDismissReport,
-  handleRemoveContent,
+  handleRequestRemoveContent,
   reportedPage,
   reportedTotalPages,
   setReportedPage,
@@ -40,7 +40,7 @@ export default function AdminModeration({
                   <button
                     type="button"
                     className="admin-remove-btn"
-                    onClick={() => handleRemoveContent("post", post._id)}
+                    onClick={() => handleRequestRemoveContent("post", post._id)}
                   >
                     <FiX /> Remover
                   </button>
@@ -63,7 +63,7 @@ export default function AdminModeration({
                   <button
                     type="button"
                     className="admin-remove-btn"
-                    onClick={() => handleRemoveContent("comment", comment._id)}
+                    onClick={() => handleRequestRemoveContent("comment", comment._id)}
                   >
                     <FiX /> Remover
                   </button>

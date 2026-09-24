@@ -124,6 +124,13 @@ export default function Register() {
                         </button>
                     </div>
 
+                    {!role && (
+                        <p className="auth-role-warning">
+                            Escolhe se és mentor ou mentorado para continuares.
+                        </p>
+                    )}
+
+
                     <form onSubmit={handleRegister}>
                         <div className="auth-field">
                             <label htmlFor="name">Nome</label>

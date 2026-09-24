@@ -280,7 +280,7 @@ const getAllAdmins = async (currentAdminId) => {
   return admins;
 };
 
-const createAdmin = async ({ name, surname, birthDate, email }) => {
+const createAdmin = async ({ name, surname, birthDate, email, password, confirmPassword }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     const error = new Error("Já existe uma conta com este email");
@@ -288,11 +288,32 @@ const createAdmin = async ({ name, surname, birthDate, email }) => {
     throw error;
   }
 
-  const placeholderPassword = crypto.randomBytes(32).toString("hex");
-  const passwordHash = await bcrypt.hash(placeholderPassword, 12);
+  if (password !== confirmPassword) {
+    const error = new Error("As palavras-passe não coincidem");
+    error.statusCode = 400;
+    throw error;
+  }
 
-  const resetToken = crypto.randomBytes(32).toString("hex");
-  const resetTokenExpires = Date.now() + 15 * 60 * 1000;
+  const MIN_PASSWORD_LENGTH = 8;
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    const error = new Error(
+      `A palavra-passe deve ter pelo menos ${MIN_PASSWORD_LENGTH} caracteres`,
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/;
+  if (!strongPasswordRegex.test(password)) {
+    const error = new Error(
+      "A palavra-passe deve conter maiúscula, minúscula, número e carácter especial",
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
 
   const newAdmin = await User.create({
     name,
@@ -302,24 +323,22 @@ const createAdmin = async ({ name, surname, birthDate, email }) => {
     passwordHash,
     role: "admin",
     status: "active",
-    resetPasswordToken: resetToken,
-    resetPasswordExpires: resetTokenExpires,
   });
 
-  const setupLink = `${process.env.FRONTEND_URL}/mentora/update-password?token=${resetToken}`;
-
-  await transporter.sendMail({
-    from: '"Mentora" <no-reply@mentora.com>',
-    to: newAdmin.email,
-    subject: "Bem-vindo(a) ao painel de administração — Mentora",
-    html: `
-            <p>Olá ${newAdmin.name},</p>
-            <p>Foi criada uma conta de administrador para ti na plataforma Mentora.</p>
-            <p>Clica no link abaixo para definires a tua palavra-passe e ativares o acesso:</p>
-            <a href="${setupLink}" target="_blank">Definir palavra-passe</a>
-            <p>Este link expira em 15 minutos.</p>
-        `,
-  });
+  try {
+    await transporter.sendMail({
+      from: '"Mentora" <no-reply@mentora.com>',
+      to: newAdmin.email,
+      subject: "Bem-vindo(a) ao painel de administração — Mentora",
+      html: `
+              <p>Olá ${newAdmin.name},</p>
+              <p>Foi criada uma conta de administrador para ti na plataforma Mentora.</p>
+              <p>Já podes entrar com o email e a palavra-passe que te foram dados por quem criou a tua conta.</p>
+          `,
+    });
+  } catch (emailError) {
+    console.error("Não foi possível enviar o email de boas-vindas:", emailError.message);
+  }
 
   return {
     _id: newAdmin._id,

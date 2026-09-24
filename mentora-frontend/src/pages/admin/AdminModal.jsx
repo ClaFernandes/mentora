@@ -54,6 +54,16 @@ export default function AdminModal({ confirmAction, onCancel, onConfirm }) {
                     </>
                 )}
 
+                {confirmAction.kind === "remove-content" && (
+                    <>
+                        <h3>Remover conteúdo?</h3>
+                        <p>
+                            Esta ação não pode ser desfeita. O {confirmAction.type === "post" ? "post" : "comentário"} vai
+                            ser apagado permanentemente da plataforma.
+                        </p>
+                    </>
+                )}
+
                 <div className="admin-modal-actions">
                     <button type="button" className="admin-modal-cancel" onClick={onCancel}>
                         Cancelar

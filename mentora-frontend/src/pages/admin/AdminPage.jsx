@@ -33,7 +33,7 @@ const TABS = [
   { key: "admins", label: "Administradores" },
 ];
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 export default function AdminPage() {
   const { token, user: currentAdmin } = useAuth();
@@ -46,14 +46,17 @@ export default function AdminPage() {
   const [approvedMentors, setApprovedMentors] = useState([]);
   const [approvedMentorsPage, setApprovedMentorsPage] = useState(1);
   const [approvedMentorsTotalPages, setApprovedMentorsTotalPages] = useState(1);
+  const [approvedMentorsTotal, setApprovedMentorsTotal] = useState(0);
   const [mentees, setMentees] = useState([]);
   const [menteesPage, setMenteesPage] = useState(1);
   const [menteesTotalPages, setMenteesTotalPages] = useState(1);
+  const [menteesTotal, setMenteesTotal] = useState(0);
 
   const [reportedPosts, setReportedPosts] = useState([]);
   const [reportedComments, setReportedComments] = useState([]);
   const [reportedPage, setReportedPage] = useState(1);
   const [reportedTotalPages, setReportedTotalPages] = useState(1);
+  const [reportedContentTotal, setReportedContentTotal] = useState(0);
 
   const [admins, setAdmins] = useState([]);
 
@@ -65,6 +68,8 @@ export default function AdminPage() {
   const [newAdminSurname, setNewAdminSurname] = useState("");
   const [newAdminBirthDate, setNewAdminBirthDate] = useState("");
   const [newAdminEmail, setNewAdminEmail] = useState("");
+  const [newAdminPassword, setNewAdminPassword] = useState("");
+  const [newAdminConfirmPassword, setNewAdminConfirmPassword] = useState("");
 
   function setActiveTab(tabKey) {
     setSearchParams({ tab: tabKey });
@@ -98,6 +103,7 @@ export default function AdminPage() {
       (data) => {
         setApprovedMentors(data.mentors);
         setApprovedMentorsTotalPages(data.totalPages);
+        setApprovedMentorsTotal(data.total);
       },
     );
   }, [activeTab, token, approvedMentorsPage]);
@@ -107,6 +113,7 @@ export default function AdminPage() {
     getAllMentees(token, menteesPage, PAGE_SIZE).then((data) => {
       setMentees(data.mentees);
       setMenteesTotalPages(data.totalPages);
+      setMenteesTotal(data.total);
     });
   }, [activeTab, token, menteesPage]);
 
@@ -116,6 +123,7 @@ export default function AdminPage() {
       setReportedPosts(data.reportedPosts);
       setReportedComments(data.reportedComments);
       setReportedTotalPages(data.totalPages);
+      setReportedContentTotal(data.total);
     });
   }, [activeTab, token, reportedPage]);
 
@@ -155,21 +163,8 @@ export default function AdminPage() {
     })();
   }
 
-  function handleRemoveContent(type, id) {
-    (async () => {
-      try {
-        if (type === "post") {
-          await removeReportedPost(token, id);
-          setReportedPosts((prev) => prev.filter((p) => p._id !== id));
-        } else {
-          await removeReportedComment(token, id);
-          setReportedComments((prev) => prev.filter((c) => c._id !== id));
-        }
-        showSuccess("Conteúdo removido com sucesso.");
-      } catch (error) {
-        showError(error.message || "Não foi possível remover o conteúdo.");
-      }
-    })();
+  function handleRequestRemoveContent(type, id) {
+    setConfirmAction({ kind: "remove-content", type, id });
   }
 
   function handleRequestStatusChange(accountType, id, name, currentStatus) {
@@ -236,6 +231,18 @@ export default function AdminPage() {
         setPendingMentors((prev) => prev.filter((m) => m._id !== id));
         showSuccess(`A candidatura de ${name} foi rejeitada.`);
       }
+
+      if (confirmAction.kind === "remove-content") {
+        const { type, id } = confirmAction;
+        if (type === "post") {
+          await removeReportedPost(token, id);
+          setReportedPosts((prev) => prev.filter((p) => p._id !== id));
+        } else {
+          await removeReportedComment(token, id);
+          setReportedComments((prev) => prev.filter((c) => c._id !== id));
+        }
+        showSuccess("Conteúdo removido com sucesso.");
+      }
     } catch (error) {
       showError(error.message || "Não foi possível concluir a ação.");
     }
@@ -248,7 +255,9 @@ export default function AdminPage() {
       !newAdminName.trim() ||
       !newAdminSurname.trim() ||
       !newAdminBirthDate ||
-      !newAdminEmail.trim()
+      !newAdminEmail.trim() ||
+      !newAdminPassword ||
+      !newAdminConfirmPassword
     ) {
       return;
     }
@@ -259,22 +268,21 @@ export default function AdminPage() {
         surname: newAdminSurname.trim(),
         birthDate: newAdminBirthDate,
         email: newAdminEmail.trim(),
+        password: newAdminPassword,
+        confirmPassword: newAdminConfirmPassword,
       });
 
       setAdmins((prev) => [...prev, newAdmin]);
-      showSuccess(
-        `${newAdmin.name} foi convidado(a) como administrador(a) — um email foi enviado para definir a password.`,
-      );
-      setNewAdminName("");
+      showSuccess(`${newAdmin.name} foi adicionado(a) como administrador(a).`);
       setNewAdminSurname("");
       setNewAdminBirthDate("");
       setNewAdminEmail("");
+      setNewAdminPassword("");
+      setNewAdminConfirmPassword("");
     } catch (error) {
       showError(error.message || "Não foi possível adicionar o administrador.");
     }
   }
-
-  const reportedContentCount = reportedPosts.length + reportedComments.length;
 
   return (
     <div className="admin-page">
@@ -327,9 +335,11 @@ export default function AdminPage() {
           mentees={mentees}
           approvedMentorsPage={approvedMentorsPage}
           approvedMentorsTotalPages={approvedMentorsTotalPages}
+          approvedMentorsTotal={approvedMentorsTotal}
           setApprovedMentorsPage={setApprovedMentorsPage}
           menteesPage={menteesPage}
           menteesTotalPages={menteesTotalPages}
+          menteesTotal={menteesTotal}
           setMenteesPage={setMenteesPage}
           handleApproveMentor={handleApproveMentor}
           handleRequestRejectMentor={handleRequestRejectMentor}
@@ -342,9 +352,9 @@ export default function AdminPage() {
         <AdminModeration
           reportedPosts={reportedPosts}
           reportedComments={reportedComments}
-          reportedContentCount={reportedContentCount}
+          reportedContentCount={reportedContentTotal}
           handleDismissReport={handleDismissReport}
-          handleRemoveContent={handleRemoveContent}
+          handleRequestRemoveContent={handleRequestRemoveContent}
           reportedPage={reportedPage}
           reportedTotalPages={reportedTotalPages}
           setReportedPage={setReportedPage}
@@ -359,10 +369,14 @@ export default function AdminPage() {
           newAdminSurname={newAdminSurname}
           newAdminBirthDate={newAdminBirthDate}
           newAdminEmail={newAdminEmail}
+          newAdminPassword={newAdminPassword}
+          newAdminConfirmPassword={newAdminConfirmPassword}
           setNewAdminName={setNewAdminName}
           setNewAdminSurname={setNewAdminSurname}
           setNewAdminBirthDate={setNewAdminBirthDate}
           setNewAdminEmail={setNewAdminEmail}
+          setNewAdminPassword={setNewAdminPassword}
+          setNewAdminConfirmPassword={setNewAdminConfirmPassword}
           handleAddAdmin={handleAddAdmin}
           handleRequestRemoveAdmin={handleRequestRemoveAdmin}
         />

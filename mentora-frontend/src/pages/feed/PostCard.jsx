@@ -49,6 +49,7 @@ export default function PostCard({
   const [isEditingPost, setIsEditingPost] = useState(false);
   const [editedContent, setEditedContent] = useState(post.content);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showReportConfirm, setShowReportConfirm] = useState(false);
   const [editedImage, setEditedImage] = useState(null);
   const [editedPreviewUrl, setEditedPreviewUrl] = useState(null);
   const [imageRemoved, setImageRemoved] = useState(false);
@@ -376,7 +377,7 @@ export default function PostCard({
 
         <button
           className="post-card_report-btn"
-          onClick={() => onReportPost(post._id)}
+          onClick={() => setShowReportConfirm(true)}
           disabled={post.reported}
         >
           <FiFlag /> {post.reported ? "Denunciado" : "Denunciar"}
@@ -405,6 +406,19 @@ export default function PostCard({
           confirmLabel="Sim, apagar"
           onCancel={() => setShowDeleteConfirm(false)}
           onConfirm={handleConfirmDelete}
+        />
+      )}
+
+      {showReportConfirm && (
+        <ConfirmModal
+          title="Denunciar este post?"
+          message="Um administrador vai analisar este post."
+          confirmLabel="Sim, denunciar"
+          onCancel={() => setShowReportConfirm(false)}
+          onConfirm={() => {
+            onReportPost(post._id);
+            setShowReportConfirm(false);
+          }}
         />
       )}
     </article>

@@ -13,7 +13,6 @@
     color: var(--color-cream);
 }
 
-/* Coluna esquerda */
 .auth-marketing {
     display: none;
     flex: 1;
@@ -95,7 +94,6 @@
     font-weight: 700;
 }
 
-/* Coluna direita */
 .auth-form-side {
     flex: 1;
     display: flex;
@@ -143,6 +141,12 @@
     padding: 10px 14px;
     border-radius: 8px;
     margin-bottom: 16px;
+}
+
+.auth-role-warning {
+    color: var(--color-danger);
+    font-size: 0.8rem;
+    margin: -12px 0 20px;
 }
 
 .auth-field {
@@ -254,7 +258,6 @@
     text-decoration: underline;
 }
 
-/* Modo recuperação */
 .auth-lock-icon {
     display: flex;
     align-items: center;
@@ -312,7 +315,6 @@
     font-weight: 600;
 }
 
-/* Seletor de papel */
 .auth-role-select {
     display: flex;
     gap: 10px;
@@ -359,7 +361,6 @@
     color: var(--color-accent-text);
 }
 
-/* Checklist de regras de password */
 .auth-password-rules {
     list-style: none;
     padding: 0;
@@ -384,7 +385,6 @@
     color: var(--color-text-secondary);
 }
 
-/* Indicador de correspondência de passwords */
 .auth-match-ok,
 .auth-match-error {
     display: flex;

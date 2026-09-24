@@ -99,8 +99,8 @@ const getAllAdminsController = async (req, res) => {
 };
 
 const createAdminController = async (req, res) => {
-  const { name, surname, birthDate, email } = req.body;
-  const result = await createAdmin({ name, surname, birthDate, email });
+  const { name, surname, birthDate, email, password, confirmPassword } = req.body;
+  const result = await createAdmin({ name, surname, birthDate, email, password, confirmPassword });
   res.status(201).json(result);
 };
 

@@ -8,10 +8,14 @@ export default function AdminAdmins({
   newAdminSurname,
   newAdminBirthDate,
   newAdminEmail,
+  newAdminPassword,
+  newAdminConfirmPassword,
   setNewAdminName,
   setNewAdminSurname,
   setNewAdminBirthDate,
   setNewAdminEmail,
+  setNewAdminPassword,
+  setNewAdminConfirmPassword,
   handleAddAdmin,
   handleRequestRemoveAdmin,
 }) {
@@ -111,6 +115,18 @@ export default function AdminAdmins({
             placeholder="Email"
             value={newAdminEmail}
             onChange={(e) => setNewAdminEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Palavra-passe"
+            value={newAdminPassword}
+            onChange={(e) => setNewAdminPassword(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Confirmar palavra-passe"
+            value={newAdminConfirmPassword}
+            onChange={(e) => setNewAdminConfirmPassword(e.target.value)}
           />
           <button
             type="button"

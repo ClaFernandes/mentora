@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ConfirmModal from "../../components/ConfirmModal";
 import { Link } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import { formatDistanceToNow } from "date-fns";
@@ -27,6 +28,9 @@ export default function CommentList({
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
   const [newCommentText, setNewCommentText] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+  const [confirmReportId, setConfirmReportId] = useState(null);
+
 
   function startEditing(comment) {
     setEditingId(comment._id);
@@ -108,7 +112,7 @@ export default function CommentList({
                           <FaPen />
                         </button>
                         <button
-                          onClick={() => onDelete(comment._id)}
+                          onClick={() => setConfirmDeleteId(comment._id)}
                           aria-label="Apagar comentário"
                         >
                           <FaTrash />
@@ -153,7 +157,7 @@ export default function CommentList({
                           <button
                             type="button"
                             className="comment-list_report-btn"
-                            onClick={() => onReport(comment._id)}
+                            onClick={() => setConfirmReportId(comment._id)}
                             disabled={comment.reported}
                           >
                             <FiFlag />{" "}
@@ -180,6 +184,32 @@ export default function CommentList({
           <FaCheck />
         </button>
       </form>
+
+      {confirmDeleteId && (
+        <ConfirmModal
+          title="Apagar este comentário?"
+          message="Esta ação não pode ser desfeita."
+          confirmLabel="Sim, apagar"
+          onCancel={() => setConfirmDeleteId(null)}
+          onConfirm={() => {
+            onDelete(confirmDeleteId);
+            setConfirmDeleteId(null);
+          }}
+        />
+      )}
+
+      {confirmReportId && (
+        <ConfirmModal
+          title="Denunciar este comentário?"
+          message="Um administrador vai analisar este comentário."
+          confirmLabel="Sim, denunciar"
+          onCancel={() => setConfirmReportId(null)}
+          onConfirm={() => {
+            onReport(confirmReportId);
+            setConfirmReportId(null);
+          }}
+        />
+      )}
     </div>
   );
 }

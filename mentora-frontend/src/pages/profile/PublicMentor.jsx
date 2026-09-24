@@ -98,7 +98,7 @@ export default function PublicMentor({ mentor }) {
             <AiFillStar /> {mentor.avgRating}
           </p>
           <p className="mentor-profile_followers">
-            {mentor.followersCount} seguidores
+            {mentor.followersCount} {mentor.followersCount === 1 ? "seguidor" : "seguidores"}
           </p>
         </div>
 

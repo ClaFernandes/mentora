@@ -9,8 +9,10 @@ export default function AdminUsers({
   mentees,
   approvedMentorsPage,
   approvedMentorsTotalPages,
+  approvedMentorsTotal,
   setApprovedMentorsPage,
   menteesPage,
+  menteesTotal,
   menteesTotalPages,
   setMenteesPage,
   handleApproveMentor,
@@ -77,7 +79,7 @@ export default function AdminUsers({
       <div className="admin-section">
         <div className="admin-section-header">
           <h3>Mentores aprovados</h3>
-          <span className="admin-section-count">{approvedMentors.length}</span>
+          <span className="admin-section-count">{approvedMentorsTotal}</span>
         </div>
 
         <table className="admin-table">
@@ -183,7 +185,7 @@ export default function AdminUsers({
       <div className="admin-section">
         <div className="admin-section-header">
           <h3>Mentorados</h3>
-          <span className="admin-section-count">{mentees.length}</span>
+          <span className="admin-section-count">{menteesTotal}</span>
         </div>
 
         <table className="admin-table">
