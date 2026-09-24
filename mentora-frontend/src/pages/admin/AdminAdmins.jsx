@@ -1,5 +1,6 @@
+import { useState } from "react";
 import Avatar from "../../components/Avatar.jsx";
-import { FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiEye, FiEyeOff } from "react-icons/fi"; novos
 
 export default function AdminAdmins({
   admins,
@@ -19,6 +20,10 @@ export default function AdminAdmins({
   handleAddAdmin,
   handleRequestRemoveAdmin,
 }) {
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <div>
       <div className="admin-section">
@@ -92,45 +97,73 @@ export default function AdminAdmins({
         </div>
 
         <div className="admin-add-form">
-          <input
-            type="text"
-            placeholder="Nome"
-            value={newAdminName}
-            onChange={(e) => setNewAdminName(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Apelido"
-            value={newAdminSurname}
-            onChange={(e) => setNewAdminSurname(e.target.value)}
-          />
-          <input
-            type="date"
-            placeholder="Data de nascimento"
-            value={newAdminBirthDate}
-            onChange={(e) => setNewAdminBirthDate(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={newAdminEmail}
-            onChange={(e) => setNewAdminEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Palavra-passe"
-            value={newAdminPassword}
-            onChange={(e) => setNewAdminPassword(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Confirmar palavra-passe"
-            value={newAdminConfirmPassword}
-            onChange={(e) => setNewAdminConfirmPassword(e.target.value)}
-          />
+          <div className="admin-add-form-row">
+            <input
+              type="text"
+              placeholder="Nome"
+              value={newAdminName}
+              onChange={(e) => setNewAdminName(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Apelido"
+              value={newAdminSurname}
+              onChange={(e) => setNewAdminSurname(e.target.value)}
+            />
+            <input
+              type="date"
+              placeholder="Data de nascimento"
+              value={newAdminBirthDate}
+              onChange={(e) => setNewAdminBirthDate(e.target.value)}
+            />
+          </div>
+
+          <div className="admin-add-form-row">
+            <input
+              type="email"
+              placeholder="Email"
+              value={newAdminEmail}
+              onChange={(e) => setNewAdminEmail(e.target.value)}
+            />
+
+            <div className="admin-password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Palavra-passe"
+                value={newAdminPassword}
+                onChange={(e) => setNewAdminPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="admin-eye-btn"
+                onClick={() => setShowPassword((p) => !p)}
+                aria-label={showPassword ? "Esconder palavra-passe" : "Mostrar palavra-passe"}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+
+            <div className="admin-password-wrapper">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirmar palavra-passe"
+                value={newAdminConfirmPassword}
+                onChange={(e) => setNewAdminConfirmPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="admin-eye-btn"
+                onClick={() => setShowConfirmPassword((p) => !p)}
+                aria-label={showConfirmPassword ? "Esconder palavra-passe" : "Mostrar palavra-passe"}
+              >
+                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+          </div>
+
           <button
             type="button"
-            className="admin-approve-btn"
+            className="admin-approve-btn admin-add-form-submit"
             onClick={handleAddAdmin}
           >
             <FiPlus /> Adicionar

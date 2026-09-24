@@ -522,6 +522,12 @@
 
 .admin-add-form {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-add-form-row {
+    display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
@@ -535,6 +541,39 @@
     background-color: var(--color-bg-elevated);
     color: var(--color-text);
     font-size: 0.88rem;
+}
+
+.admin-password-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+}
+
+.admin-password-wrapper input {
+    width: 100%;
+    padding: 9px 38px 9px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: 0.88rem;
+}
+
+.admin-eye-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.admin-add-form-submit {
+    align-self: flex-start;
 }
 
 .admin-modal-overlay {
@@ -685,11 +724,12 @@
         padding: 10px 12px;
     }
 
-    .admin-add-form input {
+    .admin-add-form-row input,
+    .admin-password-wrapper {
         flex-basis: 100%;
     }
 
-    .admin-add-form .admin-approve-btn {
+    .admin-add-form-submit {
         width: 100%;
         justify-content: center;
         padding: 10px;
