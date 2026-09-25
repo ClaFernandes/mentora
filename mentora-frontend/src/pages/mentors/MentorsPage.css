@@ -212,6 +212,11 @@
     line-height: 1.3;
     min-height: 2.3em;
     margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
 }
 
 .mentors-card-rating {
