@@ -177,4 +177,18 @@ const getMyFollowers = async (userId) => {
     return follows.map((f) => f.followerId).filter(Boolean);
 };
 
-module.exports = { getMentorProfile, updateMentorProfile, searchMentors, getMyFollowers };
+const removeFollower = async (mentorUserId, followerId) => {
+    const mentorProfile = await MentorProfile.findOne({ userId: mentorUserId });
+
+    if (!mentorProfile) {
+        const error = new Error("Perfil de mentor não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    await Follow.deleteOne({ followerId, mentorId: mentorProfile._id });
+
+    return { message: "Seguidor removido com sucesso" };
+};
+
+module.exports = { getMentorProfile, updateMentorProfile, searchMentors, getMyFollowers, removeFollower };

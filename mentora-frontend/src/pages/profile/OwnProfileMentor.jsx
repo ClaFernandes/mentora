@@ -5,7 +5,7 @@ import {
   createAvailability,
   deleteAvailability,
 } from "../../services/availabilityService.js";
-import { getMyFollowers } from "../../services/mentorService.js";
+import { getMyFollowers, removeFollower } from "../../services/mentorService.js";
 import ProfileAvatarUpload from "../../components/ProfileAvatarUpload.jsx";
 import ChangePasswordSection from "../../components/ChangePasswordSection.jsx";
 import DangerZoneSection from "../../components/DangerZoneSection.jsx";
@@ -64,6 +64,14 @@ export default function OwnProfileMentor({ mentor }) {
     }
   }
 
+  async function handleRemoveFollower(followerId) {
+    try {
+      await removeFollower(token, followerId);
+      setFollowers((prev) => (prev || []).filter((f) => f._id !== followerId));
+    } catch {
+    }
+  }
+
   return (
     <div className="mentor-profile">
       <header className="mentor-profile_header">
@@ -107,6 +115,7 @@ export default function OwnProfileMentor({ mentor }) {
         <FollowersModal
           followers={followers || []}
           onClose={() => setShowFollowersModal(false)}
+          onRemove={handleRemoveFollower}
         />
       )}
 

@@ -35,3 +35,10 @@ export async function getMyFollowers(token) {
         token,
     });
 }
+
+export async function removeFollower(token, followerId) {
+    return apiRequest(`/mentors/me/followers/${followerId}`, {
+        method: "DELETE",
+        token,
+    });
+}
