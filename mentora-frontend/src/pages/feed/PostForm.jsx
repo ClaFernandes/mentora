@@ -15,12 +15,21 @@ export default function PostForm({ onPostCreated }) {
   const [error, setError] = useState(null);
 
   const fileInputRef = useRef(null);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     if (!image) {
       setPreviewUrl(null);
       return;
     }
+
+    useEffect(() => {
+      const el = textareaRef.current;
+      if (el) {
+        el.style.height = "auto";
+        el.style.height = `${el.scrollHeight}px`;
+      }
+    }, [content]);
 
     const url = URL.createObjectURL(image);
     setPreviewUrl(url);
@@ -59,6 +68,7 @@ export default function PostForm({ onPostCreated }) {
   return (
     <form className="post-form" onSubmit={handleSubmit}>
       <textarea
+        ref={textareaRef}
         className="post-form_textarea"
         placeholder="No que estás a pensar?"
         value={content}

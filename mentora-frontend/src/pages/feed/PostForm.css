@@ -17,6 +17,7 @@
     color: var(--color-text);
     resize: none;
     min-height: 64px;
+    overflow: hidden;
 }
 
 .post-form_textarea:focus {
