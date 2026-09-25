@@ -27,7 +27,9 @@ export default function PostForm({ onPostCreated }) {
       const el = textareaRef.current;
       if (el) {
         el.style.height = "auto";
-        el.style.height = `${el.scrollHeight}px`;
+        const maxHeight = 220;
+        el.style.height = `${Math.min(el.scrollHeight, maxHeight)}px`;
+        el.style.overflowY = el.scrollHeight > maxHeight ? "auto" : "hidden";
       }
     }, [content]);
 
