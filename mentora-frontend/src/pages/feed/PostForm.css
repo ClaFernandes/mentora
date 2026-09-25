@@ -17,7 +17,8 @@
     color: var(--color-text);
     resize: none;
     min-height: 64px;
-    max-height: 220px;
+    overflow: hidden;
+    transition: height 0.15s ease
 }
 
 .post-form_textarea:focus {
