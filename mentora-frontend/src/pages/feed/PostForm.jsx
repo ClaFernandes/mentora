@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useAuth } from "../../hooks/useAuth.js";
 import { uploadImage } from "../../services/uploadService.js";
 import { createPost } from "../../services/feedService.js";
@@ -10,36 +10,33 @@ export default function PostForm({ onPostCreated }) {
 
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
   const fileInputRef = useRef(null);
   const textareaRef = useRef(null);
 
-  useEffect(() => {
-    if (!image) {
-      setPreviewUrl(null);
-      return;
-    }
-
-    useEffect(() => {
-      const el = textareaRef.current;
-      if (el) {
-        el.style.height = "auto";
-        el.style.height = `${el.scrollHeight}px`;
-      }
-    }, [content]);
-
-    const url = URL.createObjectURL(image);
-    setPreviewUrl(url);
-
-    return () => URL.revokeObjectURL(url);
+  const previewUrl = useMemo(() => {
+    if (!image) return null;
+    return URL.createObjectURL(image);
   }, [image]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = "auto";
+      el.style.height = `${el.scrollHeight}px`;
+    }
+  }, [content]);
 
   async function handleSubmit(e) {
     setError(null);
-
     e.preventDefault();
     setIsSubmitting(true);
 
